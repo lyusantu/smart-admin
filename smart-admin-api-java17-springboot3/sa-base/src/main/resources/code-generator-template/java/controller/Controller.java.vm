@@ -3,8 +3,9 @@ package ${packageName};
 #foreach ($importClass in $importPackageList)
 $importClass
 #end
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,12 +23,12 @@ import jakarta.validation.Valid;
  * @Copyright ${basic.copyright}
  */
 
+@RequiredArgsConstructor
 @RestController
 @Tag(name = "${basic.description}")
 public class ${name.upperCamel}Controller {
 
-    @Resource
-    private ${name.upperCamel}Service ${name.lowerCamel}Service;
+    private final ${name.upperCamel}Service ${name.lowerCamel}Service;
 
     @Operation(summary = "分页查询 @author ${basic.backendAuthor}")
     @PostMapping("/${name.lowerCamel}/queryPage")

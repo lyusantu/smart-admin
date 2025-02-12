@@ -6,13 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 不需要登录注解
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2022-05-30 21:22:12
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
+ * 不需要登录的注解
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

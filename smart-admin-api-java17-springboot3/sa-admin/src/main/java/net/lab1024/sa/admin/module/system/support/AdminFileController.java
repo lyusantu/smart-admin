@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.file.domain.form.FileQueryForm;

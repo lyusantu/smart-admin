@@ -9,7 +9,7 @@ import net.lab1024.sa.admin.module.business.oa.bank.domain.BankCreateForm;
 import net.lab1024.sa.admin.module.business.oa.bank.domain.BankQueryForm;
 import net.lab1024.sa.admin.module.business.oa.bank.domain.BankUpdateForm;
 import net.lab1024.sa.admin.module.business.oa.bank.domain.BankVO;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartRequestUtil;

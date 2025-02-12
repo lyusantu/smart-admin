@@ -10,9 +10,9 @@ import net.lab1024.sa.admin.module.system.position.domain.form.PositionQueryForm
 import net.lab1024.sa.admin.module.system.position.domain.form.PositionUpdateForm;
 import net.lab1024.sa.admin.module.system.position.domain.vo.PositionVO;
 import net.lab1024.sa.admin.module.system.position.service.PositionService;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.domain.ValidateList;
+import net.lab1024.sa.base.common.domain.validate.ValidateList;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

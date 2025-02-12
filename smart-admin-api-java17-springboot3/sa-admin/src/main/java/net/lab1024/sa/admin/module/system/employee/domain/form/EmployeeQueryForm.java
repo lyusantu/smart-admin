@@ -3,19 +3,13 @@ package net.lab1024.sa.admin.module.system.employee.domain.form;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import net.lab1024.sa.base.common.domain.PageParam;
+import net.lab1024.sa.base.common.domain.page.PageParam;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
 /**
  * 员工列表
- *
- * @Author 1024创新实验室: 开云
- * @Date 2021-12-20 21:06:49
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Data
 public class EmployeeQueryForm extends PageParam {

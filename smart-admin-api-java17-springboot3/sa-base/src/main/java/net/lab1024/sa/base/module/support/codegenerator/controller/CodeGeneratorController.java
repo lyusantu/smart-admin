@@ -5,8 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartResponseUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
@@ -17,6 +18,7 @@ import net.lab1024.sa.base.module.support.codegenerator.domain.vo.TableColumnVO;
 import net.lab1024.sa.base.module.support.codegenerator.domain.vo.TableConfigVO;
 import net.lab1024.sa.base.module.support.codegenerator.domain.vo.TableVO;
 import net.lab1024.sa.base.module.support.codegenerator.service.CodeGeneratorService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,55 +27,49 @@ import java.util.List;
 
 /**
  * 代码生成
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-06-29 20:23:46
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Tag(name = SwaggerTagConst.Support.CODE_GENERATOR)
 @Controller
 public class CodeGeneratorController extends SupportBaseController {
 
-    @Resource
-    private CodeGeneratorService codeGeneratorService;
+    private final CodeGeneratorService codeGeneratorService;
 
-    // ------------------- 查询 -------------------
+    /*              代码查询                */
 
-    @Operation(summary = "获取表的列 @author 卓大")
+    @Operation(summary = "获取表列")
     @GetMapping("/codeGenerator/table/getTableColumns/{table}")
     @ResponseBody
     public ResponseDTO<List<TableColumnVO>> getTableColumns(@PathVariable String table) {
         return ResponseDTO.ok(codeGeneratorService.getTableColumns(table));
     }
 
-    @Operation(summary = "查询数据库的表 @author 卓大")
+    @Operation(summary = "查询数据库的表")
     @PostMapping("/codeGenerator/table/queryTableList")
     @ResponseBody
     public ResponseDTO<PageResult<TableVO>> queryTableList(@RequestBody @Valid TableQueryForm tableQueryForm) {
         return ResponseDTO.ok(codeGeneratorService.queryTableList(tableQueryForm));
     }
 
-    // ------------------- 配置 -------------------
+    /*               代码配置               */
 
-    @Operation(summary = "获取表的配置信息 @author 卓大")
+    @Operation(summary = "获取表配置")
     @GetMapping("/codeGenerator/table/getConfig/{table}")
     @ResponseBody
     public ResponseDTO<TableConfigVO> getTableConfig(@PathVariable String table) {
         return ResponseDTO.ok(codeGeneratorService.getTableConfig(table));
     }
 
-    @Operation(summary = "更新配置信息 @author 卓大")
+    @Operation(summary = "更新表配置")
     @PostMapping("/codeGenerator/table/updateConfig")
     @ResponseBody
     public ResponseDTO<String> updateConfig(@RequestBody @Valid CodeGeneratorConfigForm form) {
         return codeGeneratorService.updateConfig(form);
     }
 
-    // ------------------- 生成 -------------------
+    /*              代码生成                */
 
-    @Operation(summary = "代码预览 @author 卓大")
+    @Operation(summary = "代码预览")
     @PostMapping("/codeGenerator/code/preview")
     @ResponseBody
     public ResponseDTO<String> preview(@RequestBody @Valid CodeGeneratorPreviewForm form) {

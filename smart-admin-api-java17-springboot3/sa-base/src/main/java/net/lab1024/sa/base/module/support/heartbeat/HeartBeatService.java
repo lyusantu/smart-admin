@@ -1,11 +1,14 @@
 package net.lab1024.sa.base.module.support.heartbeat;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
+import net.lab1024.sa.base.module.support.heartbeat.core.HeartBeatRecord;
+import net.lab1024.sa.base.module.support.heartbeat.domain.HeartBeatRecordEntity;
 import net.lab1024.sa.base.module.support.heartbeat.domain.HeartBeatRecordQueryForm;
 import net.lab1024.sa.base.module.support.heartbeat.domain.HeartBeatRecordVO;
 import org.springframework.stereotype.Service;
@@ -14,24 +17,29 @@ import java.util.List;
 
 /**
  * 心跳记录
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-01-09 20:57:24
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class HeartBeatService {
 
-    @Resource
-    private HeartBeatRecordDao heartBeatRecordDao;
+    private final HeartBeatRecordMapper heartBeatRecordMapper;
 
     public ResponseDTO<PageResult<HeartBeatRecordVO>> pageQuery(HeartBeatRecordQueryForm pageParam) {
-        Page pageQueryInfo = SmartPageUtil.convert2PageQuery(pageParam);
-        List<HeartBeatRecordVO> recordVOList = heartBeatRecordDao.pageQuery(pageQueryInfo,pageParam);
-        PageResult<HeartBeatRecordVO> pageResult = SmartPageUtil.convert2PageResult(pageQueryInfo, recordVOList);
+        Page pageQueryInfo = PageUtil.convert2PageQuery(pageParam);
+        List<HeartBeatRecordVO> recordVOList = heartBeatRecordMapper.pageQuery(pageQueryInfo, pageParam);
+        PageResult<HeartBeatRecordVO> pageResult = PageUtil.convert2PageResult(pageQueryInfo, recordVOList);
         return ResponseDTO.ok(pageResult);
     }
+
+    public void saveOrUpdate(HeartBeatRecord heartBeatRecord) {
+        HeartBeatRecordEntity heartBeatRecordEntity = SmartBeanUtil.copy(heartBeatRecord, HeartBeatRecordEntity.class);
+        HeartBeatRecordEntity heartBeatRecordOld = heartBeatRecordMapper.query(heartBeatRecordEntity);
+        if (heartBeatRecordOld == null) {
+            heartBeatRecordMapper.insert(heartBeatRecordEntity);
+        } else {
+            heartBeatRecordMapper.updateHeartBeatTimeById(heartBeatRecordOld.getHeartBeatRecordId(), heartBeatRecordEntity.getHeartBeatTime());
+        }
+    }
+
 }

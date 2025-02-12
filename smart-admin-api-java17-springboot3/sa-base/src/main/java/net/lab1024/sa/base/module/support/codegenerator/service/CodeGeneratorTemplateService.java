@@ -16,6 +16,7 @@ import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGenerato
 import net.lab1024.sa.base.module.support.codegenerator.domain.model.*;
 import net.lab1024.sa.base.module.support.codegenerator.service.variable.CodeGenerateBaseVariableService;
 import net.lab1024.sa.base.module.support.codegenerator.service.variable.backend.*;
+import net.lab1024.sa.base.module.support.codegenerator.service.variable.backend.MapperVariableService;
 import net.lab1024.sa.base.module.support.codegenerator.service.variable.backend.domain.*;
 import net.lab1024.sa.base.module.support.codegenerator.service.variable.front.ApiVariableService;
 import net.lab1024.sa.base.module.support.codegenerator.service.variable.front.ConstVariableService;
@@ -33,19 +34,12 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 代码生成器 模板 Service
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-06-30 22:15:38
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
+ * 代码生成器模板 Service
  */
 
 @Service
@@ -53,7 +47,7 @@ import java.util.stream.Collectors;
 public class CodeGeneratorTemplateService {
 
 
-    private Map<String, CodeGenerateBaseVariableService> map = new HashMap<>();
+    private final Map<String, CodeGenerateBaseVariableService> map = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -66,8 +60,8 @@ public class CodeGeneratorTemplateService {
         map.put("java/controller/Controller.java", new ControllerVariableService());
         map.put("java/service/Service.java", new ServiceVariableService());
         map.put("java/manager/Manager.java", new ManagerVariableService());
-        map.put("java/dao/Dao.java", new DaoVariableService());
-        map.put("java/mapper/Mapper.xml", new MapperVariableService());
+        map.put("java/mapper/Mapper.java", new MapperVariableService());
+        map.put("java/mapper/Mapper.xml", new net.lab1024.sa.base.module.support.codegenerator.service.variable.backend.domain.MapperVariableService());
         // 菜单 SQL
         map.put("java/sql/Menu.sql", new MenuVariableService());
         // 前端
@@ -136,19 +130,15 @@ public class CodeGeneratorTemplateService {
 
     }
 
-
     public String generate(String tableName, String file, CodeGeneratorConfigEntity codeGeneratorConfigEntity) {
 
         // -------------------- 1 校验不支持的代码生成，比如增加、删除等 --------------------
-
-        String finalFile = file;
-        Optional<String> optional = map.keySet().stream().filter(e -> e.contains(finalFile)).findFirst();
-        if (!optional.isPresent()) {
+        Optional<String> optional = map.keySet().stream().filter(e -> e.contains(file)).findFirst();
+        if (optional.isEmpty()) {
             return "不存在此模板！";
         }
 
-        file = optional.get();
-        CodeGenerateBaseVariableService codeGenerateBaseVariableService = map.get(file);
+        CodeGenerateBaseVariableService codeGenerateBaseVariableService = map.get(optional.get());
         if (codeGenerateBaseVariableService == null) {
             return "代码生成Service不存在，请检查相关代码！";
         }
@@ -159,7 +149,7 @@ public class CodeGeneratorTemplateService {
         CodeDelete deleteInfo = JSON.parseObject(codeGeneratorConfigEntity.getDeleteInfo(), CodeDelete.class);
         List<CodeQueryField> queryFields = JSONArray.parseArray(codeGeneratorConfigEntity.getQueryFields(), CodeQueryField.class);
         List<CodeTableField> tableFields = JSONArray.parseArray(codeGeneratorConfigEntity.getTableFields(), CodeTableField.class);
-        tableFields.stream().forEach(e -> e.setWidth(e.getWidth() == null ? 0 : e.getWidth()));
+        tableFields.forEach(e -> e.setWidth(e.getWidth() == null ? 0 : e.getWidth()));
 
         CodeGeneratorConfigForm form = CodeGeneratorConfigForm.builder().basic(basic).fields(fields).insertAndUpdate(insertAndUpdate).deleteInfo(deleteInfo).queryFields(queryFields).tableFields(tableFields).deleteInfo(deleteInfo).build();
         form.setTableName(tableName);
@@ -205,7 +195,7 @@ public class CodeGeneratorTemplateService {
 
         // -------------------- 4、模板 生成代码 --------------------
 
-        return render("code-generator-template/" + file + ".vm", variablesMap);
+        return render("code-generator-template/" + optional.get() + ".vm", variablesMap);
     }
 
     /**

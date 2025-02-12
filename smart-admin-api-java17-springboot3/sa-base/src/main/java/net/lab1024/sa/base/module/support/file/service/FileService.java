@@ -6,11 +6,11 @@ import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.constant.StringConst;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartEnumUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.common.util.SmartStringUtil;
 import net.lab1024.sa.base.module.support.file.constant.FileFolderTypeEnum;
 import net.lab1024.sa.base.module.support.file.dao.FileDao;
@@ -200,9 +200,9 @@ public class FileService {
      * 分页查询
      */
     public PageResult<FileVO> queryPage(FileQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<FileVO> list = fileDao.queryPage(page, queryForm);
-        return SmartPageUtil.convert2PageResult(page, list);
+        return PageUtil.convert2PageResult(page, list);
     }
 
 

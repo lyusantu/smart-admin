@@ -8,10 +8,10 @@ import net.lab1024.sa.admin.module.system.position.domain.form.PositionAddForm;
 import net.lab1024.sa.admin.module.system.position.domain.form.PositionQueryForm;
 import net.lab1024.sa.admin.module.system.position.domain.form.PositionUpdateForm;
 import net.lab1024.sa.admin.module.system.position.domain.vo.PositionVO;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -39,9 +39,9 @@ public class PositionService {
      */
     public PageResult<PositionVO> queryPage(PositionQueryForm queryForm) {
         queryForm.setDeletedFlag(Boolean.FALSE);
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<PositionVO> list = positionDao.queryPage(page, queryForm);
-        PageResult<PositionVO> pageResult = SmartPageUtil.convert2PageResult(page, list);
+        PageResult<PositionVO> pageResult = PageUtil.convert2PageResult(page, list);
         return pageResult;
     }
 

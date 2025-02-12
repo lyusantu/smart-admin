@@ -16,13 +16,12 @@ import net.lab1024.sa.admin.module.system.role.domain.vo.RoleSelectedVO;
 import net.lab1024.sa.admin.module.system.role.domain.vo.RoleVO;
 import net.lab1024.sa.admin.module.system.role.manager.RoleEmployeeManager;
 import net.lab1024.sa.base.common.constant.StringConst;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class RoleEmployeeService {
      *
      */
     public ResponseDTO<PageResult<EmployeeVO>> queryEmployee(RoleEmployeeQueryForm roleEmployeeQueryForm) {
-        Page page = SmartPageUtil.convert2PageQuery(roleEmployeeQueryForm);
+        Page page = PageUtil.convert2PageQuery(roleEmployeeQueryForm);
         List<EmployeeVO> employeeList = roleEmployeeDao.selectRoleEmployeeByName(page, roleEmployeeQueryForm)
                 .stream()
                 .filter(Objects::nonNull)
@@ -78,7 +77,7 @@ public class RoleEmployeeService {
                 e.setDepartmentName(departmentIdNameMap.getOrDefault(e.getDepartmentId(), StringConst.EMPTY));
             });
         }
-        PageResult<EmployeeVO> pageResult = SmartPageUtil.convert2PageResult(page, employeeList, EmployeeVO.class);
+        PageResult<EmployeeVO> pageResult = PageUtil.convert2PageResult(page, employeeList, EmployeeVO.class);
         return ResponseDTO.ok(pageResult);
     }
 

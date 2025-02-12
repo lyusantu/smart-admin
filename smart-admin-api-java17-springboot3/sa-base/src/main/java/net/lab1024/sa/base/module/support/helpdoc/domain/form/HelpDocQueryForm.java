@@ -2,7 +2,7 @@ package net.lab1024.sa.base.module.support.helpdoc.domain.form;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import net.lab1024.sa.base.common.domain.PageParam;
+import net.lab1024.sa.base.common.domain.page.PageParam;
 
 import java.time.LocalDate;
 

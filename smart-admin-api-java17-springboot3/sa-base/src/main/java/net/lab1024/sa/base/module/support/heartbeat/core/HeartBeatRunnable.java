@@ -1,6 +1,7 @@
 package net.lab1024.sa.base.module.support.heartbeat.core;
 
 import cn.hutool.core.net.NetUtil;
+import net.lab1024.sa.base.module.support.heartbeat.HeartBeatService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.management.ManagementFactory;
@@ -13,12 +14,6 @@ import java.util.List;
 
 /**
  * 心跳线程
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-01-09 20:57:24
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 public class HeartBeatRunnable implements Runnable {
 
@@ -39,24 +34,23 @@ public class HeartBeatRunnable implements Runnable {
      */
     private LocalDateTime processStartTime;
 
-    private IHeartBeatRecordHandler recordHandler;
+    private final HeartBeatService heartBeatService;
 
-    public HeartBeatRunnable(IHeartBeatRecordHandler recordHandler) {
-        this.recordHandler = recordHandler;
+    public HeartBeatRunnable(HeartBeatService heartBeatService) {
+        this.heartBeatService = heartBeatService;
         this.initServerInfo();
     }
 
     /**
      * 初始化心跳相关信息
      */
-    private void initServerInfo(){
+    private void initServerInfo() {
         RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-       this.projectPath = System.getProperty("user.dir");
-       this.serverIps = new ArrayList<>(NetUtil.localIpv4s());
-       this.processNo = Integer.valueOf(runtimeMXBean.getName().split("@")[0]).intValue();
-       this.processStartTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(runtimeMXBean.getStartTime()), ZoneId.systemDefault());
+        this.projectPath = System.getProperty("user.dir");
+        this.serverIps = new ArrayList<>(NetUtil.localIpv4s());
+        this.processNo = Integer.valueOf(runtimeMXBean.getName().split("@")[0]).intValue();
+        this.processStartTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(runtimeMXBean.getStartTime()), ZoneId.systemDefault());
     }
-
 
     @Override
     public void run() {
@@ -66,6 +60,7 @@ public class HeartBeatRunnable implements Runnable {
         heartBeatRecord.setProcessNo(this.processNo);
         heartBeatRecord.setProcessStartTime(this.processStartTime);
         heartBeatRecord.setHeartBeatTime(LocalDateTime.now());
-        recordHandler.handler(heartBeatRecord);
+        heartBeatService.saveOrUpdate(heartBeatRecord);
     }
+
 }

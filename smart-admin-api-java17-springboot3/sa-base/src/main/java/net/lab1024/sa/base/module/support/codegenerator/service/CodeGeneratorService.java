@@ -3,15 +3,15 @@ package net.lab1024.sa.base.module.support.codegenerator.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.common.util.SmartStringUtil;
 import net.lab1024.sa.base.module.support.codegenerator.constant.CodeGeneratorConstant;
-import net.lab1024.sa.base.module.support.codegenerator.dao.CodeGeneratorConfigDao;
-import net.lab1024.sa.base.module.support.codegenerator.dao.CodeGeneratorDao;
+import net.lab1024.sa.base.module.support.codegenerator.mapper.CodeGeneratorConfigMapper;
+import net.lab1024.sa.base.module.support.codegenerator.mapper.CodeGeneratorMapper;
 import net.lab1024.sa.base.module.support.codegenerator.domain.entity.CodeGeneratorConfigEntity;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorConfigForm;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorPreviewForm;
@@ -29,48 +29,36 @@ import java.util.Optional;
 
 /**
  * 代码生成器 Service
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-06-30 22:15:38
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class CodeGeneratorService {
 
-    @Resource
-    private CodeGeneratorDao codeGeneratorDao;
+    private final CodeGeneratorMapper codeGeneratorMapper;
 
-    @Resource
-    private CodeGeneratorConfigDao codeGeneratorConfigDao;
+    private final CodeGeneratorConfigMapper codeGeneratorConfigMapper;
 
-    @Resource
-    private CodeGeneratorTemplateService codeGeneratorTemplateService;
+    private final CodeGeneratorTemplateService codeGeneratorTemplateService;
 
 
     /**
      * 列信息
      *
-     * @param tableName
-     * @return
+     * @param tableName 表名
+     * @return 列信息
      */
     public List<TableColumnVO> getTableColumns(String tableName) {
-        return codeGeneratorDao.selectTableColumn(tableName);
+        return codeGeneratorMapper.selectTableColumn(tableName);
     }
 
 
     /**
      * 查询数据库表数据
-     *
-     * @param tableQueryForm
-     * @return
      */
     public PageResult<TableVO> queryTableList(TableQueryForm tableQueryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(tableQueryForm);
-        List<TableVO> tableVOList = codeGeneratorDao.queryTableList(page, tableQueryForm);
-        return SmartPageUtil.convert2PageResult(page, tableVOList);
+        Page<?> page = PageUtil.convert2PageQuery(tableQueryForm);
+        return PageUtil.convert2PageResult(page, codeGeneratorMapper.queryTableList(page, tableQueryForm));
     }
 
     /**
@@ -83,7 +71,7 @@ public class CodeGeneratorService {
 
         TableConfigVO config = new TableConfigVO();
 
-        CodeGeneratorConfigEntity codeGeneratorConfigEntity = codeGeneratorConfigDao.selectById(table);
+        CodeGeneratorConfigEntity codeGeneratorConfigEntity = codeGeneratorConfigMapper.selectById(table);
         if (codeGeneratorConfigEntity == null) {
             return config;
         }
@@ -128,12 +116,12 @@ public class CodeGeneratorService {
      * @return
      */
     public synchronized ResponseDTO<String> updateConfig(CodeGeneratorConfigForm form) {
-        long existCount = codeGeneratorDao.countByTableName(form.getTableName());
+        long existCount = codeGeneratorMapper.countByTableName(form.getTableName());
         if (existCount == 0) {
             return ResponseDTO.userErrorParam("表不存在，请联系后端查看下数据库");
         }
 
-        CodeGeneratorConfigEntity codeGeneratorConfigEntity = codeGeneratorConfigDao.selectById(form.getTableName());
+        CodeGeneratorConfigEntity codeGeneratorConfigEntity = codeGeneratorConfigMapper.selectById(form.getTableName());
         boolean updateFlag = true;
         if (codeGeneratorConfigEntity == null) {
             codeGeneratorConfigEntity = new CodeGeneratorConfigEntity();
@@ -150,7 +138,7 @@ public class CodeGeneratorService {
         }
 
         // 校验表必须有主键
-        if(!tableColumns.stream().filter( e -> "PRI".equalsIgnoreCase(e.getColumnKey())).findAny().isPresent()){
+        if (!tableColumns.stream().filter(e -> "PRI".equalsIgnoreCase(e.getColumnKey())).findAny().isPresent()) {
             return ResponseDTO.userErrorParam("表必须有主键，请联系后端查看下数据库表结构");
         }
 
@@ -163,9 +151,9 @@ public class CodeGeneratorService {
         codeGeneratorConfigEntity.setTableFields(JSONArray.toJSONString(form.getTableFields()));
 
         if (updateFlag) {
-            codeGeneratorConfigDao.updateById(codeGeneratorConfigEntity);
+            codeGeneratorConfigMapper.updateById(codeGeneratorConfigEntity);
         } else {
-            codeGeneratorConfigDao.insert(codeGeneratorConfigEntity);
+            codeGeneratorConfigMapper.insert(codeGeneratorConfigEntity);
         }
         return ResponseDTO.ok();
     }
@@ -177,12 +165,12 @@ public class CodeGeneratorService {
      * @return
      */
     public ResponseDTO<String> preview(CodeGeneratorPreviewForm form) {
-        long existCount = codeGeneratorDao.countByTableName(form.getTableName());
+        long existCount = codeGeneratorMapper.countByTableName(form.getTableName());
         if (existCount == 0) {
             return ResponseDTO.userErrorParam("表不存在，请联系后端查看下数据库");
         }
 
-        CodeGeneratorConfigEntity codeGeneratorConfigEntity = codeGeneratorConfigDao.selectById(form.getTableName());
+        CodeGeneratorConfigEntity codeGeneratorConfigEntity = codeGeneratorConfigMapper.selectById(form.getTableName());
         if (codeGeneratorConfigEntity == null) {
             return ResponseDTO.userErrorParam("配置信息不存在，请先进行配置");
         }
@@ -199,6 +187,7 @@ public class CodeGeneratorService {
 
     /**
      * 下载代码
+     *
      * @param tableName
      * @return
      */
@@ -207,12 +196,12 @@ public class CodeGeneratorService {
             return ResponseDTO.userErrorParam("表名不能为空");
         }
 
-        long existCount = codeGeneratorDao.countByTableName(tableName);
+        long existCount = codeGeneratorMapper.countByTableName(tableName);
         if (existCount == 0) {
             return ResponseDTO.userErrorParam("表不存在，请联系后端查看下数据库");
         }
 
-        CodeGeneratorConfigEntity codeGeneratorConfigEntity = codeGeneratorConfigDao.selectById(tableName);
+        CodeGeneratorConfigEntity codeGeneratorConfigEntity = codeGeneratorConfigMapper.selectById(tableName);
         if (codeGeneratorConfigEntity == null) {
             return ResponseDTO.userErrorParam("配置信息不存在，请先进行配置");
         }

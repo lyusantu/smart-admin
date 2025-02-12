@@ -13,7 +13,7 @@ import net.lab1024.sa.admin.module.business.oa.notice.domain.vo.*;
 import net.lab1024.sa.admin.module.business.oa.notice.service.NoticeEmployeeService;
 import net.lab1024.sa.admin.module.business.oa.notice.service.NoticeService;
 import net.lab1024.sa.admin.module.business.oa.notice.service.NoticeTypeService;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartRequestUtil;
 import net.lab1024.sa.base.module.support.operatelog.annotation.OperateLog;

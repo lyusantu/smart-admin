@@ -7,10 +7,10 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.code.UserErrorCode;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.constant.ReloadConst;
 import net.lab1024.sa.base.module.support.config.domain.*;
 import net.lab1024.sa.base.module.support.reload.core.annoation.SmartReload;
@@ -78,9 +78,9 @@ public class ConfigService {
      *
      */
     public ResponseDTO<PageResult<ConfigVO>> queryConfigPage(ConfigQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<ConfigEntity> entityList = configDao.queryByPage(page, queryForm);
-        PageResult<ConfigVO> pageResult = SmartPageUtil.convert2PageResult(page, entityList, ConfigVO.class);
+        PageResult<ConfigVO> pageResult = PageUtil.convert2PageResult(page, entityList, ConfigVO.class);
         return ResponseDTO.ok(pageResult);
     }
 

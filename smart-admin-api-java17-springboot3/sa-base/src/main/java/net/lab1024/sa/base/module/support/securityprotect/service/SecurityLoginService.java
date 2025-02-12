@@ -4,10 +4,10 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.code.UserErrorCode;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.securityprotect.dao.LoginFailDao;
 import net.lab1024.sa.base.module.support.securityprotect.domain.LoginFailEntity;
 import net.lab1024.sa.base.module.support.securityprotect.domain.LoginFailQueryForm;
@@ -151,9 +151,9 @@ public class SecurityLoginService {
      * @return
      */
     public PageResult<LoginFailVO> queryPage(LoginFailQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<LoginFailVO> list = loginFailDao.queryPage(page, queryForm);
-        return SmartPageUtil.convert2PageResult(page, list);
+        return PageUtil.convert2PageResult(page, list);
     }
 
     /**

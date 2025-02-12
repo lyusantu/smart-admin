@@ -2,8 +2,8 @@ package net.lab1024.sa.base.module.support.serialnumber.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
-import net.lab1024.sa.base.common.domain.PageResult;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.domain.page.PageResult;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.serialnumber.dao.SerialNumberRecordDao;
 import net.lab1024.sa.base.module.support.serialnumber.domain.SerialNumberRecordEntity;
 import net.lab1024.sa.base.module.support.serialnumber.domain.SerialNumberRecordQueryForm;
@@ -27,8 +27,8 @@ public class SerialNumberRecordService {
     private SerialNumberRecordDao serialNumberRecordDao;
 
     public PageResult<SerialNumberRecordEntity> query(SerialNumberRecordQueryForm queryForm) {
-        Page page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page page = PageUtil.convert2PageQuery(queryForm);
         List<SerialNumberRecordEntity> recordList = serialNumberRecordDao.query(page, queryForm);
-        return SmartPageUtil.convert2PageResult(page, recordList);
+        return PageUtil.convert2PageResult(page, recordList);
     }
 }

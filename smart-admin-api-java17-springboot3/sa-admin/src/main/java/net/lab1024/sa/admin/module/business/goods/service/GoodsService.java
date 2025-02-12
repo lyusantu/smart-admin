@@ -18,16 +18,15 @@ import net.lab1024.sa.admin.module.business.goods.domain.form.GoodsUpdateForm;
 import net.lab1024.sa.admin.module.business.goods.domain.vo.GoodsExcelVO;
 import net.lab1024.sa.admin.module.business.goods.domain.vo.GoodsVO;
 import net.lab1024.sa.base.common.code.UserErrorCode;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.exception.BusinessException;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
 import net.lab1024.sa.base.common.util.SmartEnumUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerTypeEnum;
 import net.lab1024.sa.base.module.support.datatracer.service.DataTracerService;
 import net.lab1024.sa.base.module.support.dict.service.DictCacheService;
-import net.lab1024.sa.base.module.support.dict.service.DictService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,9 +146,9 @@ public class GoodsService {
      */
     public ResponseDTO<PageResult<GoodsVO>> query(GoodsQueryForm queryForm) {
         queryForm.setDeletedFlag(false);
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<GoodsVO> list = goodsDao.query(page, queryForm);
-        PageResult<GoodsVO> pageResult = SmartPageUtil.convert2PageResult(page, list);
+        PageResult<GoodsVO> pageResult = PageUtil.convert2PageResult(page, list);
         if (pageResult.getEmptyFlag()) {
             return ResponseDTO.ok(pageResult);
         }

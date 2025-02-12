@@ -20,12 +20,12 @@ import net.lab1024.sa.admin.module.system.role.dao.RoleEmployeeDao;
 import net.lab1024.sa.admin.module.system.role.domain.vo.RoleEmployeeVO;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.constant.StringConst;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.securityprotect.service.SecurityPasswordService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.annotation.Lazy;
@@ -82,7 +82,7 @@ public class EmployeeService {
      */
     public ResponseDTO<PageResult<EmployeeVO>> queryEmployee(EmployeeQueryForm employeeQueryForm) {
         employeeQueryForm.setDeletedFlag(false);
-        Page pageParam = SmartPageUtil.convert2PageQuery(employeeQueryForm);
+        Page pageParam = PageUtil.convert2PageQuery(employeeQueryForm);
 
         List<Long> departmentIdList = new ArrayList<>();
         if (employeeQueryForm.getDepartmentId() != null) {
@@ -91,7 +91,7 @@ public class EmployeeService {
 
         List<EmployeeVO> employeeList = employeeDao.queryEmployee(pageParam, employeeQueryForm, departmentIdList);
         if (CollectionUtils.isEmpty(employeeList)) {
-            PageResult<EmployeeVO> pageResult = SmartPageUtil.convert2PageResult(pageParam, employeeList);
+            PageResult<EmployeeVO> pageResult = PageUtil.convert2PageResult(pageParam, employeeList);
             return ResponseDTO.ok(pageResult);
         }
 
@@ -112,7 +112,7 @@ public class EmployeeService {
             e.setDepartmentName(departmentService.getDepartmentPath(e.getDepartmentId()));
             e.setPositionName(positionNameMap.get(e.getPositionId()));
         });
-        PageResult<EmployeeVO> pageResult = SmartPageUtil.convert2PageResult(pageParam, employeeList);
+        PageResult<EmployeeVO> pageResult = PageUtil.convert2PageResult(pageParam, employeeList);
         return ResponseDTO.ok(pageResult);
     }
 

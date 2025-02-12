@@ -2,11 +2,11 @@ package net.lab1024.sa.base.module.support.helpdoc.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocDao;
 import net.lab1024.sa.base.module.support.helpdoc.domain.entity.HelpDocEntity;
 import net.lab1024.sa.base.module.support.helpdoc.domain.form.HelpDocViewRecordQueryForm;
@@ -78,8 +78,8 @@ public class HelpDocUserService {
      * @return
      */
     public PageResult<HelpDocViewRecordVO> queryViewRecord(HelpDocViewRecordQueryForm helpDocViewRecordQueryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(helpDocViewRecordQueryForm);
+        Page<?> page = PageUtil.convert2PageQuery(helpDocViewRecordQueryForm);
         List<HelpDocViewRecordVO> noticeViewRecordVOS = helpDocDao.queryViewRecordList(page, helpDocViewRecordQueryForm);
-        return SmartPageUtil.convert2PageResult(page, noticeViewRecordVOS);
+        return PageUtil.convert2PageResult(page, noticeViewRecordVOS);
     }
 }

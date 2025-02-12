@@ -259,7 +259,7 @@
       '控制层：' + formData.moduleName + 'Controller.java', //
       '业务层：' + formData.moduleName + 'Service.java', //
       '中间层：' + formData.moduleName + 'Manager.java', //
-      '持久层：' + formData.moduleName + 'Dao.java', //
+      '持久层：' + formData.moduleName + 'Mapper.java', //
       'SQL层： ' + formData.moduleName + 'Mapper.xml', //
     ];
   });

@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.admin.module.business.oa.bank.domain.*;
 import net.lab1024.sa.admin.module.business.oa.enterprise.dao.EnterpriseDao;
 import net.lab1024.sa.admin.module.business.oa.enterprise.domain.entity.EnterpriseEntity;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerConst;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerTypeEnum;
 import net.lab1024.sa.base.module.support.datatracer.service.DataTracerService;
@@ -46,9 +46,9 @@ public class BankService {
      */
     public ResponseDTO<PageResult<BankVO>> queryByPage(BankQueryForm queryForm) {
         queryForm.setDeletedFlag(Boolean.FALSE);
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<BankVO> bankList = bankDao.queryPage(page, queryForm);
-        PageResult<BankVO> pageResult = SmartPageUtil.convert2PageResult(page, bankList);
+        PageResult<BankVO> pageResult = PageUtil.convert2PageResult(page, bankList);
         return ResponseDTO.ok(pageResult);
     }
 

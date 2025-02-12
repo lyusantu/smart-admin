@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.constant.AdminSwaggerTagConst;
 import net.lab1024.sa.admin.module.business.category.domain.form.CategoryAddForm;
 import net.lab1024.sa.admin.module.business.category.domain.form.CategoryTreeQueryForm;
@@ -19,19 +20,13 @@ import java.util.List;
 
 /**
  * 类目
- *
- * @Author 1024创新实验室: 胡克
- * @Date 2021/08/05 21:26:58
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @RestController
 @Tag(name = AdminSwaggerTagConst.Business.MANAGER_CATEGORY)
 public class CategoryController {
 
-    @Resource
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @Operation(summary = "添加类目 @author 胡克")
     @PostMapping("/category/add")

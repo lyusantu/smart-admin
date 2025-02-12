@@ -2,10 +2,10 @@ package net.lab1024.sa.base.module.support.changelog.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.changelog.dao.ChangeLogDao;
 import net.lab1024.sa.base.module.support.changelog.domain.entity.ChangeLogEntity;
 import net.lab1024.sa.base.module.support.changelog.domain.form.ChangeLogAddForm;
@@ -35,9 +35,9 @@ public class ChangeLogService {
      * 分页查询
      */
     public PageResult<ChangeLogVO> queryPage(ChangeLogQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<ChangeLogVO> list = changeLogDao.queryPage(page, queryForm);
-        return SmartPageUtil.convert2PageResult(page, list);
+        return PageUtil.convert2PageResult(page, list);
     }
 
     /**

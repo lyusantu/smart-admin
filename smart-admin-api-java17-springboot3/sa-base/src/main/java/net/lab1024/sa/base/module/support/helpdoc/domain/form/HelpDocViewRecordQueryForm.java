@@ -3,7 +3,7 @@ package net.lab1024.sa.base.module.support.helpdoc.domain.form;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import net.lab1024.sa.base.common.domain.PageParam;
+import net.lab1024.sa.base.common.domain.page.PageParam;
 
 /**
  * 查阅记录 查询

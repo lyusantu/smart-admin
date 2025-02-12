@@ -14,7 +14,7 @@ import net.lab1024.sa.admin.module.business.oa.enterprise.domain.vo.EnterpriseEx
 import net.lab1024.sa.admin.module.business.oa.enterprise.domain.vo.EnterpriseListVO;
 import net.lab1024.sa.admin.module.business.oa.enterprise.domain.vo.EnterpriseVO;
 import net.lab1024.sa.admin.util.AdminRequestUtil;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.*;

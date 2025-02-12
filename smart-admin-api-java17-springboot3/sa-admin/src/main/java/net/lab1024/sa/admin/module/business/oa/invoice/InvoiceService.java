@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.admin.module.business.oa.enterprise.EnterpriseService;
 import net.lab1024.sa.admin.module.business.oa.enterprise.domain.vo.EnterpriseVO;
 import net.lab1024.sa.admin.module.business.oa.invoice.domain.*;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerConst;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerTypeEnum;
 import net.lab1024.sa.base.module.support.datatracer.service.DataTracerService;
@@ -46,9 +46,9 @@ public class InvoiceService {
      */
     public ResponseDTO<PageResult<InvoiceVO>> queryByPage(InvoiceQueryForm queryForm) {
         queryForm.setDeletedFlag(Boolean.FALSE);
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<InvoiceVO> invoiceList = invoiceDao.queryPage(page, queryForm);
-        PageResult<InvoiceVO> pageResult = SmartPageUtil.convert2PageResult(page, invoiceList);
+        PageResult<InvoiceVO> pageResult = PageUtil.convert2PageResult(page, invoiceList);
         return ResponseDTO.ok(pageResult);
     }
 

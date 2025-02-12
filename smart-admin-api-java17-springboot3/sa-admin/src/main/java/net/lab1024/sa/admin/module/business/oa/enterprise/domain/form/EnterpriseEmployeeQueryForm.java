@@ -3,7 +3,7 @@ package net.lab1024.sa.admin.module.business.oa.enterprise.domain.form;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import net.lab1024.sa.base.common.domain.PageParam;
+import net.lab1024.sa.base.common.domain.page.PageParam;
 import org.hibernate.validator.constraints.Length;
 
 /**

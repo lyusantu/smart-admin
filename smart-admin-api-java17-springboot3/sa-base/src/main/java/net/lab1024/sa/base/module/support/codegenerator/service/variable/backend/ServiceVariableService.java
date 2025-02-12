@@ -8,14 +8,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @Author 1024创新实验室-主任:卓大
- * @Date 2022/9/29 17:20:41
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
- */
-
 public class ServiceVariableService extends CodeGenerateBaseVariableService {
 
     @Override
@@ -30,7 +22,7 @@ public class ServiceVariableService extends CodeGenerateBaseVariableService {
         List<CodeInsertAndUpdateField> updateFieldList = form.getInsertAndUpdate().getFieldList().stream().filter(e -> Boolean.TRUE.equals(e.getInsertFlag())).collect(Collectors.toList());
         List<String> packageList = getPackageList(updateFieldList, form);
 
-        variablesMap.put("packageName", form.getBasic().getJavaPackageName() + ".service" );
+        variablesMap.put("packageName", form.getBasic().getJavaPackageName() + ".service");
         variablesMap.put("importPackageList", packageList);
 
         return variablesMap;
@@ -48,7 +40,7 @@ public class ServiceVariableService extends CodeGenerateBaseVariableService {
         packageSet.addAll(getJavaBeanImportClass(form));
 
         //2、dao
-        packageSet.add("import " + form.getBasic().getJavaPackageName() + ".dao."+ form.getBasic().getModuleName() + "Dao;" );
+        packageSet.add("import " + form.getBasic().getJavaPackageName() + ".mapper." + form.getBasic().getModuleName() + "Mapper;");
 
         //3、util list
         packageSet.add("import java.util.List;");

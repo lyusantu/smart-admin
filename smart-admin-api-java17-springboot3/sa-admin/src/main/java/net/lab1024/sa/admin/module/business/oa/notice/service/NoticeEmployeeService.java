@@ -11,10 +11,10 @@ import net.lab1024.sa.admin.module.business.oa.notice.domain.vo.*;
 import net.lab1024.sa.admin.module.system.department.service.DepartmentService;
 import net.lab1024.sa.admin.module.system.employee.domain.entity.EmployeeEntity;
 import net.lab1024.sa.admin.module.system.employee.service.EmployeeService;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public class NoticeEmployeeService {
      * 查询我的 通知、公告清单
      */
     public ResponseDTO<PageResult<NoticeEmployeeVO>> queryList(Long requestEmployeeId, NoticeEmployeeQueryForm noticeEmployeeQueryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(noticeEmployeeQueryForm);
+        Page<?> page = PageUtil.convert2PageQuery(noticeEmployeeQueryForm);
 
         List<Long> employeeDepartmentIdList = Lists.newArrayList();
         EmployeeEntity employeeEntity = employeeService.getById(requestEmployeeId);
@@ -84,7 +84,7 @@ public class NoticeEmployeeService {
         // 设置发布日期
         noticeList.forEach(notice -> notice.setPublishDate(notice.getPublishTime().toLocalDate()));
 
-        return ResponseDTO.ok(SmartPageUtil.convert2PageResult(page, noticeList));
+        return ResponseDTO.ok(PageUtil.convert2PageResult(page, noticeList));
     }
 
 
@@ -148,8 +148,8 @@ public class NoticeEmployeeService {
      * 分页查询  查看记录
      */
     public PageResult<NoticeViewRecordVO> queryViewRecord(NoticeViewRecordQueryForm noticeViewRecordQueryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(noticeViewRecordQueryForm);
+        Page<?> page = PageUtil.convert2PageQuery(noticeViewRecordQueryForm);
         List<NoticeViewRecordVO> noticeViewRecordList = noticeDao.queryNoticeViewRecordList(page, noticeViewRecordQueryForm);
-        return SmartPageUtil.convert2PageResult(page, noticeViewRecordList);
+        return PageUtil.convert2PageResult(page, noticeViewRecordList);
     }
 }

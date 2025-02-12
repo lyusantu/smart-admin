@@ -22,10 +22,10 @@ import net.lab1024.sa.admin.module.system.department.service.DepartmentService;
 import net.lab1024.sa.admin.module.system.employee.dao.EmployeeDao;
 import net.lab1024.sa.admin.module.system.employee.domain.entity.EmployeeEntity;
 import net.lab1024.sa.base.common.constant.StringConst;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerTypeEnum;
 import net.lab1024.sa.base.module.support.datatracer.service.DataTracerService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -76,11 +76,11 @@ public class NoticeService {
      *
      */
     public PageResult<NoticeVO> query(NoticeQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<NoticeVO> list = noticeDao.query(page, queryForm);
         LocalDateTime now = LocalDateTime.now();
         list.forEach(e -> e.setPublishFlag(e.getPublishTime().isBefore(now)));
-        return SmartPageUtil.convert2PageResult(page, list);
+        return PageUtil.convert2PageResult(page, list);
     }
 
     /**

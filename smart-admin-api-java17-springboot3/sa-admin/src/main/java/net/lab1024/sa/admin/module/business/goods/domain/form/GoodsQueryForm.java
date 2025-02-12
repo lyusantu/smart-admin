@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import net.lab1024.sa.admin.module.business.goods.constant.GoodsStatusEnum;
-import net.lab1024.sa.base.common.domain.PageParam;
+import net.lab1024.sa.base.common.domain.page.PageParam;
 import net.lab1024.sa.base.common.json.deserializer.DictValueVoDeserializer;
 import net.lab1024.sa.base.common.swagger.SchemaEnum;
 import net.lab1024.sa.base.common.validator.enumeration.CheckEnum;

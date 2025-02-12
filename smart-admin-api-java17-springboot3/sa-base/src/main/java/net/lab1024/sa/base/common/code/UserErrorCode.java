@@ -4,13 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 用户级别的错误码（用户引起的错误返回码，可以不用关注）
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2021/09/21 22:12:27
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
+ * 用户错误码
  */
 @Getter
 @AllArgsConstructor

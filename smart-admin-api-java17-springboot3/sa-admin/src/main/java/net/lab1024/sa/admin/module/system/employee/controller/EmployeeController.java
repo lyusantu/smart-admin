@@ -5,11 +5,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.constant.AdminSwaggerTagConst;
 import net.lab1024.sa.admin.module.system.employee.domain.form.*;
 import net.lab1024.sa.admin.module.system.employee.domain.vo.EmployeeVO;
 import net.lab1024.sa.admin.module.system.employee.service.EmployeeService;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartRequestUtil;
 import net.lab1024.sa.base.module.support.apiencrypt.annotation.ApiDecrypt;
@@ -20,22 +21,15 @@ import java.util.List;
 
 /**
  * 员工
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2021-12-09 22:57:49
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @RestController
 @Tag(name = AdminSwaggerTagConst.System.SYSTEM_EMPLOYEE)
 public class EmployeeController {
 
-    @Resource
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
-    @Resource
-    private Level3ProtectConfigService level3ProtectConfigService;
+    private final Level3ProtectConfigService level3ProtectConfigService;
 
     @PostMapping("/employee/query")
     @Operation(summary = "员工管理查询 @author 卓大")

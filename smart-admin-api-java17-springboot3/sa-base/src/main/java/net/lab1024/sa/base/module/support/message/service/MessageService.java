@@ -3,10 +3,10 @@ package net.lab1024.sa.base.module.support.message.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.message.constant.MessageTemplateEnum;
 import net.lab1024.sa.base.module.support.message.dao.MessageDao;
 import net.lab1024.sa.base.module.support.message.domain.*;
@@ -33,9 +33,9 @@ public class MessageService {
      * 分页查询 消息
      */
     public PageResult<MessageVO> query(MessageQueryForm queryForm) {
-        Page page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page page = PageUtil.convert2PageQuery(queryForm);
         List<MessageVO> messageVOList = messageDao.query(page, queryForm);
-        return SmartPageUtil.convert2PageResult(page, messageVOList);
+        return PageUtil.convert2PageResult(page, messageVOList);
     }
 
     /**

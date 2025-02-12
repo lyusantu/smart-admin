@@ -11,7 +11,7 @@ import net.lab1024.sa.admin.module.system.role.domain.form.RoleEmployeeQueryForm
 import net.lab1024.sa.admin.module.system.role.domain.form.RoleEmployeeUpdateForm;
 import net.lab1024.sa.admin.module.system.role.domain.vo.RoleSelectedVO;
 import net.lab1024.sa.admin.module.system.role.service.RoleEmployeeService;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import org.springframework.web.bind.annotation.*;
 

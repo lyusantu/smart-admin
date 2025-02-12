@@ -4,26 +4,20 @@ import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
 
 /**
  * 请求用户
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2021-12-21 19:55:07
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 public interface RequestUser {
 
     /**
-     * 请求用户id
+     * 获取请求用户ID
      *
-     * @return
+     * @return 用户ID
      */
     Long getUserId();
 
     /**
-     * 请求用户名称
+     * 获取请求用户名称
      *
-     * @return
+     * @return 用户名称
      */
     String getUserName();
 
@@ -35,14 +29,14 @@ public interface RequestUser {
     /**
      * 获取请求的IP
      *
-     * @return
+     * @return 请求IP
      */
     String getIp();
 
     /**
-     * 获取请求 user-agent
+     * 获取请求UA
      *
-     * @return
+     * @return UA
      */
     String getUserAgent();
 

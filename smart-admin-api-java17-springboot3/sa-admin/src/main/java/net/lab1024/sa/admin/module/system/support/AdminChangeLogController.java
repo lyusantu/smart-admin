@@ -7,7 +7,7 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.domain.ValidateList;
+import net.lab1024.sa.base.common.domain.validate.ValidateList;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.changelog.domain.form.ChangeLogAddForm;
 import net.lab1024.sa.base.module.support.changelog.domain.form.ChangeLogUpdateForm;

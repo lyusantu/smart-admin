@@ -11,34 +11,28 @@ import java.util.Objects;
 
 /**
  * 枚举类接口
- *
- * @Author 1024创新实验室: 胡克
- * @Date 2018-07-17 21:22:12
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 public interface BaseEnum {
 
     /**
      * 获取枚举类的值
      *
-     * @return
+     * @return 枚举类的值
      */
     Object getValue();
 
     /**
      * 获取枚举类的说明
      *
-     * @return String
+     * @return 枚举类的说明
      */
     String getDesc();
 
     /**
      * 比较参数是否与枚举类的value相同
      *
-     * @param value
-     * @return boolean
+     * @param value 参数
+     * @return 比较结果
      */
     default boolean equalsValue(Object value) {
         return Objects.equals(getValue(), value);
@@ -47,8 +41,8 @@ public interface BaseEnum {
     /**
      * 比较枚举类是否相同
      *
-     * @param baseEnum
-     * @return boolean
+     * @param baseEnum 枚举类
+     * @return boolean 比较结果
      */
     default boolean equals(BaseEnum baseEnum) {
         return Objects.equals(getValue(), baseEnum.getValue()) && Objects.equals(getDesc(), baseEnum.getDesc());
@@ -58,7 +52,7 @@ public interface BaseEnum {
      * 返回枚举类的说明
      *
      * @param clazz 枚举类类对象
-     * @return
+     * @return 枚举类的说明
      */
     static String getInfo(Class<? extends BaseEnum> clazz) {
         BaseEnum[] enums = clazz.getEnumConstants();

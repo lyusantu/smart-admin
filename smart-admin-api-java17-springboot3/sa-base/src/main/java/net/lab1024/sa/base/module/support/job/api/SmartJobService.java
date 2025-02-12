@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.code.UserErrorCode;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.job.api.domain.*;
 import net.lab1024.sa.base.module.support.job.config.SmartJobAutoConfiguration;
 import net.lab1024.sa.base.module.support.job.constant.SmartJobTriggerTypeEnum;
@@ -72,9 +72,9 @@ public class SmartJobService {
      * @return
      */
     public ResponseDTO<PageResult<SmartJobVO>> queryJob(SmartJobQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<SmartJobVO> jobList = jobDao.query(page, queryForm);
-        PageResult<SmartJobVO> pageResult = SmartPageUtil.convert2PageResult(page, jobList);
+        PageResult<SmartJobVO> pageResult = PageUtil.convert2PageResult(page, jobList);
         // 处理设置job详情
         this.handleJobInfo(jobList);
         return ResponseDTO.ok(pageResult);
@@ -120,9 +120,9 @@ public class SmartJobService {
      * @return
      */
     public ResponseDTO<PageResult<SmartJobLogVO>> queryJobLog(SmartJobLogQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<SmartJobLogVO> jobList = jobLogDao.query(page, queryForm);
-        PageResult<SmartJobLogVO> pageResult = SmartPageUtil.convert2PageResult(page, jobList);
+        PageResult<SmartJobLogVO> pageResult = PageUtil.convert2PageResult(page, jobList);
         return ResponseDTO.ok(pageResult);
     }
 

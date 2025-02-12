@@ -21,7 +21,7 @@
     <a-row justify="space-between" class="smart-margin-bottom10">
       <a-radio-group v-model:value="languageType" button-style="solid" @change="onChangeLanguageType">
         <a-radio-button :value="LANGUAGE_LIST[0]">JavaScript代码</a-radio-button>
-        <a-radio-button :value="LANGUAGE_LIST[1]">TypeScript代码</a-radio-button>
+        <!--        <a-radio-button :value="LANGUAGE_LIST[1]">TypeScript代码</a-radio-button>-->
         <a-radio-button :value="LANGUAGE_LIST[2]">Java代码</a-radio-button>
       </a-radio-group>
 
@@ -31,7 +31,7 @@
       <a-tab-pane v-for="item in tabList" :key="item" :tab="item" />
     </a-tabs>
     <div>
-      <pre><code :class="codeClass">{{resultCode}}</code></pre>
+      <pre><code :class="codeClass">{{ resultCode }}</code></pre>
     </div>
   </a-drawer>
 </template>
@@ -53,9 +53,37 @@
 
   // 显示
   const visibleFlag = ref(false);
-  function showModal(tableInfo) {
+
+  // 预检
+  async function preCheck(templateFile, tableName) {
+    try {
+      // 先查询一次，存在再显示
+      await codeGeneratorApi.preview({
+        templateFile,
+        tableName,
+      });
+      return true;
+    } catch (e) {
+      // 出错代表配置有误，直接提示即可
+      smartSentry.captureError(e);
+      return false;
+    }
+  }
+
+  async function showModal(tableInfo) {
     tableName.value = tableInfo.tableName;
     tableComment.value = tableInfo.tableComment;
+
+    // 预检失败就直接返回，此操作会多调用一次接口，但是解决了配置未完成时的页面显示问题
+    if (!await preCheck(fileKey.value, tableName.value)) {
+      return;
+    }
+
+    // 每次点击预览时，先清空代码内容，以防接口没有数据时显示为上一个打开的代码
+    resultCode.value = '';
+    // 设置每次点击预览时的默认选项卡
+    // fileKey.value = JS_FILE_LIST[0];
+
     visibleFlag.value = true;
     nextTick(() => {
       onChangeTab(fileKey.value);
@@ -114,6 +142,7 @@
 
   // ------------------ 查询代码 ------------------
   const codeClass = ref('language-javascript');
+
   function onChangeTab(tab) {
     let templateFile = tab;
 
@@ -121,13 +150,14 @@
     hljs.registerLanguage(language, language == 'java' ? java : javascript);
     codeClass.value = 'language-' + language;
 
-    console.log(templateFile);
+    // console.log(templateFile);
     nextTick(() => {
       generateCode(templateFile, tableName.value);
     });
   }
 
   const resultCode = ref('');
+
   async function generateCode(templateFile, tableName) {
     try {
       let result = await codeGeneratorApi.preview({

@@ -4,12 +4,12 @@ package net.lab1024.sa.base.module.support.datatracer.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
 import net.lab1024.sa.base.common.util.SmartIpUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.common.util.SmartRequestUtil;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerConst;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerTypeEnum;
@@ -218,9 +218,9 @@ public class DataTracerService {
      * @return
      */
     public ResponseDTO<PageResult<DataTracerVO>> query(DataTracerQueryForm queryForm) {
-        Page page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page page = PageUtil.convert2PageQuery(queryForm);
         List<DataTracerVO> list = dataTracerDao.query(page, queryForm);
-        PageResult<DataTracerVO> pageResult = SmartPageUtil.convert2PageResult(page, list);
+        PageResult<DataTracerVO> pageResult = PageUtil.convert2PageResult(page, list);
         return ResponseDTO.ok(pageResult);
     }
 

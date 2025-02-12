@@ -2,10 +2,10 @@ package net.lab1024.sa.base.module.support.helpdoc.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocDao;
 import net.lab1024.sa.base.module.support.helpdoc.domain.entity.HelpDocEntity;
 import net.lab1024.sa.base.module.support.helpdoc.domain.form.HelpDocAddForm;
@@ -45,9 +45,9 @@ public class HelpDocService {
      * @return
      */
     public PageResult<HelpDocVO> query(HelpDocQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<HelpDocVO> list = helpDocDao.query(page, queryForm);
-        return SmartPageUtil.convert2PageResult(page, list);
+        return PageUtil.convert2PageResult(page, list);
     }
 
     /**

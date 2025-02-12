@@ -15,10 +15,10 @@ import net.lab1024.sa.admin.module.business.oa.enterprise.domain.vo.EnterpriseLi
 import net.lab1024.sa.admin.module.business.oa.enterprise.domain.vo.EnterpriseVO;
 import net.lab1024.sa.admin.module.system.department.service.DepartmentService;
 import net.lab1024.sa.base.common.code.UserErrorCode;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerTypeEnum;
 import net.lab1024.sa.base.module.support.datatracer.domain.form.DataTracerForm;
 import net.lab1024.sa.base.module.support.datatracer.service.DataTracerService;
@@ -64,9 +64,9 @@ public class EnterpriseService {
      */
     public ResponseDTO<PageResult<EnterpriseVO>> queryByPage(EnterpriseQueryForm queryForm) {
         queryForm.setDeletedFlag(Boolean.FALSE);
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<EnterpriseVO> enterpriseList = enterpriseDao.queryPage(page, queryForm);
-        PageResult<EnterpriseVO> pageResult = SmartPageUtil.convert2PageResult(page, enterpriseList);
+        PageResult<EnterpriseVO> pageResult = PageUtil.convert2PageResult(page, enterpriseList);
         return ResponseDTO.ok(pageResult);
     }
 
@@ -228,11 +228,11 @@ public class EnterpriseService {
      *
      */
     public PageResult<EnterpriseEmployeeVO> queryPageEmployeeList(EnterpriseEmployeeQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<EnterpriseEmployeeVO> enterpriseEmployeeVOList = enterpriseEmployeeDao.queryPageEmployeeList(page, queryForm);
         for (EnterpriseEmployeeVO enterpriseEmployeeVO : enterpriseEmployeeVOList) {
             enterpriseEmployeeVO.setDepartmentName(departmentService.getDepartmentPath(enterpriseEmployeeVO.getDepartmentId()));
         }
-        return SmartPageUtil.convert2PageResult(page, enterpriseEmployeeVOList);
+        return PageUtil.convert2PageResult(page, enterpriseEmployeeVOList);
     }
 }

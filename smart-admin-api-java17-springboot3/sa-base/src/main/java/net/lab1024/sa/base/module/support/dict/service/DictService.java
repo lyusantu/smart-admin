@@ -1,14 +1,12 @@
 package net.lab1024.sa.base.module.support.dict.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.code.UserErrorCode;
-import net.lab1024.sa.base.common.domain.PageResult;
+import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartPageUtil;
+import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.dict.dao.DictKeyDao;
 import net.lab1024.sa.base.module.support.dict.dao.DictValueDao;
 import net.lab1024.sa.base.module.support.dict.domain.entity.DictKeyEntity;
@@ -157,9 +155,9 @@ public class DictService {
      */
     public ResponseDTO<PageResult<DictKeyVO>> keyQuery(DictKeyQueryForm queryForm) {
         queryForm.setDeletedFlag(false);
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<DictKeyVO> list = dictKeyDao.query(page, queryForm);
-        PageResult<DictKeyVO> pageResult = SmartPageUtil.convert2PageResult(page, list);
+        PageResult<DictKeyVO> pageResult = PageUtil.convert2PageResult(page, list);
         if (pageResult.getEmptyFlag()) {
             return ResponseDTO.ok(pageResult);
         }
@@ -183,9 +181,9 @@ public class DictService {
      */
     public ResponseDTO<PageResult<DictValueVO>> valueQuery(DictValueQueryForm queryForm) {
         queryForm.setDeletedFlag(false);
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
         List<DictValueVO> list = dictValueDao.query(page, queryForm);
-        PageResult<DictValueVO> pageResult = SmartPageUtil.convert2PageResult(page, list);
+        PageResult<DictValueVO> pageResult = PageUtil.convert2PageResult(page, list);
         if (pageResult.getEmptyFlag()) {
             return ResponseDTO.ok(pageResult);
         }

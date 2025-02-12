@@ -130,7 +130,7 @@ export const JAVA_FILE_LIST = [
   'Controller.java', //
   'Service.java', //
   'Manager.java', //
-  'Dao.java', //
+  'Mapper.java', //
   'Mapper.xml', //
   ...JAVA_DOMAIN_FILE_LIST,
   'Menu.sql', //

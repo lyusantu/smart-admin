@@ -37,10 +37,10 @@ spring:
 
   # 邮件，置以SSL的方式发送, 这个需要使用这种方式并且端口是465
   mail:
-    host: smtp.163.com
+    host: smtp.qq.com
     port: 465
-    username: lab1024@163.com
-    password: LAB1024LAB
+    username: 352050321@qq.com
+    password: putwayntvfvqbhcb
     properties:
       mail:
         smtp:

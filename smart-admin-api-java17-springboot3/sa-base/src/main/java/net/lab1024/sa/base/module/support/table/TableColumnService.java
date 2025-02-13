@@ -2,6 +2,7 @@ package net.lab1024.sa.base.module.support.table;
 
 import com.alibaba.fastjson.JSONArray;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.module.support.table.domain.TableColumnEntity;
@@ -11,18 +12,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * 表格自定义列（前端用户自定义表格列，并保存到数据库里）
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-08-12 22:52:21
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class TableColumnService {
 
-    @Resource
-    private TableColumnDao tableColumnDao;
+    private final TableColumnMapper tableColumnMapper;
 
     /**
      * 获取 - 表格列
@@ -30,7 +25,7 @@ public class TableColumnService {
      * @return
      */
     public String getTableColumns(RequestUser requestUser, Integer tableId) {
-        TableColumnEntity tableColumnEntity = tableColumnDao.selectByUserIdAndTableId(requestUser.getUserId(), requestUser.getUserType().getValue(), tableId);
+        TableColumnEntity tableColumnEntity = tableColumnMapper.selectByUserIdAndTableId(requestUser.getUserId(), requestUser.getUserType().getValue(), tableId);
         return tableColumnEntity == null ? null : tableColumnEntity.getColumns();
     }
 
@@ -44,7 +39,7 @@ public class TableColumnService {
             return ResponseDTO.ok();
         }
         Integer tableId = updateForm.getTableId();
-        TableColumnEntity tableColumnEntity = tableColumnDao.selectByUserIdAndTableId(requestUser.getUserId(), requestUser.getUserType().getValue(), tableId);
+        TableColumnEntity tableColumnEntity = tableColumnMapper.selectByUserIdAndTableId(requestUser.getUserId(), requestUser.getUserType().getValue(), tableId);
         if (tableColumnEntity == null) {
             tableColumnEntity = new TableColumnEntity();
             tableColumnEntity.setTableId(tableId);
@@ -52,10 +47,10 @@ public class TableColumnService {
             tableColumnEntity.setUserType(requestUser.getUserType().getValue());
 
             tableColumnEntity.setColumns(JSONArray.toJSONString(updateForm.getColumnList()));
-            tableColumnDao.insert(tableColumnEntity);
+            tableColumnMapper.insert(tableColumnEntity);
         } else {
             tableColumnEntity.setColumns(JSONArray.toJSONString(updateForm.getColumnList()));
-            tableColumnDao.updateById(tableColumnEntity);
+            tableColumnMapper.updateById(tableColumnEntity);
         }
         return ResponseDTO.ok();
     }
@@ -66,7 +61,7 @@ public class TableColumnService {
      * @return
      */
     public ResponseDTO<String> deleteTableColumn(RequestUser requestUser, Integer tableId) {
-        tableColumnDao.deleteTableColumn(requestUser.getUserId(), requestUser.getUserType().getValue(), tableId);
+        tableColumnMapper.deleteTableColumn(requestUser.getUserId(), requestUser.getUserType().getValue(), tableId);
         return ResponseDTO.ok();
     }
 }

@@ -2,7 +2,7 @@ package net.lab1024.sa.admin.module.system.role.service;
 
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
-import net.lab1024.sa.admin.module.system.menu.dao.MenuDao;
+import net.lab1024.sa.admin.module.system.menu.mapper.MenuMapper;
 import net.lab1024.sa.admin.module.system.menu.domain.entity.MenuEntity;
 import net.lab1024.sa.admin.module.system.menu.domain.vo.MenuSimpleTreeVO;
 import net.lab1024.sa.admin.module.system.menu.domain.vo.MenuVO;
@@ -44,7 +44,7 @@ public class RoleMenuService {
     @Resource
     private RoleMenuManager roleMenuManager;
     @Resource
-    private MenuDao menuDao;
+    private MenuMapper menuDao;
 
     /**
      * 更新角色权限

@@ -1,7 +1,7 @@
 package net.lab1024.sa.base.module.support.job.sample;
 
 import lombok.extern.slf4j.Slf4j;
-import net.lab1024.sa.base.module.support.config.ConfigDao;
+import net.lab1024.sa.base.module.support.config.ConfigMapper;
 import net.lab1024.sa.base.module.support.config.domain.ConfigEntity;
 import net.lab1024.sa.base.module.support.job.core.SmartJob;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SmartJobSample2 implements SmartJob {
 
     @Autowired
-    private ConfigDao configDao;
+    private ConfigMapper configMapper;
 
     /**
      * 定时任务示例
@@ -35,12 +35,12 @@ public class SmartJobSample2 implements SmartJob {
         ConfigEntity configEntity = new ConfigEntity();
         configEntity.setConfigId(1L);
         configEntity.setRemark(param);
-        configDao.updateById(configEntity);
+        configMapper.updateById(configEntity);
 
         configEntity = new ConfigEntity();
         configEntity.setConfigId(2L);
         configEntity.setRemark("SmartJob Sample2 update");
-        configDao.updateById(configEntity);
+        configMapper.updateById(configEntity);
 
         return "执行成功,本次处理数据1条";
     }

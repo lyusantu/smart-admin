@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
@@ -17,21 +18,21 @@ import java.util.List;
 /**
  * 缓存
  */
+@RequiredArgsConstructor
 @RestController
 @Tag(name = SwaggerTagConst.Support.CACHE)
 public class AdminCacheController extends SupportBaseController {
 
-    @Resource
-    private CacheService cacheService;
+    private final CacheService cacheService;
 
-    @Operation(summary = "获取所有缓存 @author 罗伊")
+    @Operation(summary = "获取所有缓存")
     @GetMapping("/cache/names")
     @SaCheckPermission("support:cache:keys")
     public ResponseDTO<List<String>> cacheNames() {
         return ResponseDTO.ok(cacheService.cacheNames());
     }
 
-    @Operation(summary = "移除某个缓存 @author 罗伊")
+    @Operation(summary = "移除某个缓存")
     @GetMapping("/cache/remove/{cacheName}")
     @SaCheckPermission("support:cache:delete")
     public ResponseDTO<String> removeCache(@PathVariable String cacheName) {
@@ -39,7 +40,7 @@ public class AdminCacheController extends SupportBaseController {
         return ResponseDTO.ok();
     }
 
-    @Operation(summary = "获取某个缓存的所有key @author 罗伊")
+    @Operation(summary = "获取某个缓存的所有key")
     @GetMapping("/cache/keys/{cacheName}")
     @SaCheckPermission("support:cache:keys")
     public ResponseDTO<List<String>> cacheKeys(@PathVariable String cacheName) {

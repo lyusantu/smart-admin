@@ -3,15 +3,15 @@ package net.lab1024.sa.admin.module.system.support;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartEnumUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.serialnumber.constant.SerialNumberIdEnum;
-import net.lab1024.sa.base.module.support.serialnumber.dao.SerialNumberDao;
+import net.lab1024.sa.base.module.support.serialnumber.mapper.SerialNumberMapper;
 import net.lab1024.sa.base.module.support.serialnumber.domain.SerialNumberEntity;
 import net.lab1024.sa.base.module.support.serialnumber.domain.SerialNumberGenerateForm;
 import net.lab1024.sa.base.module.support.serialnumber.domain.SerialNumberRecordEntity;
@@ -27,27 +27,19 @@ import java.util.List;
 
 /**
  * 单据序列号
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-03-25 21:46:07
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Tag(name = SwaggerTagConst.Support.SERIAL_NUMBER)
 @RestController
 public class AdminSerialNumberController extends SupportBaseController {
 
-    @Resource
-    private SerialNumberDao serialNumberDao;
+    private final SerialNumberMapper serialNumberMapper;
 
-    @Resource
-    private SerialNumberService serialNumberService;
+    private final SerialNumberService serialNumberService;
 
-    @Resource
-    private SerialNumberRecordService serialNumberRecordService;
+    private final SerialNumberRecordService serialNumberRecordService;
 
-    @Operation(summary = "生成单号 @author 卓大")
+    @Operation(summary = "生成单号")
     @PostMapping("/serialNumber/generate")
     @SaCheckPermission("support:serialNumber:generate")
     public ResponseDTO<List<String>> generate(@RequestBody @Valid SerialNumberGenerateForm generateForm) {
@@ -58,13 +50,13 @@ public class AdminSerialNumberController extends SupportBaseController {
         return ResponseDTO.ok(serialNumberService.generate(serialNumberIdEnum, generateForm.getCount()));
     }
 
-    @Operation(summary = "获取所有单号定义 @author 卓大")
+    @Operation(summary = "获取所有单号定义")
     @GetMapping("/serialNumber/all")
     public ResponseDTO<List<SerialNumberEntity>> getAll() {
-        return ResponseDTO.ok(serialNumberDao.selectList(null));
+        return ResponseDTO.ok(serialNumberMapper.selectList(null));
     }
 
-    @Operation(summary = "获取生成记录 @author 卓大")
+    @Operation(summary = "获取生成记录")
     @PostMapping("/serialNumber/queryRecord")
     @SaCheckPermission("support:serialNumber:record")
     public ResponseDTO<PageResult<SerialNumberRecordEntity>> queryRecord(@RequestBody @Valid SerialNumberRecordQueryForm queryForm) {

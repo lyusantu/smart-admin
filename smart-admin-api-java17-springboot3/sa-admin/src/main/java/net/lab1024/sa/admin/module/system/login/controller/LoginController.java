@@ -15,7 +15,7 @@ import net.lab1024.sa.admin.util.AdminRequestUtil;
 import net.lab1024.sa.base.common.annoation.NoNeedLogin;
 import net.lab1024.sa.base.common.constant.RequestHeaderConst;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.module.support.captcha.domain.CaptchaVO;
 import net.lab1024.sa.base.module.support.securityprotect.service.Level3ProtectConfigService;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +60,7 @@ public class LoginController {
     @Operation(summary = "退出登陆  @author 卓大")
     @GetMapping("/login/logout")
     public ResponseDTO<String> logout(@RequestHeader(value = RequestHeaderConst.TOKEN, required = false) String token) {
-        return loginService.logout(token, SmartRequestUtil.getRequestUser());
+        return loginService.logout(token, RequestUtil.getRequestUser());
     }
 
     @Operation(summary = "获取验证码  @author 卓大")

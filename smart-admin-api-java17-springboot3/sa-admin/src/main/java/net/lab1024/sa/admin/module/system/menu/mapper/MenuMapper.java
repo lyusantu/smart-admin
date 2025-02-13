@@ -1,4 +1,4 @@
-package net.lab1024.sa.admin.module.system.menu.dao;
+package net.lab1024.sa.admin.module.system.menu.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -10,17 +10,11 @@ import net.lab1024.sa.admin.module.system.menu.domain.vo.MenuVO;
 import java.util.List;
 
 /**
- * 菜单 dao
- *
- * @Author 1024创新实验室: 善逸
- * @Date 2022-03-06 22:04:37
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
+ * 菜单 Mapper
  */
 @Mapper
 @Component
-public interface MenuDao extends BaseMapper<MenuEntity> {
+public interface MenuMapper extends BaseMapper<MenuEntity> {
 
     /**
      * 根据名称查询同一级下的菜单
@@ -91,7 +85,6 @@ public interface MenuDao extends BaseMapper<MenuEntity> {
 
     /**
      * 查询孩子id
-     *
      */
     List<Long> selectMenuIdByParentIdList(@Param("menuIdList") List<Long> menuIdList);
 }

@@ -1,4 +1,4 @@
-package net.lab1024.sa.base.module.support.serialnumber.dao;
+package net.lab1024.sa.base.module.support.serialnumber.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import net.lab1024.sa.base.module.support.serialnumber.domain.SerialNumberEntity;
@@ -10,16 +10,10 @@ import java.time.LocalDateTime;
 
 /**
  * 单据序列号
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-03-25 21:46:07
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Mapper
 @Component
-public interface SerialNumberDao extends BaseMapper<SerialNumberEntity> {
+public interface SerialNumberMapper extends BaseMapper<SerialNumberEntity> {
 
     /**
      * 排他锁查询

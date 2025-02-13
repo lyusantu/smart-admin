@@ -10,7 +10,7 @@ import net.lab1024.sa.admin.module.system.datascope.constant.DataScopeViewTypeEn
 import net.lab1024.sa.admin.module.system.datascope.constant.DataScopeWhereInTypeEnum;
 import net.lab1024.sa.admin.module.system.datascope.domain.DataScopeSqlConfig;
 import net.lab1024.sa.admin.module.system.datascope.strategy.AbstractDataScopeStrategy;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
@@ -96,7 +96,7 @@ public class DataScopeSqlConfigService {
     public String getJoinSql(Map<String, Object> paramMap, DataScopeSqlConfig sqlConfigDTO) {
         DataScopeTypeEnum dataScopeTypeEnum = sqlConfigDTO.getDataScopeType();
         String joinSql = sqlConfigDTO.getJoinSql();
-        Long employeeId = SmartRequestUtil.getRequestUserId();
+        Long employeeId = RequestUtil.getRequestUserId();
         if (employeeId == null) {
             return "";
         }

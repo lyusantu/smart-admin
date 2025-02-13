@@ -12,7 +12,7 @@ import net.lab1024.sa.admin.module.business.oa.bank.domain.BankVO;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class BankController {
     @Operation(summary = "新建银行信息 @author 善逸")
     @PostMapping("/oa/bank/create")
     public ResponseDTO<String> createBank(@RequestBody @Valid BankCreateForm createVO) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         createVO.setCreateUserId(requestUser.getUserId());
         createVO.setCreateUserName(requestUser.getUserName());
         return bankService.createBank(createVO);

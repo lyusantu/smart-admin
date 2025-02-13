@@ -8,7 +8,7 @@ import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.message.domain.MessageQueryForm;
 import net.lab1024.sa.base.module.support.message.domain.MessageVO;
@@ -31,7 +31,7 @@ public class MessageController extends SupportBaseController {
     @Operation(summary = "分页查询我的消息 @luoyi")
     @PostMapping("/message/queryMyMessage")
     public ResponseDTO<PageResult<MessageVO>> query(@RequestBody @Valid MessageQueryForm queryForm) {
-        RequestUser user = SmartRequestUtil.getRequestUser();
+        RequestUser user = RequestUtil.getRequestUser();
         if(user == null){
             return ResponseDTO.userErrorParam("用户未登录");
         }
@@ -45,7 +45,7 @@ public class MessageController extends SupportBaseController {
     @Operation(summary = "查询未读消息数量 @luoyi")
     @GetMapping("/message/getUnreadCount")
     public ResponseDTO<Long> getUnreadCount() {
-        RequestUser user = SmartRequestUtil.getRequestUser();
+        RequestUser user = RequestUtil.getRequestUser();
         if(user == null){
             return ResponseDTO.userErrorParam("用户未登录");
         }
@@ -55,7 +55,7 @@ public class MessageController extends SupportBaseController {
     @Operation(summary = "更新已读 @luoyi")
     @GetMapping("/message/read/{messageId}")
     public ResponseDTO<String> updateReadFlag(@PathVariable Long messageId) {
-        RequestUser user = SmartRequestUtil.getRequestUser();
+        RequestUser user = RequestUtil.getRequestUser();
         if(user == null){
             return ResponseDTO.userErrorParam("用户未登录");
         }

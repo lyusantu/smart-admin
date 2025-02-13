@@ -20,20 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- *
  * api 加密
- *
- * @Author 1024创新实验室-主任:卓大
- * @Date 2023/10/21 09:21:20
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>，Since 2012
  */
-
 @RestController
 @Tag(name = SwaggerTagConst.Support.PROTECT)
 public class AdminApiEncryptController extends SupportBaseController {
-
 
     @ApiDecrypt
     @PostMapping("/apiEncrypt/testRequestEncrypt")

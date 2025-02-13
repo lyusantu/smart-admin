@@ -15,7 +15,7 @@ import net.lab1024.sa.admin.module.business.oa.notice.service.NoticeService;
 import net.lab1024.sa.admin.module.business.oa.notice.service.NoticeTypeService;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.module.support.operatelog.annotation.OperateLog;
 import net.lab1024.sa.base.module.support.repeatsubmit.annoation.RepeatSubmit;
 import org.springframework.web.bind.annotation.*;
@@ -86,7 +86,7 @@ public class NoticeController {
     @RepeatSubmit
     @SaCheckPermission("oa:notice:add")
     public ResponseDTO<String> add(@RequestBody @Valid NoticeAddForm addForm) {
-        addForm.setCreateUserId(SmartRequestUtil.getRequestUserId());
+        addForm.setCreateUserId(RequestUtil.getRequestUserId());
         return noticeService.add(addForm);
     }
 
@@ -119,7 +119,7 @@ public class NoticeController {
     @GetMapping("/oa/notice/employee/view/{noticeId}")
     public ResponseDTO<NoticeDetailVO> view(@PathVariable Long noticeId, HttpServletRequest request) {
         return noticeEmployeeService.view(
-                SmartRequestUtil.getRequestUserId(),
+                RequestUtil.getRequestUserId(),
                 noticeId,
                 JakartaServletUtil.getClientIP(request),
                 request.getHeader("User-Agent")
@@ -129,7 +129,7 @@ public class NoticeController {
     @Operation(summary = "【员工】通知公告-查询全部 @author 卓大")
     @PostMapping("/oa/notice/employee/query")
     public ResponseDTO<PageResult<NoticeEmployeeVO>> queryEmployeeNotice(@RequestBody @Valid NoticeEmployeeQueryForm noticeEmployeeQueryForm) {
-        return noticeEmployeeService.queryList(SmartRequestUtil.getRequestUserId(), noticeEmployeeQueryForm);
+        return noticeEmployeeService.queryList(RequestUtil.getRequestUserId(), noticeEmployeeQueryForm);
     }
 
     @Operation(summary = "【员工】通知公告-查询 查看记录 @author 卓大")

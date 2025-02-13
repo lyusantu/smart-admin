@@ -2,9 +2,9 @@ package net.lab1024.sa.admin.module.system.menu.service;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.google.common.collect.Lists;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.module.system.menu.constant.MenuTypeEnum;
-import net.lab1024.sa.admin.module.system.menu.dao.MenuDao;
+import net.lab1024.sa.admin.module.system.menu.mapper.MenuMapper;
 import net.lab1024.sa.admin.module.system.menu.domain.entity.MenuEntity;
 import net.lab1024.sa.admin.module.system.menu.domain.form.MenuAddForm;
 import net.lab1024.sa.admin.module.system.menu.domain.form.MenuBaseForm;
@@ -24,22 +24,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 菜单
- *
- * @Author 1024创新实验室: 善逸
- * @Date 2022-03-08 22:15:09
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
+ * 菜单 Service
  */
+@RequiredArgsConstructor
 @Service
 public class MenuService {
 
-    @Resource
-    private MenuDao menuDao;
+    private final MenuMapper menuMapper;
 
-    @Resource
-    private List<RequestUrlVO> authUrl;
+    private final List<RequestUrlVO> authUrl;
 
     /**
      * 添加菜单
@@ -55,7 +48,7 @@ public class MenuService {
             return ResponseDTO.userErrorParam("前端权限字符串已存在");
         }
         MenuEntity menuEntity = SmartBeanUtil.copy(menuAddForm, MenuEntity.class);
-        menuDao.insert(menuEntity);
+        menuMapper.insert(menuEntity);
         return ResponseDTO.ok();
     }
 
@@ -65,7 +58,7 @@ public class MenuService {
      */
     public synchronized ResponseDTO<String> updateMenu(MenuUpdateForm menuUpdateForm) {
         //校验菜单是否存在
-        MenuEntity selectMenu = menuDao.selectById(menuUpdateForm.getMenuId());
+        MenuEntity selectMenu = menuMapper.selectById(menuUpdateForm.getMenuId());
         if (selectMenu == null) {
             return ResponseDTO.userErrorParam("菜单不存在");
         }
@@ -84,7 +77,7 @@ public class MenuService {
             return ResponseDTO.userErrorParam("上级菜单不能为自己");
         }
         MenuEntity menuEntity = SmartBeanUtil.copy(menuUpdateForm, MenuEntity.class);
-        menuDao.updateById(menuEntity);
+        menuMapper.updateById(menuEntity);
         return ResponseDTO.ok();
     }
 
@@ -97,18 +90,18 @@ public class MenuService {
         if (CollectionUtils.isEmpty(menuIdList)) {
             return ResponseDTO.userErrorParam("所选菜单不能为空");
         }
-        menuDao.deleteByMenuIdList(menuIdList, employeeId, Boolean.TRUE);
+        menuMapper.deleteByMenuIdList(menuIdList, employeeId, Boolean.TRUE);
         //孩子节点也需要删除
         this.recursiveDeleteChildren(menuIdList, employeeId);
         return ResponseDTO.ok();
     }
 
     private void recursiveDeleteChildren(List<Long> menuIdList, Long employeeId) {
-        List<Long> childrenMenuIdList = menuDao.selectMenuIdByParentIdList(menuIdList);
+        List<Long> childrenMenuIdList = menuMapper.selectMenuIdByParentIdList(menuIdList);
         if (CollectionUtil.isEmpty(childrenMenuIdList)) {
             return;
         }
-        menuDao.deleteByMenuIdList(childrenMenuIdList, employeeId, Boolean.TRUE);
+        menuMapper.deleteByMenuIdList(childrenMenuIdList, employeeId, Boolean.TRUE);
         recursiveDeleteChildren(childrenMenuIdList, employeeId);
     }
 
@@ -117,7 +110,7 @@ public class MenuService {
      *
      */
     public <T extends MenuBaseForm> Boolean validateMenuName(T menuDTO) {
-        MenuEntity menu = menuDao.getByMenuName(menuDTO.getMenuName(), menuDTO.getParentId(), Boolean.FALSE);
+        MenuEntity menu = menuMapper.getByMenuName(menuDTO.getMenuName(), menuDTO.getParentId(), Boolean.FALSE);
         if (menuDTO instanceof MenuAddForm) {
             return menu != null;
         }
@@ -134,7 +127,7 @@ public class MenuService {
      * @return true 重复 false 未重复
      */
     public <T extends MenuBaseForm> Boolean validateWebPerms(T menuDTO) {
-        MenuEntity menu = menuDao.getByWebPerms(menuDTO.getWebPerms(), Boolean.FALSE);
+        MenuEntity menu = menuMapper.getByWebPerms(menuDTO.getWebPerms(), Boolean.FALSE);
         if (menuDTO instanceof MenuAddForm) {
             return menu != null;
         }
@@ -150,7 +143,7 @@ public class MenuService {
      *
      */
     public List<MenuVO> queryMenuList(Boolean disabledFlag) {
-        List<MenuVO> menuVOList = menuDao.queryMenuList(Boolean.FALSE, disabledFlag, null);
+        List<MenuVO> menuVOList = menuMapper.queryMenuList(Boolean.FALSE, disabledFlag, null);
         //根据ParentId进行分组
         Map<Long, List<MenuVO>> parentMap = menuVOList.stream().collect(Collectors.groupingBy(MenuVO::getParentId, Collectors.toList()));
         return this.filterNoParentMenu(parentMap, NumberUtils.LONG_ZERO);
@@ -183,7 +176,7 @@ public class MenuService {
         if (onlyMenu) {
             menuTypeList = Lists.newArrayList(MenuTypeEnum.CATALOG.getValue(), MenuTypeEnum.MENU.getValue());
         }
-        List<MenuVO> menuVOList = menuDao.queryMenuList(Boolean.FALSE, null, menuTypeList);
+        List<MenuVO> menuVOList = menuMapper.queryMenuList(Boolean.FALSE, null, menuTypeList);
         //根据ParentId进行分组
         Map<Long, List<MenuVO>> parentMap = menuVOList.stream().collect(Collectors.groupingBy(MenuVO::getParentId, Collectors.toList()));
         List<MenuTreeVO> menuTreeVOList = this.buildMenuTree(parentMap, NumberUtils.LONG_ZERO);
@@ -211,7 +204,7 @@ public class MenuService {
      */
     public ResponseDTO<MenuVO> getMenuDetail(Long menuId) {
         //校验菜单是否存在
-        MenuEntity selectMenu = menuDao.selectById(menuId);
+        MenuEntity selectMenu = menuMapper.selectById(menuId);
         if (selectMenu == null) {
             return ResponseDTO.error(SystemErrorCode.SYSTEM_ERROR, "菜单不存在");
         }

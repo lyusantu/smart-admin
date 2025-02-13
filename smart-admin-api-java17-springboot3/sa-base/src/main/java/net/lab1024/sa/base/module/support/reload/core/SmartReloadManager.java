@@ -1,6 +1,5 @@
 package net.lab1024.sa.base.module.support.reload.core;
 
-
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
@@ -11,9 +10,7 @@ import net.lab1024.sa.base.module.support.reload.core.thread.SmartReloadRunnable
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -27,12 +24,6 @@ import java.util.concurrent.TimeUnit;
  * SmartReloadManager 管理器
  * <p>
  * 可以在此类中添加 检测任务 以及注册 处理程序
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2015-03-02 19:11:52
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Slf4j
 @Service

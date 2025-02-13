@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.page.PageResult;
@@ -23,13 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 系统配置业务类
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-03-14 20:46:27
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class ConfigService {
@@ -39,8 +34,7 @@ public class ConfigService {
      */
     private final ConcurrentHashMap<String, ConfigEntity> CONFIG_CACHE = new ConcurrentHashMap<>();
 
-    @Resource
-    private ConfigDao configDao;
+    private final ConfigMapper configMapper;
 
     @SmartReload(ReloadConst.CONFIG_RELOAD)
     public void configReload(String param) {
@@ -53,7 +47,7 @@ public class ConfigService {
     @PostConstruct
     private void loadConfigCache() {
         CONFIG_CACHE.clear();
-        List<ConfigEntity> entityList = configDao.selectList(null);
+        List<ConfigEntity> entityList = configMapper.selectList(null);
         if (CollectionUtils.isEmpty(entityList)) {
             return;
         }
@@ -66,7 +60,7 @@ public class ConfigService {
      */
     private void refreshConfigCache(Long configId) {
         // 重新查询 加入缓存
-        ConfigEntity configEntity = configDao.selectById(configId);
+        ConfigEntity configEntity = configMapper.selectById(configId);
         if (null == configEntity) {
             return;
         }
@@ -75,18 +69,16 @@ public class ConfigService {
 
     /**
      * 分页查询系统配置
-     *
      */
     public ResponseDTO<PageResult<ConfigVO>> queryConfigPage(ConfigQueryForm queryForm) {
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<ConfigEntity> entityList = configDao.queryByPage(page, queryForm);
+        List<ConfigEntity> entityList = configMapper.queryByPage(page, queryForm);
         PageResult<ConfigVO> pageResult = PageUtil.convert2PageResult(page, entityList, ConfigVO.class);
         return ResponseDTO.ok(pageResult);
     }
 
     /**
      * 查询配置缓存
-     *
      */
     public ConfigVO getConfig(ConfigKeyEnum configKey) {
         return this.getConfig(configKey.getValue());
@@ -94,7 +86,6 @@ public class ConfigService {
 
     /**
      * 查询配置缓存
-     *
      */
     public ConfigVO getConfig(String configKey) {
         if (StrUtil.isBlank(configKey)) {
@@ -106,7 +97,6 @@ public class ConfigService {
 
     /**
      * 查询配置缓存参数
-     *
      */
     public String getConfigValue(ConfigKeyEnum configKey) {
         ConfigVO config = this.getConfig(configKey);
@@ -115,7 +105,6 @@ public class ConfigService {
 
     /**
      * 根据参数key查询 并转换为对象
-     *
      */
     public <T> T getConfigValue2Obj(ConfigKeyEnum configKey, Class<T> clazz) {
         String configValue = this.getConfigValue(configKey);
@@ -124,15 +113,14 @@ public class ConfigService {
 
     /**
      * 添加系统配置
-     *
      */
     public ResponseDTO<String> add(ConfigAddForm configAddForm) {
-        ConfigEntity entity = configDao.selectByKey(configAddForm.getConfigKey());
+        ConfigEntity entity = configMapper.selectByKey(configAddForm.getConfigKey());
         if (null != entity) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST);
         }
         entity = SmartBeanUtil.copy(configAddForm, ConfigEntity.class);
-        configDao.insert(entity);
+        configMapper.insert(entity);
 
         // 刷新缓存
         this.refreshConfigCache(entity.getConfigId());
@@ -141,22 +129,21 @@ public class ConfigService {
 
     /**
      * 更新系统配置
-     *
      */
     public ResponseDTO<String> updateConfig(ConfigUpdateForm updateDTO) {
         Long configId = updateDTO.getConfigId();
-        ConfigEntity entity = configDao.selectById(configId);
+        ConfigEntity entity = configMapper.selectById(configId);
         if (null == entity) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
-        ConfigEntity alreadyEntity = configDao.selectByKey(updateDTO.getConfigKey());
+        ConfigEntity alreadyEntity = configMapper.selectByKey(updateDTO.getConfigKey());
         if (null != alreadyEntity && !Objects.equals(configId, alreadyEntity.getConfigId())) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST, "config key 已存在");
         }
 
         // 更新数据
         entity = SmartBeanUtil.copy(updateDTO, ConfigEntity.class);
-        configDao.updateById(entity);
+        configMapper.updateById(entity);
 
         // 刷新缓存
         this.refreshConfigCache(configId);
@@ -165,7 +152,6 @@ public class ConfigService {
 
     /**
      * 更新系统配置
-     *
      */
     public ResponseDTO<String> updateValueByKey(ConfigKeyEnum key, String value) {
         ConfigVO config = this.getConfig(key);
@@ -178,7 +164,7 @@ public class ConfigService {
         ConfigEntity entity = new ConfigEntity();
         entity.setConfigId(configId);
         entity.setConfigValue(value);
-        configDao.updateById(entity);
+        configMapper.updateById(entity);
 
         // 刷新缓存
         this.refreshConfigCache(configId);

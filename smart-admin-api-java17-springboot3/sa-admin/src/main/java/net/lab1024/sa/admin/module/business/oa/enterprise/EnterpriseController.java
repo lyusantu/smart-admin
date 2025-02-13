@@ -78,7 +78,7 @@ public class EnterpriseController {
     @PostMapping("/oa/enterprise/create")
     @SaCheckPermission("oa:enterprise:add")
     public ResponseDTO<String> createEnterprise(@RequestBody @Valid EnterpriseCreateForm createVO) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         createVO.setCreateUserId(requestUser.getUserId());
         createVO.setCreateUserName(requestUser.getUserName());
         return enterpriseService.createEnterprise(createVO);

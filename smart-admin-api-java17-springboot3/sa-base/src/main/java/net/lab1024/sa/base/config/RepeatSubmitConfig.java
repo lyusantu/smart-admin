@@ -1,7 +1,7 @@
 package net.lab1024.sa.base.config;
 
 import net.lab1024.sa.base.common.constant.StringConst;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.module.support.repeatsubmit.RepeatSubmitAspect;
 import net.lab1024.sa.base.module.support.repeatsubmit.ticket.RepeatSubmitCaffeineTicket;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ public class RepeatSubmitConfig {
      * 获取指明某个用户的凭证
      */
     private String ticket(String servletPath) {
-        Long userId = SmartRequestUtil.getRequestUserId();
+        Long userId = RequestUtil.getRequestUserId();
         if (null == userId) {
             return StringConst.EMPTY;
         }

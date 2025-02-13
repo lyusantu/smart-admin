@@ -7,7 +7,7 @@ import net.lab1024.sa.base.common.domain.RequestUser;
  * 请求用户  工具类
  */
 @Slf4j
-public class SmartRequestUtil {
+public class RequestUtil {
 
     private static final ThreadLocal<RequestUser> REQUEST_THREAD_LOCAL = new ThreadLocal<>();
 

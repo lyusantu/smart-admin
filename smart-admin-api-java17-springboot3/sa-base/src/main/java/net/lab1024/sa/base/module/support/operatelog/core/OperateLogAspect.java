@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.constant.StringConst;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.util.SmartIpUtil;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.module.support.operatelog.OperateLogDao;
 import net.lab1024.sa.base.module.support.operatelog.annotation.OperateLog;
 import net.lab1024.sa.base.module.support.operatelog.domain.OperateLogEntity;
@@ -180,7 +180,7 @@ public abstract class OperateLogAspect {
     private void submitLog(final JoinPoint joinPoint, final Throwable e) throws Exception {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         //设置用户信息
-        RequestUser user = SmartRequestUtil.getRequestUser();
+        RequestUser user = RequestUtil.getRequestUser();
         if (user == null) {
             return;
         }

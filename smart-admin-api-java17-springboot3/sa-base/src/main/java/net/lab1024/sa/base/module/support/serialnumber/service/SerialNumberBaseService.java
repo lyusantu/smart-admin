@@ -7,8 +7,8 @@ import net.lab1024.sa.base.common.exception.BusinessException;
 import net.lab1024.sa.base.common.util.SmartEnumUtil;
 import net.lab1024.sa.base.module.support.serialnumber.constant.SerialNumberIdEnum;
 import net.lab1024.sa.base.module.support.serialnumber.constant.SerialNumberRuleTypeEnum;
-import net.lab1024.sa.base.module.support.serialnumber.dao.SerialNumberDao;
-import net.lab1024.sa.base.module.support.serialnumber.dao.SerialNumberRecordDao;
+import net.lab1024.sa.base.module.support.serialnumber.mapper.SerialNumberMapper;
+import net.lab1024.sa.base.module.support.serialnumber.mapper.SerialNumberRecordDao;
 import net.lab1024.sa.base.module.support.serialnumber.domain.*;
 import org.apache.commons.lang3.RandomUtils;
 
@@ -33,7 +33,7 @@ public abstract class SerialNumberBaseService implements SerialNumberService {
     protected SerialNumberRecordDao serialNumberRecordDao;
 
     @Resource
-    protected SerialNumberDao serialNumberDao;
+    protected SerialNumberMapper serialNumberDao;
 
     private ConcurrentHashMap<Integer, SerialNumberInfoBO> serialNumberMap = new ConcurrentHashMap<>();
 

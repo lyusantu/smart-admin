@@ -9,7 +9,7 @@ import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.feedback.domain.FeedbackAddForm;
 import net.lab1024.sa.base.module.support.feedback.domain.FeedbackQueryForm;
@@ -45,7 +45,7 @@ public class FeedbackController extends SupportBaseController {
     @Operation(summary = "意见反馈-新增 @author 开云")
     @PostMapping("/feedback/add")
     public ResponseDTO<String> add(@RequestBody @Valid FeedbackAddForm addForm) {
-        RequestUser employee = SmartRequestUtil.getRequestUser();
+        RequestUser employee = RequestUtil.getRequestUser();
         return feedbackService.add(addForm, employee);
     }
 }

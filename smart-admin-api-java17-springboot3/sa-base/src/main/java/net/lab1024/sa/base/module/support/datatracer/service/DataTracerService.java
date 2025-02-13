@@ -10,7 +10,7 @@ import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.SmartBeanUtil;
 import net.lab1024.sa.base.common.util.SmartIpUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerConst;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerTypeEnum;
 import net.lab1024.sa.base.module.support.datatracer.dao.DataTracerDao;
@@ -158,7 +158,7 @@ public class DataTracerService {
      * 保存数据变动记录
      */
     public void addTrace(DataTracerForm tracerForm) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         this.addTrace(tracerForm, requestUser);
     }
 
@@ -184,7 +184,7 @@ public class DataTracerService {
      * 批量保存数据变动记录
      */
     public void addTraceList(List<DataTracerForm> tracerFormList) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         this.addTraceList(tracerFormList, requestUser);
     }
 

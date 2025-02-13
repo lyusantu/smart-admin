@@ -3,7 +3,6 @@ package net.lab1024.sa.admin.module.system.employee.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.constant.AdminSwaggerTagConst;
@@ -12,7 +11,7 @@ import net.lab1024.sa.admin.module.system.employee.domain.vo.EmployeeVO;
 import net.lab1024.sa.admin.module.system.employee.service.EmployeeService;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.module.support.apiencrypt.annotation.ApiDecrypt;
 import net.lab1024.sa.base.module.support.securityprotect.service.Level3ProtectConfigService;
 import org.springframework.web.bind.annotation.*;
@@ -54,14 +53,14 @@ public class EmployeeController {
     @Operation(summary = "更新登录人信息 @author 善逸")
     @PostMapping("/employee/update/login")
     public ResponseDTO<String> updateByLogin(@Valid @RequestBody EmployeeUpdateForm employeeUpdateForm) {
-        employeeUpdateForm.setEmployeeId(SmartRequestUtil.getRequestUserId());
+        employeeUpdateForm.setEmployeeId(RequestUtil.getRequestUserId());
         return employeeService.updateEmployee(employeeUpdateForm);
     }
 
     @Operation(summary = "更新登录人头像 @author 善逸")
     @PostMapping("/employee/update/avatar")
     public ResponseDTO<String> updateAvatar(@Valid @RequestBody EmployeeUpdateAvatarForm employeeUpdateAvatarForm) {
-        employeeUpdateAvatarForm.setEmployeeId(SmartRequestUtil.getRequestUserId());
+        employeeUpdateAvatarForm.setEmployeeId(RequestUtil.getRequestUserId());
         return employeeService.updateAvatar(employeeUpdateAvatarForm);
     }
 
@@ -90,8 +89,8 @@ public class EmployeeController {
     @PostMapping("/employee/update/password")
     @ApiDecrypt
     public ResponseDTO<String> updatePassword(@Valid @RequestBody EmployeeUpdatePasswordForm updatePasswordForm) {
-        updatePasswordForm.setEmployeeId(SmartRequestUtil.getRequestUserId());
-        return employeeService.updatePassword(SmartRequestUtil.getRequestUser(), updatePasswordForm);
+        updatePasswordForm.setEmployeeId(RequestUtil.getRequestUserId());
+        return employeeService.updatePassword(RequestUtil.getRequestUser(), updatePasswordForm);
     }
 
     @Operation(summary = "获取密码复杂度 @author 卓大")

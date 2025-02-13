@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
@@ -19,15 +20,14 @@ import java.util.List;
 /**
  * 数据脱敏demo
  */
-
+@RequiredArgsConstructor
 @RestController
 @Tag(name = SwaggerTagConst.Support.DATA_MASKING)
 public class AdminDataMaskingDemoController extends SupportBaseController {
 
-    @Operation(summary = "数据脱敏demo @author 1024创新实验室-主任-卓大")
+    @Operation(summary = "数据脱敏demo")
     @GetMapping("/dataMasking/demo/query")
     public ResponseDTO<List<DataVO>> query() {
-
         List<DataVO> list = new ArrayList<>();
         for (int i = 0; i < RandomUtil.randomInt(10,16); i++) {
             DataVO data = new DataVO();

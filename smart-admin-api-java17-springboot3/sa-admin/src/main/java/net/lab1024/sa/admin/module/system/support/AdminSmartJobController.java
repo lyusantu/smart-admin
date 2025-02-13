@@ -7,7 +7,7 @@ import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.job.api.SmartJobService;
 import net.lab1024.sa.base.module.support.job.api.domain.*;
@@ -35,7 +35,7 @@ public class AdminSmartJobController extends SupportBaseController {
     @PostMapping("/job/execute")
     @RepeatSubmit
     public ResponseDTO<String> execute(@RequestBody @Valid SmartJobExecuteForm executeForm) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         executeForm.setUpdateName(requestUser.getUserName());
         return jobService.execute(executeForm);
     }
@@ -56,7 +56,7 @@ public class AdminSmartJobController extends SupportBaseController {
     @PostMapping("/job/add")
     @RepeatSubmit
     public ResponseDTO<String> addJob(@RequestBody @Valid SmartJobAddForm addForm) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         addForm.setUpdateName(requestUser.getUserName());
         return jobService.addJob(addForm);
     }
@@ -65,7 +65,7 @@ public class AdminSmartJobController extends SupportBaseController {
     @PostMapping("/job/update")
     @RepeatSubmit
     public ResponseDTO<String> updateJob(@RequestBody @Valid SmartJobUpdateForm updateForm) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         updateForm.setUpdateName(requestUser.getUserName());
         return jobService.updateJob(updateForm);
     }
@@ -74,7 +74,7 @@ public class AdminSmartJobController extends SupportBaseController {
     @PostMapping("/job/update/enabled")
     @RepeatSubmit
     public ResponseDTO<String> updateJobEnabled(@RequestBody @Valid SmartJobEnabledUpdateForm updateForm) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         updateForm.setUpdateName(requestUser.getUserName());
         return jobService.updateJobEnabled(updateForm);
     }
@@ -83,7 +83,7 @@ public class AdminSmartJobController extends SupportBaseController {
     @GetMapping("/job/delete")
     @RepeatSubmit
     public ResponseDTO<String> deleteJob(@RequestParam Integer jobId) {
-        return jobService.deleteJob(jobId, SmartRequestUtil.getRequestUser());
+        return jobService.deleteJob(jobId, RequestUtil.getRequestUser());
     }
 
     @Operation(summary = "定时任务-执行记录-分页查询 @huke")

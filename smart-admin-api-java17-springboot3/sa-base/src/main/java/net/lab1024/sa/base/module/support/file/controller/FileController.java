@@ -10,7 +10,7 @@ import net.lab1024.sa.base.common.constant.RequestHeaderConst;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.common.util.SmartResponseUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileDownloadVO;
@@ -44,7 +44,7 @@ public class FileController extends SupportBaseController {
     @Operation(summary = "文件上传 @author 胡克")
     @PostMapping("/file/upload")
     public ResponseDTO<FileUploadVO> upload(@RequestParam MultipartFile file, @RequestParam Integer folder) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         return fileService.fileUpload(file, folder, requestUser);
     }
 

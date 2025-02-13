@@ -19,7 +19,7 @@ import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.domain.SystemEnvironment;
 import net.lab1024.sa.base.common.enumeration.SystemEnvironmentEnum;
 import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.common.util.SmartResponseUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -91,7 +91,7 @@ public class AdminInterceptor implements HandlerInterceptor {
             checkActiveTimeout(requestEmployee, debugNumberTokenFlag);
 
             // 放行所有带@SaIgnore的接口
-            SmartRequestUtil.setRequestUser(requestEmployee);
+            RequestUtil.setRequestUser(requestEmployee);
             if (SaStrategy.instance.isAnnotationPresent.apply(method, SaIgnore.class)) {
                 return true;
             }
@@ -154,7 +154,7 @@ public class AdminInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         // 清除上下文
-        SmartRequestUtil.remove();
+        RequestUtil.remove();
         // 开发环境，关闭 sa token 的临时切换用户
         if (systemEnvironment.getCurrentEnvironment() == SystemEnvironmentEnum.DEV) {
             StpUtil.endSwitch();

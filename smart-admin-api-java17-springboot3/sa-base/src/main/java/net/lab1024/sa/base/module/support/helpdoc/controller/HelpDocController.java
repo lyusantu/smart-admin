@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.helpdoc.domain.form.HelpDocViewRecordQueryForm;
 import net.lab1024.sa.base.module.support.helpdoc.domain.vo.HelpDocCatalogVO;
@@ -56,7 +56,7 @@ public class HelpDocController extends SupportBaseController {
     @RepeatSubmit
     public ResponseDTO<HelpDocDetailVO> view(@PathVariable Long helpDocId, HttpServletRequest request) {
         return helpDocUserService.view(
-                SmartRequestUtil.getRequestUser(),
+                RequestUtil.getRequestUser(),
                 helpDocId);
     }
 

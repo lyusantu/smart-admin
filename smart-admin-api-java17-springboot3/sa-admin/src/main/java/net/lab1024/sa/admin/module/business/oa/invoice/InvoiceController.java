@@ -13,7 +13,7 @@ import net.lab1024.sa.admin.module.business.oa.invoice.domain.InvoiceVO;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartRequestUtil;
+import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.module.support.operatelog.annotation.OperateLog;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +51,7 @@ public class InvoiceController {
     @Operation(summary = "新建发票信息 @author 善逸")
     @PostMapping("/oa/invoice/create")
     public ResponseDTO<String> createInvoice(@RequestBody @Valid InvoiceAddForm createVO) {
-        RequestUser requestUser = SmartRequestUtil.getRequestUser();
+        RequestUser requestUser = RequestUtil.getRequestUser();
         createVO.setCreateUserId(requestUser.getUserId());
         createVO.setCreateUserName(requestUser.getUserName());
         return invoiceService.createInvoice(createVO);

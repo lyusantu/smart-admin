@@ -2,11 +2,12 @@ package net.lab1024.sa.base.module.support.changelog.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
-import net.lab1024.sa.base.module.support.changelog.dao.ChangeLogDao;
+import net.lab1024.sa.base.module.support.changelog.mapper.ChangeLogMapper;
 import net.lab1024.sa.base.module.support.changelog.domain.entity.ChangeLogEntity;
 import net.lab1024.sa.base.module.support.changelog.domain.form.ChangeLogAddForm;
 import net.lab1024.sa.base.module.support.changelog.domain.form.ChangeLogQueryForm;
@@ -19,24 +20,19 @@ import java.util.List;
 
 /**
  * 系统更新日志 Service
- *
- * @Author 卓大
- * @Date 2022-09-26 14:53:50
- * @Copyright 1024创新实验室
  */
-
+@RequiredArgsConstructor
 @Service
 public class ChangeLogService {
 
-    @Resource
-    private ChangeLogDao changeLogDao;
+    private final ChangeLogMapper changeLogMapper;
 
     /**
      * 分页查询
      */
     public PageResult<ChangeLogVO> queryPage(ChangeLogQueryForm queryForm) {
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<ChangeLogVO> list = changeLogDao.queryPage(page, queryForm);
+        List<ChangeLogVO> list = changeLogMapper.queryPage(page, queryForm);
         return PageUtil.convert2PageResult(page, list);
     }
 
@@ -44,13 +40,13 @@ public class ChangeLogService {
      * 添加
      */
     public synchronized ResponseDTO<String> add(ChangeLogAddForm addForm) {
-        ChangeLogEntity existVersion = changeLogDao.selectByVersion(addForm.getVersion());
+        ChangeLogEntity existVersion = changeLogMapper.selectByVersion(addForm.getVersion());
         if (existVersion != null) {
             return ResponseDTO.userErrorParam("此版本已经存在");
         }
 
-        ChangeLogEntity changeLogEntity = SmartBeanUtil.copy(addForm, ChangeLogEntity.class);
-        changeLogDao.insert(changeLogEntity);
+        ChangeLogEntity changeLogEntity = BeanUtil.copy(addForm, ChangeLogEntity.class);
+        changeLogMapper.insert(changeLogEntity);
         return ResponseDTO.ok();
     }
 
@@ -58,12 +54,12 @@ public class ChangeLogService {
      * 更新
      */
     public synchronized ResponseDTO<String> update(ChangeLogUpdateForm updateForm) {
-        ChangeLogEntity existVersion = changeLogDao.selectByVersion(updateForm.getVersion());
+        ChangeLogEntity existVersion = changeLogMapper.selectByVersion(updateForm.getVersion());
         if (existVersion != null && !updateForm.getChangeLogId().equals(existVersion.getChangeLogId())) {
             return ResponseDTO.userErrorParam("此版本已经存在");
         }
-        ChangeLogEntity changeLogEntity = SmartBeanUtil.copy(updateForm, ChangeLogEntity.class);
-        changeLogDao.updateById(changeLogEntity);
+        ChangeLogEntity changeLogEntity = BeanUtil.copy(updateForm, ChangeLogEntity.class);
+        changeLogMapper.updateById(changeLogEntity);
         return ResponseDTO.ok();
     }
 
@@ -75,7 +71,7 @@ public class ChangeLogService {
             return ResponseDTO.ok();
         }
 
-        changeLogDao.deleteBatchIds(idList);
+        changeLogMapper.deleteBatchIds(idList);
         return ResponseDTO.ok();
     }
 
@@ -87,11 +83,11 @@ public class ChangeLogService {
             return ResponseDTO.ok();
         }
 
-        changeLogDao.deleteById(changeLogId);
+        changeLogMapper.deleteById(changeLogId);
         return ResponseDTO.ok();
     }
 
     public ChangeLogVO getById(Long changeLogId) {
-        return SmartBeanUtil.copy(changeLogDao.selectById(changeLogId), ChangeLogVO.class);
+        return BeanUtil.copy(changeLogMapper.selectById(changeLogId), ChangeLogVO.class);
     }
 }

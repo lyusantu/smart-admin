@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import net.lab1024.sa.base.common.enumeration.GenderEnum;
 import net.lab1024.sa.base.common.swagger.SchemaEnum;
-import net.lab1024.sa.base.common.util.SmartVerificationUtil;
+import net.lab1024.sa.base.common.util.VerificationUtil;
 import net.lab1024.sa.base.common.validator.enumeration.CheckEnum;
 import org.hibernate.validator.constraints.Length;
 
@@ -48,7 +48,7 @@ public class EmployeeAddForm {
 
     @Schema(description = "手机号")
     @NotNull(message = "手机号不能为空")
-    @Pattern(regexp = SmartVerificationUtil.PHONE_REGEXP, message = "手机号格式不正确")
+    @Pattern(regexp = VerificationUtil.PHONE_REGEXP, message = "手机号格式不正确")
     private String phone;
 
     @Schema(description = "邮箱")

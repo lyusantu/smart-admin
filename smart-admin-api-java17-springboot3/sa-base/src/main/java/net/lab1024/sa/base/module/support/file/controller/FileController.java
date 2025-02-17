@@ -11,7 +11,7 @@ import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.RequestUtil;
-import net.lab1024.sa.base.common.util.SmartResponseUtil;
+import net.lab1024.sa.base.common.util.ResponseUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileDownloadVO;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileUploadVO;
@@ -60,13 +60,13 @@ public class FileController extends SupportBaseController {
         String userAgent = JakartaServletUtil.getHeaderIgnoreCase(request, RequestHeaderConst.USER_AGENT);
         ResponseDTO<FileDownloadVO> downloadFileResult = fileService.getDownloadFile(fileKey, userAgent);
         if (!downloadFileResult.getOk()) {
-            SmartResponseUtil.write(response, downloadFileResult);
+            ResponseUtil.write(response, downloadFileResult);
             return;
         }
         // 下载文件信息
         FileDownloadVO fileDownloadVO = downloadFileResult.getData();
         // 设置下载消息头
-        SmartResponseUtil.setDownloadFileHeader(response, fileDownloadVO.getMetadata().getFileName(), fileDownloadVO.getMetadata().getFileSize());
+        ResponseUtil.setDownloadFileHeader(response, fileDownloadVO.getMetadata().getFileName(), fileDownloadVO.getMetadata().getFileSize());
         // 下载
         response.getOutputStream().write(fileDownloadVO.getData());
     }

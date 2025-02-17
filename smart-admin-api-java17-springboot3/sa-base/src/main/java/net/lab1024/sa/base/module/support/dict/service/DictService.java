@@ -2,13 +2,14 @@ package net.lab1024.sa.base.module.support.dict.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
-import net.lab1024.sa.base.module.support.dict.dao.DictKeyDao;
-import net.lab1024.sa.base.module.support.dict.dao.DictValueDao;
+import net.lab1024.sa.base.module.support.dict.mapper.DictKeyMapper;
+import net.lab1024.sa.base.module.support.dict.mapper.DictValueMapper;
 import net.lab1024.sa.base.module.support.dict.domain.entity.DictKeyEntity;
 import net.lab1024.sa.base.module.support.dict.domain.entity.DictValueEntity;
 import net.lab1024.sa.base.module.support.dict.domain.form.*;
@@ -21,22 +22,16 @@ import java.util.List;
 
 /**
  * 字典 服务
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2022/5/26 19:40:55
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class DictService {
 
-    @Resource
-    private DictKeyDao dictKeyDao;
-    @Resource
-    private DictValueDao dictValueDao;
-    @Resource
-    private DictCacheService dictCacheService;
+    private final DictKeyMapper dictKeyMapper;
+
+    private final DictValueMapper dictValueMapper;
+
+    private final DictCacheService dictCacheService;
 
 
     /**
@@ -46,12 +41,12 @@ public class DictService {
      * @return
      */
     public synchronized ResponseDTO<String> keyAdd(DictKeyAddForm keyAddForm) {
-        DictKeyEntity dictKeyEntity = dictKeyDao.selectByCode(keyAddForm.getKeyCode(), false);
+        DictKeyEntity dictKeyEntity = dictKeyMapper.selectByCode(keyAddForm.getKeyCode(), false);
         if (dictKeyEntity != null) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST);
         }
-        dictKeyEntity = SmartBeanUtil.copy(keyAddForm, DictKeyEntity.class);
-        dictKeyDao.insert(dictKeyEntity);
+        dictKeyEntity = BeanUtil.copy(keyAddForm, DictKeyEntity.class);
+        dictKeyMapper.insert(dictKeyEntity);
         //刷新缓存
         dictCacheService.cacheRefresh();
         return ResponseDTO.ok();
@@ -64,12 +59,12 @@ public class DictService {
      * @return
      */
     public synchronized ResponseDTO<String> valueAdd(DictValueAddForm valueAddForm) {
-        DictValueEntity dictValueEntity = dictValueDao.selectByCode(valueAddForm.getValueCode(), false);
+        DictValueEntity dictValueEntity = dictValueMapper.selectByCode(valueAddForm.getValueCode(), false);
         if (dictValueEntity != null) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST);
         }
-        dictValueEntity = SmartBeanUtil.copy(valueAddForm, DictValueEntity.class);
-        dictValueDao.insert(dictValueEntity);
+        dictValueEntity = BeanUtil.copy(valueAddForm, DictValueEntity.class);
+        dictValueMapper.insert(dictValueEntity);
         //刷新缓存
         dictCacheService.cacheRefresh();
         return ResponseDTO.ok();
@@ -82,12 +77,12 @@ public class DictService {
      * @return
      */
     public synchronized ResponseDTO<String> keyEdit(DictKeyUpdateForm keyUpdateForm) {
-        DictKeyEntity dictKeyEntity = dictKeyDao.selectByCode(keyUpdateForm.getKeyCode(), false);
+        DictKeyEntity dictKeyEntity = dictKeyMapper.selectByCode(keyUpdateForm.getKeyCode(), false);
         if (dictKeyEntity != null && !dictKeyEntity.getDictKeyId().equals(keyUpdateForm.getDictKeyId())) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST);
         }
-        DictKeyEntity dictKeyUpdateEntity = SmartBeanUtil.copy(keyUpdateForm, DictKeyEntity.class);
-        dictKeyDao.updateById(dictKeyUpdateEntity);
+        DictKeyEntity dictKeyUpdateEntity = BeanUtil.copy(keyUpdateForm, DictKeyEntity.class);
+        dictKeyMapper.updateById(dictKeyUpdateEntity);
         //刷新缓存
         dictCacheService.cacheRefresh();
         return ResponseDTO.ok();
@@ -100,16 +95,16 @@ public class DictService {
      * @return
      */
     public synchronized ResponseDTO<String> valueEdit(DictValueUpdateForm valueUpdateForm) {
-        DictKeyEntity dictKeyEntity = dictKeyDao.selectById(valueUpdateForm.getDictKeyId());
+        DictKeyEntity dictKeyEntity = dictKeyMapper.selectById(valueUpdateForm.getDictKeyId());
         if (dictKeyEntity == null || dictKeyEntity.getDeletedFlag()) {
             return ResponseDTO.userErrorParam("key不能存在");
         }
-        DictValueEntity dictValueEntity = dictValueDao.selectByCode(valueUpdateForm.getValueCode(), false);
+        DictValueEntity dictValueEntity = dictValueMapper.selectByCode(valueUpdateForm.getValueCode(), false);
         if (dictValueEntity != null && !dictValueEntity.getDictValueId().equals(valueUpdateForm.getDictValueId())) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST);
         }
-        DictValueEntity dictValueUpdateEntity = SmartBeanUtil.copy(valueUpdateForm, DictValueEntity.class);
-        dictValueDao.updateById(dictValueUpdateEntity);
+        DictValueEntity dictValueUpdateEntity = BeanUtil.copy(valueUpdateForm, DictValueEntity.class);
+        dictValueMapper.updateById(dictValueUpdateEntity);
         //刷新缓存
         dictCacheService.cacheRefresh();
         return ResponseDTO.ok();
@@ -125,7 +120,7 @@ public class DictService {
         if (CollectionUtils.isEmpty(keyIdList)) {
             return ResponseDTO.ok();
         }
-        dictKeyDao.updateDeletedFlagByIdList(keyIdList, true);
+        dictKeyMapper.updateDeletedFlagByIdList(keyIdList, true);
         //刷新缓存
         dictCacheService.cacheRefresh();
         return ResponseDTO.ok();
@@ -141,7 +136,7 @@ public class DictService {
         if (CollectionUtils.isEmpty(valueIdList)) {
             return ResponseDTO.ok();
         }
-        dictValueDao.updateDeletedFlagByIdList(valueIdList, true);
+        dictValueMapper.updateDeletedFlagByIdList(valueIdList, true);
         //刷新缓存
         dictCacheService.cacheRefresh();
         return ResponseDTO.ok();
@@ -156,7 +151,7 @@ public class DictService {
     public ResponseDTO<PageResult<DictKeyVO>> keyQuery(DictKeyQueryForm queryForm) {
         queryForm.setDeletedFlag(false);
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<DictKeyVO> list = dictKeyDao.query(page, queryForm);
+        List<DictKeyVO> list = dictKeyMapper.query(page, queryForm);
         PageResult<DictKeyVO> pageResult = PageUtil.convert2PageResult(page, list);
         if (pageResult.getEmptyFlag()) {
             return ResponseDTO.ok(pageResult);
@@ -170,7 +165,7 @@ public class DictService {
      * @return
      */
     public List<DictKeyVO> queryAllKey() {
-        return SmartBeanUtil.copyList(dictKeyDao.selectByDeletedFlag(false), DictKeyVO.class);
+        return BeanUtil.copyList(dictKeyMapper.selectByDeletedFlag(false), DictKeyVO.class);
     }
 
     /**
@@ -182,7 +177,7 @@ public class DictService {
     public ResponseDTO<PageResult<DictValueVO>> valueQuery(DictValueQueryForm queryForm) {
         queryForm.setDeletedFlag(false);
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<DictValueVO> list = dictValueDao.query(page, queryForm);
+        List<DictValueVO> list = dictValueMapper.query(page, queryForm);
         PageResult<DictValueVO> pageResult = PageUtil.convert2PageResult(page, list);
         if (pageResult.getEmptyFlag()) {
             return ResponseDTO.ok(pageResult);

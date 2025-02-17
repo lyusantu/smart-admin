@@ -18,12 +18,6 @@ import java.util.Base64;
  * 2、AES 要求秘钥为 128bit，转化字节为 16个字节；
  * 3、js前端使用 UCS-2 或者 UTF-16 编码，字母、数字、特殊符号等 占用1个字节；
  * 4、所以：秘钥Key 组成为：字母、数字、特殊符号 一共16个即可
- *
- * @Author 1024创新实验室-主任:卓大
- * @Date 2023/10/21 11:41:46
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 
 @Slf4j

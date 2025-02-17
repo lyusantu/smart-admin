@@ -1,8 +1,8 @@
 package net.lab1024.sa.admin.module.system.position.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import jakarta.annotation.Resource;
-import net.lab1024.sa.admin.module.system.position.dao.PositionDao;
+import lombok.RequiredArgsConstructor;
+import net.lab1024.sa.admin.module.system.position.mapper.PositionMapper;
 import net.lab1024.sa.admin.module.system.position.domain.entity.PositionEntity;
 import net.lab1024.sa.admin.module.system.position.domain.form.PositionAddForm;
 import net.lab1024.sa.admin.module.system.position.domain.form.PositionQueryForm;
@@ -10,7 +10,7 @@ import net.lab1024.sa.admin.module.system.position.domain.form.PositionUpdateFor
 import net.lab1024.sa.admin.module.system.position.domain.vo.PositionVO;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -19,17 +19,12 @@ import java.util.List;
 
 /**
  * 职务表 Service
- *
- * @Author kaiyun
- * @Date 2024-06-23 23:31:38
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
-
+@RequiredArgsConstructor
 @Service
 public class PositionService {
 
-    @Resource
-    private PositionDao positionDao;
+    private final PositionMapper positionMapper;
 
     /**
      * 分页查询
@@ -40,7 +35,7 @@ public class PositionService {
     public PageResult<PositionVO> queryPage(PositionQueryForm queryForm) {
         queryForm.setDeletedFlag(Boolean.FALSE);
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<PositionVO> list = positionDao.queryPage(page, queryForm);
+        List<PositionVO> list = positionMapper.queryPage(page, queryForm);
         PageResult<PositionVO> pageResult = PageUtil.convert2PageResult(page, list);
         return pageResult;
     }
@@ -49,8 +44,8 @@ public class PositionService {
      * 添加
      */
     public ResponseDTO<String> add(PositionAddForm addForm) {
-        PositionEntity positionEntity = SmartBeanUtil.copy(addForm, PositionEntity.class);
-        positionDao.insert(positionEntity);
+        PositionEntity positionEntity = BeanUtil.copy(addForm, PositionEntity.class);
+        positionMapper.insert(positionEntity);
         return ResponseDTO.ok();
     }
 
@@ -61,8 +56,8 @@ public class PositionService {
      * @return
      */
     public ResponseDTO<String> update(PositionUpdateForm updateForm) {
-        PositionEntity positionEntity = SmartBeanUtil.copy(updateForm, PositionEntity.class);
-        positionDao.updateById(positionEntity);
+        PositionEntity positionEntity = BeanUtil.copy(updateForm, PositionEntity.class);
+        positionMapper.updateById(positionEntity);
         return ResponseDTO.ok();
     }
 
@@ -77,7 +72,7 @@ public class PositionService {
             return ResponseDTO.ok();
         }
 
-        positionDao.deleteBatchIds(idList);
+        positionMapper.deleteBatchIds(idList);
         return ResponseDTO.ok();
     }
 
@@ -89,7 +84,7 @@ public class PositionService {
             return ResponseDTO.ok();
         }
 
-        positionDao.deleteById(positionId);
+        positionMapper.deleteById(positionId);
         return ResponseDTO.ok();
     }
 
@@ -99,7 +94,7 @@ public class PositionService {
      * @return
      */
     public List<PositionVO> queryList() {
-        List<PositionVO> list = positionDao.queryList(Boolean.FALSE);
+        List<PositionVO> list = positionMapper.queryList(Boolean.FALSE);
         return list;
     }
 }

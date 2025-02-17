@@ -4,7 +4,7 @@ package ${packageName};
 $importClass
 #end
 import lombok.RequiredArgsConstructor;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.domain.page.PageResult;
@@ -43,7 +43,7 @@ public class ${name.upperCamel}Service {
      * 添加
      */
     public ResponseDTO<String> add(${name.upperCamel}AddForm addForm) {
-        ${name.upperCamel}Entity ${name.lowerCamel}Entity = SmartBeanUtil.copy(addForm, ${name.upperCamel}Entity.class);
+        ${name.upperCamel}Entity ${name.lowerCamel}Entity = BeanUtil.copy(addForm, ${name.upperCamel}Entity.class);
         ${name.lowerCamel}Dao.insert(${name.lowerCamel}Entity);
         return ResponseDTO.ok();
     }
@@ -55,7 +55,7 @@ public class ${name.upperCamel}Service {
      * @return
      */
     public ResponseDTO<String> update(${name.upperCamel}UpdateForm updateForm) {
-        ${name.upperCamel}Entity ${name.lowerCamel}Entity = SmartBeanUtil.copy(updateForm, ${name.upperCamel}Entity.class);
+        ${name.upperCamel}Entity ${name.lowerCamel}Entity = BeanUtil.copy(updateForm, ${name.upperCamel}Entity.class);
         ${name.lowerCamel}Dao.updateById(${name.lowerCamel}Entity);
         return ResponseDTO.ok();
     }

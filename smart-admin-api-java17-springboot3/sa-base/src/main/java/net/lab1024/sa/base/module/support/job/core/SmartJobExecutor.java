@@ -2,7 +2,7 @@ package net.lab1024.sa.base.module.support.job.core;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
-import net.lab1024.sa.base.common.util.SmartIpUtil;
+import net.lab1024.sa.base.common.util.IpUtil;
 import net.lab1024.sa.base.module.support.job.constant.SmartJobConst;
 import net.lab1024.sa.base.module.support.job.constant.SmartJobUtil;
 import net.lab1024.sa.base.module.support.job.repository.SmartJobRepository;
@@ -145,7 +145,7 @@ public class SmartJobExecutor implements Runnable {
         logEntity.setExecuteEndTime(executeTime);
         logEntity.setExecuteTimeMillis(0L);
         logEntity.setCreateName(executorName);
-        logEntity.setIp(SmartIpUtil.getLocalFirstIp());
+        logEntity.setIp(IpUtil.getLocalFirstIp());
         logEntity.setProcessId(SmartJobUtil.getProcessId());
         logEntity.setProgramPath(SmartJobUtil.getProgramPath());
 

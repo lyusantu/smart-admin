@@ -1,8 +1,8 @@
 package net.lab1024.sa.admin.module.business.category.service;
 
 import com.google.common.collect.Lists;
-import jakarta.annotation.Resource;
-import net.lab1024.sa.admin.module.business.category.dao.CategoryDao;
+import lombok.RequiredArgsConstructor;
+import net.lab1024.sa.admin.module.business.category.mapper.CategoryMapper;
 import net.lab1024.sa.admin.module.business.category.domain.entity.CategoryEntity;
 import net.lab1024.sa.admin.module.business.category.domain.form.CategoryAddForm;
 import net.lab1024.sa.admin.module.business.category.domain.form.CategoryTreeQueryForm;
@@ -12,7 +12,7 @@ import net.lab1024.sa.admin.module.business.category.domain.vo.CategoryVO;
 import net.lab1024.sa.admin.module.business.category.manager.CategoryCacheManager;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
@@ -23,31 +23,23 @@ import java.util.Optional;
 
 /**
  * 类目
- *
- * @Author 1024创新实验室: 胡克
- * @Date 2021/08/05 21:26:58
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class CategoryService {
 
-    @Resource
-    private CategoryDao categoryDao;
+    private final CategoryMapper categoryMapper;
 
-    @Resource
-    private CategoryQueryService categoryQueryService;
+    private final CategoryQueryService categoryQueryService;
 
-    @Resource
-    private CategoryCacheManager categoryCacheManager;
+    private final CategoryCacheManager categoryCacheManager;
 
     /**
      * 添加类目
      */
     public ResponseDTO<String> add(CategoryAddForm addForm) {
         // 校验类目
-        CategoryEntity categoryEntity = SmartBeanUtil.copy(addForm, CategoryEntity.class);
+        CategoryEntity categoryEntity = BeanUtil.copy(addForm, CategoryEntity.class);
         ResponseDTO<String> res = this.checkCategory(categoryEntity, false);
         if (!res.getOk()) {
             return res;
@@ -59,7 +51,7 @@ public class CategoryService {
         categoryEntity.setDeletedFlag(false);
 
         // 保存数据
-        categoryDao.insert(categoryEntity);
+        categoryMapper.insert(categoryEntity);
 
         // 更新缓存
         categoryCacheManager.removeCache();
@@ -78,7 +70,7 @@ public class CategoryService {
         if (!optional.isPresent()) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
-        CategoryEntity categoryEntity = SmartBeanUtil.copy(updateForm, CategoryEntity.class);
+        CategoryEntity categoryEntity = BeanUtil.copy(updateForm, CategoryEntity.class);
 
         /*
           不更新类目类型
@@ -92,7 +84,7 @@ public class CategoryService {
         if (!responseDTO.getOk()) {
             return responseDTO;
         }
-        categoryDao.updateById(categoryEntity);
+        categoryMapper.updateById(categoryEntity);
 
         // 更新缓存
         categoryCacheManager.removeCache();
@@ -134,7 +126,7 @@ public class CategoryService {
         queryEntity.setCategoryType(categoryType);
         queryEntity.setCategoryName(categoryEntity.getCategoryName());
         queryEntity.setDeletedFlag(false);
-        queryEntity = categoryDao.selectOne(queryEntity);
+        queryEntity = categoryMapper.selectOne(queryEntity);
         if (null != queryEntity) {
             if (isUpdate) {
                 if (!Objects.equals(queryEntity.getCategoryId(), categoryEntity.getCategoryId())) {
@@ -156,7 +148,7 @@ public class CategoryService {
         if (!optional.isPresent()) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
-        CategoryVO adminVO = SmartBeanUtil.copy(optional.get(), CategoryVO.class);
+        CategoryVO adminVO = BeanUtil.copy(optional.get(), CategoryVO.class);
         return ResponseDTO.ok(adminVO);
     }
 
@@ -196,7 +188,7 @@ public class CategoryService {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setCategoryId(categoryId);
         categoryEntity.setDeletedFlag(true);
-        categoryDao.updateById(categoryEntity);
+        categoryMapper.updateById(categoryEntity);
 
         // 更新缓存
         categoryCacheManager.removeCache();

@@ -11,7 +11,7 @@ import net.lab1024.sa.admin.module.business.oa.enterprise.constant.EnterpriseTyp
 import net.lab1024.sa.base.common.json.deserializer.FileKeyVoDeserializer;
 import net.lab1024.sa.base.common.json.serializer.FileKeyVoSerializer;
 import net.lab1024.sa.base.common.swagger.SchemaEnum;
-import net.lab1024.sa.base.common.util.SmartVerificationUtil;
+import net.lab1024.sa.base.common.util.VerificationUtil;
 import net.lab1024.sa.base.common.validator.enumeration.CheckEnum;
 import org.hibernate.validator.constraints.Length;
 
@@ -49,7 +49,7 @@ public class EnterpriseCreateForm {
 
     @Schema(description = "联系人电话")
     @NotBlank(message = "联系人电话不能为空")
-    @Pattern(regexp = SmartVerificationUtil.PHONE_REGEXP, message = "手机号格式不正确")
+    @Pattern(regexp = VerificationUtil.PHONE_REGEXP, message = "手机号格式不正确")
     private String contactPhone;
 
     @SchemaEnum(desc = "类型", value = EnterpriseTypeEnum.class)
@@ -57,7 +57,7 @@ public class EnterpriseCreateForm {
     private Integer type;
 
     @Schema(description = "邮箱")
-    @Pattern(regexp = SmartVerificationUtil.EMAIL, message = "邮箱格式不正确")
+    @Pattern(regexp = VerificationUtil.EMAIL, message = "邮箱格式不正确")
     private String email;
 
     @Schema(description = "省份")

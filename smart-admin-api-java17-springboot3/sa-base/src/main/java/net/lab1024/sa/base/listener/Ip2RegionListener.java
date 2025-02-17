@@ -1,7 +1,7 @@
 package net.lab1024.sa.base.listener;
 
 import lombok.extern.slf4j.Slf4j;
-import net.lab1024.sa.base.common.util.SmartIpUtil;
+import net.lab1024.sa.base.common.util.IpUtil;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.boot.context.logging.LoggingApplicationListener;
@@ -52,7 +52,7 @@ public class Ip2RegionListener implements ApplicationListener<ApplicationEnviron
             FileUtils.copyInputStreamToFile(new ClassPathResource(IP_FILE_NAME).getInputStream(), tempFile);
 
             // 2、初始化
-            SmartIpUtil.init(tempFilePath);
+            IpUtil.init(tempFilePath);
 
 
         } catch (IOException e) {

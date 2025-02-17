@@ -1,8 +1,8 @@
 package net.lab1024.sa.admin.module.system.role.manager;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import jakarta.annotation.Resource;
-import net.lab1024.sa.admin.module.system.role.dao.RoleMenuDao;
+import lombok.RequiredArgsConstructor;
+import net.lab1024.sa.admin.module.system.role.mapper.RoleMenuMapper;
 import net.lab1024.sa.admin.module.system.role.domain.entity.RoleMenuEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,18 +11,12 @@ import java.util.List;
 
 /**
  * 角色-菜单 manager
- *
- * @Author 1024创新实验室: 善逸
- * @Date 2022-04-09 19:05:49
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
-public class RoleMenuManager extends ServiceImpl<RoleMenuDao, RoleMenuEntity> {
+public class RoleMenuManager extends ServiceImpl<RoleMenuMapper, RoleMenuEntity> {
 
-    @Resource
-    private RoleMenuDao roleMenuDao;
+    private final RoleMenuMapper roleMenuMapper;
 
     /**
      * 更新角色权限
@@ -31,7 +25,7 @@ public class RoleMenuManager extends ServiceImpl<RoleMenuDao, RoleMenuEntity> {
     @Transactional(rollbackFor = Exception.class)
     public void updateRoleMenu(Long roleId, List<RoleMenuEntity> roleMenuEntityList) {
         // 根据角色ID删除菜单权限
-        roleMenuDao.deleteByRoleId(roleId);
+        roleMenuMapper.deleteByRoleId(roleId);
         // 批量添加菜单权限
         saveBatch(roleMenuEntityList);
     }

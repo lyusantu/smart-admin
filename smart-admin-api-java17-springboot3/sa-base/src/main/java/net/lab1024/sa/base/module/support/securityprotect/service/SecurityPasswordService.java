@@ -3,7 +3,7 @@ package net.lab1024.sa.base.module.support.securityprotect.service;
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.securityprotect.dao.PasswordLogDao;
 import net.lab1024.sa.base.module.support.securityprotect.domain.PasswordLogEntity;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -51,7 +51,7 @@ public class SecurityPasswordService {
      */
     public ResponseDTO<String> validatePasswordComplexity(String password) {
 
-        if (SmartStringUtil.isEmpty(password)) {
+        if (StringUtil.isEmpty(password)) {
             return ResponseDTO.userErrorParam(PASSWORD_FORMAT_MSG);
         }
 

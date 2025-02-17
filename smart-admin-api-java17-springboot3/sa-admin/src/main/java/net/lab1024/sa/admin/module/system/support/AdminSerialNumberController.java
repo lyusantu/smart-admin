@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.serialnumber.constant.SerialNumberIdEnum;
 import net.lab1024.sa.base.module.support.serialnumber.mapper.SerialNumberMapper;
@@ -43,7 +43,7 @@ public class AdminSerialNumberController extends SupportBaseController {
     @PostMapping("/serialNumber/generate")
     @SaCheckPermission("support:serialNumber:generate")
     public ResponseDTO<List<String>> generate(@RequestBody @Valid SerialNumberGenerateForm generateForm) {
-        SerialNumberIdEnum serialNumberIdEnum = SmartEnumUtil.getEnumByValue(generateForm.getSerialNumberId(), SerialNumberIdEnum.class);
+        SerialNumberIdEnum serialNumberIdEnum = EnumUtil.getEnumByValue(generateForm.getSerialNumberId(), SerialNumberIdEnum.class);
         if (null == serialNumberIdEnum) {
             return ResponseDTO.userErrorParam("SerialNumberId，不存在" + generateForm.getSerialNumberId());
         }

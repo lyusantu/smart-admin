@@ -4,11 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.module.support.dict.dao.DictKeyDao;
-import net.lab1024.sa.base.module.support.dict.dao.DictValueDao;
+import net.lab1024.sa.base.common.util.BeanUtil;
+import net.lab1024.sa.base.module.support.dict.mapper.DictKeyMapper;
+import net.lab1024.sa.base.module.support.dict.mapper.DictValueMapper;
 import net.lab1024.sa.base.module.support.dict.domain.entity.DictKeyEntity;
 import net.lab1024.sa.base.module.support.dict.domain.entity.DictValueEntity;
 import net.lab1024.sa.base.module.support.dict.domain.vo.DictValueVO;
@@ -23,21 +24,14 @@ import java.util.stream.Collectors;
 
 /**
  * 字典缓存 服务
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2022/5/26 19:40:55
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class DictCacheService {
 
-    @Resource
-    private DictKeyDao dictKeyDao;
-    @Resource
-    private DictValueDao dictValueDao;
+    private final DictKeyMapper dictKeyMapper;
+    private final DictValueMapper dictValueMapper;
 
     private ConcurrentHashMap<String, List<DictValueVO>> DICT_CACHE = new ConcurrentHashMap<>();
 
@@ -50,12 +44,12 @@ public class DictCacheService {
     }
 
     public void cacheInit() {
-        List<DictKeyEntity> dictKeyEntityList = dictKeyDao.selectByDeletedFlag(false);
+        List<DictKeyEntity> dictKeyEntityList = dictKeyMapper.selectByDeletedFlag(false);
         if (CollectionUtils.isEmpty(dictKeyEntityList)) {
             return;
         }
-        List<DictValueEntity> dictKeyValueList = dictValueDao.selectByDeletedFlag(false);
-        List<DictValueVO> dictValueVOList = SmartBeanUtil.copyList(dictKeyValueList, DictValueVO.class);
+        List<DictValueEntity> dictKeyValueList = dictValueMapper.selectByDeletedFlag(false);
+        List<DictValueVO> dictValueVOList = BeanUtil.copyList(dictKeyValueList, DictValueVO.class);
         Map<Long, List<DictValueVO>> valueListMap = dictValueVOList.stream().collect(Collectors.groupingBy(DictValueVO::getDictKeyId));
         //字典键值对缓存
         for (DictKeyEntity dictKeyEntity : dictKeyEntityList) {

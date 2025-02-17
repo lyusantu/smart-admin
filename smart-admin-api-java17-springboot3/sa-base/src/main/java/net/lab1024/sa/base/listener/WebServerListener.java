@@ -5,7 +5,7 @@ import cn.hutool.core.util.URLUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.code.ErrorCodeRegister;
 import net.lab1024.sa.base.common.enumeration.SystemEnvironmentEnum;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.context.WebServerApplicationContext;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
@@ -16,12 +16,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * 启动监听器
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2021-12-23 23:45:26
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Slf4j
 @Component
@@ -55,7 +49,7 @@ public class WebServerListener implements ApplicationListener<WebServerInitializ
             contextPath = "";
         }
         String profile = env.getProperty("spring.profiles.active");
-        SystemEnvironmentEnum environmentEnum = SmartEnumUtil.getEnumByValue(profile, SystemEnvironmentEnum.class);
+        SystemEnvironmentEnum environmentEnum = EnumUtil.getEnumByValue(profile, SystemEnvironmentEnum.class);
         String projectName = env.getProperty("project.name");
         //拼接服务地址
         String title = String.format("-------------【%s】 服务已成功启动 （%s started successfully）-------------", projectName, projectName);

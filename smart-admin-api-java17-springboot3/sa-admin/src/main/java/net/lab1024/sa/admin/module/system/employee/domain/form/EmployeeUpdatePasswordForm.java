@@ -2,18 +2,10 @@ package net.lab1024.sa.admin.module.system.employee.domain.form;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import net.lab1024.sa.base.common.util.SmartVerificationUtil;
 
 /**
  * 修改密码所需参数
- *
- * @Author 1024创新实验室: 开云
- * @Date 2021-12-20 21:06:49
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Data
 public class EmployeeUpdatePasswordForm {

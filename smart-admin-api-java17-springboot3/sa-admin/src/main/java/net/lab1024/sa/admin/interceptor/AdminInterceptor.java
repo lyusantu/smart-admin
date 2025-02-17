@@ -20,7 +20,7 @@ import net.lab1024.sa.base.common.domain.SystemEnvironment;
 import net.lab1024.sa.base.common.enumeration.SystemEnvironmentEnum;
 import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
 import net.lab1024.sa.base.common.util.RequestUtil;
-import net.lab1024.sa.base.common.util.SmartResponseUtil;
+import net.lab1024.sa.base.common.util.ResponseUtil;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -83,7 +83,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 
             // 校验用户是否登录
             if (requestEmployee == null) {
-                SmartResponseUtil.write(response, ResponseDTO.error(UserErrorCode.LOGIN_STATE_INVALID));
+                ResponseUtil.write(response, ResponseDTO.error(UserErrorCode.LOGIN_STATE_INVALID));
                 return false;
             }
 
@@ -106,16 +106,16 @@ public class AdminInterceptor implements HandlerInterceptor {
         } catch (SaTokenException e) {
             // Sa-Token异常状态码 https://sa-token.cc/doc.html#/fun/exception-code
             switch (e.getCode()) {
-                case 11041, 11051 -> SmartResponseUtil.write(response, ResponseDTO.error(UserErrorCode.NO_PERMISSION));
-                case 11016 -> SmartResponseUtil.write(response, ResponseDTO.error(UserErrorCode.LOGIN_ACTIVE_TIMEOUT));
+                case 11041, 11051 -> ResponseUtil.write(response, ResponseDTO.error(UserErrorCode.NO_PERMISSION));
+                case 11016 -> ResponseUtil.write(response, ResponseDTO.error(UserErrorCode.LOGIN_ACTIVE_TIMEOUT));
                 case 11011 - 11015 ->
-                        SmartResponseUtil.write(response, ResponseDTO.error(UserErrorCode.LOGIN_STATE_INVALID));
-                default -> SmartResponseUtil.write(response, ResponseDTO.error(UserErrorCode.PARAM_ERROR));
+                        ResponseUtil.write(response, ResponseDTO.error(UserErrorCode.LOGIN_STATE_INVALID));
+                default -> ResponseUtil.write(response, ResponseDTO.error(UserErrorCode.PARAM_ERROR));
             }
             log.warn("SaToken效验失败，Code: {}, Message: {}", e.getCode(), e.getMessage());
             return false;
         } catch (Throwable e) {
-            SmartResponseUtil.write(response, ResponseDTO.error(SystemErrorCode.SYSTEM_ERROR));
+            ResponseUtil.write(response, ResponseDTO.error(SystemErrorCode.SYSTEM_ERROR));
             log.error("AdminInterceptor 发生异常: {}", e.getMessage(), e);
             return false;
         }

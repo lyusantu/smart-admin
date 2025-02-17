@@ -9,10 +9,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.lab1024.sa.base.common.util.SmartBigDecimalUtil;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.BigDecimalUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.datatracer.annoation.*;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerConst;
 import net.lab1024.sa.base.module.support.datatracer.domain.bo.DataTracerContentBO;
@@ -34,21 +35,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 数据变更内容
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-07-23 19:38:52
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class DataTracerChangeContentService {
 
-    @Resource
-    private ApplicationContext applicationContext;
-    @Resource
-    private DictCacheService dictCacheService;
+    private final ApplicationContext applicationContext;
+
+    private final DictCacheService dictCacheService;
     /**
      * 字段描述缓存
      */
@@ -298,9 +293,9 @@ public class DataTracerChangeContentService {
         DataTracerFieldDict dataTracerFieldDict = field.getAnnotation(DataTracerFieldDict.class);
         if (dataTracerFieldEnum != null) {
             if (fieldValue instanceof Collection) {
-                fieldContent = SmartEnumUtil.getEnumDescByValueList((Collection) fieldValue, dataTracerFieldEnum.enumClass());
+                fieldContent = EnumUtil.getEnumDescByValueList((Collection) fieldValue, dataTracerFieldEnum.enumClass());
             } else {
-                fieldContent = SmartEnumUtil.getEnumDescByValue(fieldValue, dataTracerFieldEnum.enumClass());
+                fieldContent = EnumUtil.getEnumDescByValue(fieldValue, dataTracerFieldEnum.enumClass());
             }
         } else if (dataTracerFieldDict != null) {
             fieldContent = dictCacheService.selectValueNameByValueCodeSplit(fieldValue.toString());
@@ -315,7 +310,7 @@ public class DataTracerChangeContentService {
         } else if (fieldValue instanceof BigDecimal) {
             DataTracerFieldBigDecimal dataTracerFieldBigDecimal = field.getAnnotation(DataTracerFieldBigDecimal.class);
             if (dataTracerFieldBigDecimal != null) {
-                BigDecimal value = SmartBigDecimalUtil.setScale((BigDecimal) fieldValue, dataTracerFieldBigDecimal.scale());
+                BigDecimal value = BigDecimalUtil.setScale((BigDecimal) fieldValue, dataTracerFieldBigDecimal.scale());
                 fieldContent = value.toString();
             }
         } else {
@@ -346,7 +341,7 @@ public class DataTracerChangeContentService {
         if (CollectionUtils.isEmpty(displayValue)) {
             return "";
         }
-        return SmartStringUtil.join(",", displayValue);
+        return StringUtil.join(",", displayValue);
     }
 
     /**

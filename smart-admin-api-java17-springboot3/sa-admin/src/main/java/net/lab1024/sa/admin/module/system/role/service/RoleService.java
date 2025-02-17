@@ -1,16 +1,16 @@
 package net.lab1024.sa.admin.module.system.role.service;
 
-import jakarta.annotation.Resource;
-import net.lab1024.sa.admin.module.system.role.dao.RoleDao;
-import net.lab1024.sa.admin.module.system.role.dao.RoleEmployeeDao;
-import net.lab1024.sa.admin.module.system.role.dao.RoleMenuDao;
+import lombok.RequiredArgsConstructor;
+import net.lab1024.sa.admin.module.system.role.mapper.RoleMapper;
+import net.lab1024.sa.admin.module.system.role.mapper.RoleEmployeeMapper;
+import net.lab1024.sa.admin.module.system.role.mapper.RoleMenuMapper;
 import net.lab1024.sa.admin.module.system.role.domain.entity.RoleEntity;
 import net.lab1024.sa.admin.module.system.role.domain.form.RoleAddForm;
 import net.lab1024.sa.admin.module.system.role.domain.form.RoleUpdateForm;
 import net.lab1024.sa.admin.module.system.role.domain.vo.RoleVO;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,41 +18,33 @@ import java.util.List;
 
 /**
  * 角色
- *
- * @Author 1024创新实验室: 胡克
- * @Date 2021-08-16 20:19:22
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class RoleService {
 
-    @Resource
-    private RoleDao roleDao;
+    private final RoleMapper roleMapper;
 
-    @Resource
-    private RoleMenuDao roleMenuDao;
+    private final RoleMenuMapper roleMenuMapper;
 
-    @Resource
-    private RoleEmployeeDao roleEmployeeDao;
+    private final RoleEmployeeMapper roleEmployeeMapper;
 
     /**
      * 新增添加角色
      */
     public ResponseDTO<String> addRole(RoleAddForm roleAddForm) {
-        RoleEntity existRoleEntity = roleDao.getByRoleName(roleAddForm.getRoleName());
+        RoleEntity existRoleEntity = roleMapper.getByRoleName(roleAddForm.getRoleName());
         if (null != existRoleEntity) {
             return ResponseDTO.userErrorParam("角色名称重复");
         }
 
-        existRoleEntity = roleDao.getByRoleCode(roleAddForm.getRoleCode());
+        existRoleEntity = roleMapper.getByRoleCode(roleAddForm.getRoleCode());
         if (null != existRoleEntity) {
             return ResponseDTO.userErrorParam("角色编码重复，重复的角色为：" + existRoleEntity.getRoleName());
         }
 
-        RoleEntity roleEntity = SmartBeanUtil.copy(roleAddForm, RoleEntity.class);
-        roleDao.insert(roleEntity);
+        RoleEntity roleEntity = BeanUtil.copy(roleAddForm, RoleEntity.class);
+        roleMapper.insert(roleEntity);
         return ResponseDTO.ok();
     }
 
@@ -61,18 +53,18 @@ public class RoleService {
      */
     @Transactional(rollbackFor = Exception.class)
     public ResponseDTO<String> deleteRole(Long roleId) {
-        RoleEntity roleEntity = roleDao.selectById(roleId);
+        RoleEntity roleEntity = roleMapper.selectById(roleId);
         if (null == roleEntity) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
         // 当没有员工绑定这个角色时才可以删除
-        Integer exists = roleEmployeeDao.existsByRoleId(roleId);
+        Integer exists = roleEmployeeMapper.existsByRoleId(roleId);
         if (exists != null) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST, "该角色下存在员工，无法删除");
         }
-        roleDao.deleteById(roleId);
-        roleMenuDao.deleteByRoleId(roleId);
-        roleEmployeeDao.deleteByRoleId(roleId);
+        roleMapper.deleteById(roleId);
+        roleMenuMapper.deleteByRoleId(roleId);
+        roleEmployeeMapper.deleteByRoleId(roleId);
         return ResponseDTO.ok();
     }
 
@@ -81,22 +73,22 @@ public class RoleService {
      */
     @Transactional(rollbackFor = Exception.class)
     public ResponseDTO<String> updateRole(RoleUpdateForm roleUpdateForm) {
-        if (null == roleDao.selectById(roleUpdateForm.getRoleId())) {
+        if (null == roleMapper.selectById(roleUpdateForm.getRoleId())) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
 
-        RoleEntity existRoleEntity = roleDao.getByRoleName(roleUpdateForm.getRoleName());
+        RoleEntity existRoleEntity = roleMapper.getByRoleName(roleUpdateForm.getRoleName());
         if (null != existRoleEntity && !existRoleEntity.getRoleId().equals(roleUpdateForm.getRoleId())) {
             return ResponseDTO.userErrorParam("角色名称重复");
         }
 
-        existRoleEntity = roleDao.getByRoleCode(roleUpdateForm.getRoleCode());
+        existRoleEntity = roleMapper.getByRoleCode(roleUpdateForm.getRoleCode());
         if (null != existRoleEntity && !existRoleEntity.getRoleId().equals(roleUpdateForm.getRoleId())) {
             return ResponseDTO.userErrorParam("角色编码重复，重复的角色为：" + existRoleEntity.getRoleName());
         }
 
-        RoleEntity roleEntity = SmartBeanUtil.copy(roleUpdateForm, RoleEntity.class);
-        roleDao.updateById(roleEntity);
+        RoleEntity roleEntity = BeanUtil.copy(roleUpdateForm, RoleEntity.class);
+        roleMapper.updateById(roleEntity);
         return ResponseDTO.ok();
     }
 
@@ -104,11 +96,11 @@ public class RoleService {
      * 根据id获取角色数据
      */
     public ResponseDTO<RoleVO> getRoleById(Long roleId) {
-        RoleEntity roleEntity = roleDao.selectById(roleId);
+        RoleEntity roleEntity = roleMapper.selectById(roleId);
         if (null == roleEntity) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
-        RoleVO role = SmartBeanUtil.copy(roleEntity, RoleVO.class);
+        RoleVO role = BeanUtil.copy(roleEntity, RoleVO.class);
         return ResponseDTO.ok(role);
     }
 
@@ -116,8 +108,8 @@ public class RoleService {
      * 获取所有角色列表
      */
     public ResponseDTO<List<RoleVO>> getAllRole() {
-        List<RoleEntity> roleEntityList = roleDao.selectList(null);
-        List<RoleVO> roleList = SmartBeanUtil.copyList(roleEntityList, RoleVO.class);
+        List<RoleEntity> roleEntityList = roleMapper.selectList(null);
+        List<RoleVO> roleList = BeanUtil.copyList(roleEntityList, RoleVO.class);
         return ResponseDTO.ok(roleList);
     }
 }

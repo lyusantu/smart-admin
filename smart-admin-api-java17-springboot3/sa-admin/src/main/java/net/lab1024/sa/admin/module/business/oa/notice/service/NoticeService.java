@@ -2,9 +2,9 @@ package net.lab1024.sa.admin.module.business.oa.notice.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Maps;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.module.business.oa.notice.constant.NoticeVisibleRangeDataTypeEnum;
-import net.lab1024.sa.admin.module.business.oa.notice.dao.NoticeDao;
+import net.lab1024.sa.admin.module.business.oa.notice.mapper.NoticeMapper;
 import net.lab1024.sa.admin.module.business.oa.notice.domain.entity.NoticeEntity;
 import net.lab1024.sa.admin.module.business.oa.notice.domain.form.NoticeAddForm;
 import net.lab1024.sa.admin.module.business.oa.notice.domain.form.NoticeQueryForm;
@@ -15,16 +15,16 @@ import net.lab1024.sa.admin.module.business.oa.notice.domain.vo.NoticeUpdateForm
 import net.lab1024.sa.admin.module.business.oa.notice.domain.vo.NoticeVO;
 import net.lab1024.sa.admin.module.business.oa.notice.domain.vo.NoticeVisibleRangeVO;
 import net.lab1024.sa.admin.module.business.oa.notice.manager.NoticeManager;
-import net.lab1024.sa.admin.module.system.department.dao.DepartmentDao;
+import net.lab1024.sa.admin.module.system.department.mapper.DepartmentMapper;
 import net.lab1024.sa.admin.module.system.department.domain.entity.DepartmentEntity;
 import net.lab1024.sa.admin.module.system.department.domain.vo.DepartmentVO;
 import net.lab1024.sa.admin.module.system.department.service.DepartmentService;
-import net.lab1024.sa.admin.module.system.employee.dao.EmployeeDao;
+import net.lab1024.sa.admin.module.system.employee.mapper.EmployeeMapper;
 import net.lab1024.sa.admin.module.system.employee.domain.entity.EmployeeEntity;
 import net.lab1024.sa.base.common.constant.StringConst;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerTypeEnum;
 import net.lab1024.sa.base.module.support.datatracer.service.DataTracerService;
@@ -40,44 +40,31 @@ import java.util.stream.Collectors;
 
 /**
  * 通知。公告 后台管理业务
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-08-12 21:40:39
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class NoticeService {
 
-    @Resource
-    private NoticeDao noticeDao;
+    private final NoticeMapper noticeMapper;
 
-    @Resource
-    private NoticeManager noticeManager;
+    private final NoticeManager noticeManager;
 
-    @Resource
-    private EmployeeDao employeeDao;
+    private final EmployeeMapper employeeMapper;
 
-    @Resource
-    private DepartmentDao departmentDao;
+    private final DepartmentMapper departmentMapper;
 
-    @Resource
-    private DepartmentService departmentService;
+    private final DepartmentService departmentService;
 
-    @Resource
-    private NoticeTypeService noticeTypeService;
+    private final NoticeTypeService noticeTypeService;
 
-    @Resource
-    private DataTracerService dataTracerService;
+    private final DataTracerService dataTracerService;
 
     /**
      * 查询 通知、公告
-     *
      */
     public PageResult<NoticeVO> query(NoticeQueryForm queryForm) {
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<NoticeVO> list = noticeDao.query(page, queryForm);
+        List<NoticeVO> list = noticeMapper.query(page, queryForm);
         LocalDateTime now = LocalDateTime.now();
         list.forEach(e -> e.setPublishFlag(e.getPublishTime().isBefore(now)));
         return PageUtil.convert2PageResult(page, list);
@@ -94,7 +81,7 @@ public class NoticeService {
         }
 
         // build 资讯
-        NoticeEntity noticeEntity = SmartBeanUtil.copy(addForm, NoticeEntity.class);
+        NoticeEntity noticeEntity = BeanUtil.copy(addForm, NoticeEntity.class);
         // 发布时间：不是定时发布时 默认为 当前
         if (!addForm.getScheduledPublishFlag()) {
             noticeEntity.setPublishTime(LocalDateTime.now());
@@ -106,7 +93,6 @@ public class NoticeService {
 
     /**
      * 校验并返回可见范围
-     *
      */
     private ResponseDTO<String> checkAndBuildVisibleRange(NoticeAddForm form) {
         // 校验资讯分类
@@ -135,7 +121,7 @@ public class NoticeService {
                 .distinct().collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(employeeIdList)) {
             employeeIdList = employeeIdList.stream().distinct().collect(Collectors.toList());
-            List<Long> dbEmployeeIdList = employeeDao.selectBatchIds(employeeIdList).stream().map(EmployeeEntity::getEmployeeId).collect(Collectors.toList());
+            List<Long> dbEmployeeIdList = employeeMapper.selectBatchIds(employeeIdList).stream().map(EmployeeEntity::getEmployeeId).collect(Collectors.toList());
             Collection<Long> subtract = CollectionUtils.subtract(employeeIdList, dbEmployeeIdList);
             if (!subtract.isEmpty()) {
                 return ResponseDTO.userErrorParam("员工id不存在：" + subtract);
@@ -149,7 +135,7 @@ public class NoticeService {
                 .distinct().collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(deptIdList)) {
             deptIdList = deptIdList.stream().distinct().collect(Collectors.toList());
-            List<Long> dbDeptIdList = departmentDao.selectBatchIds(deptIdList).stream().map(DepartmentEntity::getDepartmentId).collect(Collectors.toList());
+            List<Long> dbDeptIdList = departmentMapper.selectBatchIds(deptIdList).stream().map(DepartmentEntity::getDepartmentId).collect(Collectors.toList());
             Collection<Long> subtract = CollectionUtils.subtract(deptIdList, dbDeptIdList);
             if (!subtract.isEmpty()) {
                 return ResponseDTO.userErrorParam("部门id不存在：" + subtract);
@@ -161,11 +147,10 @@ public class NoticeService {
 
     /**
      * 更新
-     *
      */
     public ResponseDTO<String> update(NoticeUpdateForm updateForm) {
 
-        NoticeEntity oldNoticeEntity = noticeDao.selectById(updateForm.getNoticeId());
+        NoticeEntity oldNoticeEntity = noticeMapper.selectById(updateForm.getNoticeId());
         if (oldNoticeEntity == null) {
             return ResponseDTO.userErrorParam("通知不存在");
         }
@@ -177,7 +162,7 @@ public class NoticeService {
         }
 
         // 更新
-        NoticeEntity noticeEntity = SmartBeanUtil.copy(updateForm, NoticeEntity.class);
+        NoticeEntity noticeEntity = BeanUtil.copy(updateForm, NoticeEntity.class);
         noticeManager.update(oldNoticeEntity, noticeEntity, updateForm.getVisibleRangeList());
         return ResponseDTO.ok();
     }
@@ -185,15 +170,14 @@ public class NoticeService {
 
     /**
      * 删除
-     *
      */
     public ResponseDTO<String> delete(Long noticeId) {
-        NoticeEntity noticeEntity = noticeDao.selectById(noticeId);
+        NoticeEntity noticeEntity = noticeMapper.selectById(noticeId);
         if (null == noticeEntity || noticeEntity.getDeletedFlag()) {
             return ResponseDTO.userErrorParam("通知公告不存在");
         }
         // 更新删除状态
-        noticeDao.updateDeletedFlag(noticeId);
+        noticeMapper.updateDeletedFlag(noticeId);
         dataTracerService.delete(noticeId, DataTracerTypeEnum.OA_NOTICE);
         return ResponseDTO.ok();
     }
@@ -202,21 +186,21 @@ public class NoticeService {
      * 获取更新表单用的详情
      */
     public NoticeUpdateFormVO getUpdateFormVO(Long noticeId) {
-        NoticeEntity noticeEntity = noticeDao.selectById(noticeId);
+        NoticeEntity noticeEntity = noticeMapper.selectById(noticeId);
         if (null == noticeEntity) {
             return null;
         }
 
-        NoticeUpdateFormVO updateFormVO = SmartBeanUtil.copy(noticeEntity, NoticeUpdateFormVO.class);
+        NoticeUpdateFormVO updateFormVO = BeanUtil.copy(noticeEntity, NoticeUpdateFormVO.class);
         if (!updateFormVO.getAllVisibleFlag()) {
-            List<NoticeVisibleRangeVO> noticeVisibleRangeList = noticeDao.queryVisibleRange(noticeId);
+            List<NoticeVisibleRangeVO> noticeVisibleRangeList = noticeMapper.queryVisibleRange(noticeId);
             List<Long> employeeIdList = noticeVisibleRangeList.stream().filter(e -> NoticeVisibleRangeDataTypeEnum.EMPLOYEE.getValue().equals(e.getDataType()))
                     .map(NoticeVisibleRangeVO::getDataId)
                     .collect(Collectors.toList());
 
             Map<Long, EmployeeEntity> employeeMap = null;
             if (CollectionUtils.isNotEmpty(employeeIdList)) {
-                employeeMap = employeeDao.selectBatchIds(employeeIdList).stream().collect(Collectors.toMap(EmployeeEntity::getEmployeeId, Function.identity()));
+                employeeMap = employeeMapper.selectBatchIds(employeeIdList).stream().collect(Collectors.toMap(EmployeeEntity::getEmployeeId, Function.identity()));
             } else {
                 employeeMap = Maps.newHashMap();
             }

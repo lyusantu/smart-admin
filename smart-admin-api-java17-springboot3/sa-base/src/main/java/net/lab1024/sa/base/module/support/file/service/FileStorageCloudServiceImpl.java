@@ -10,7 +10,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.code.SystemErrorCode;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.config.FileConfig;
 import net.lab1024.sa.base.constant.RedisKeyConst;
 import net.lab1024.sa.base.module.support.file.constant.FileFolderTypeEnum;
@@ -81,7 +81,7 @@ public class FileStorageCloudServiceImpl implements IFileStorageService {
     public ResponseDTO<FileUploadVO> upload(MultipartFile file, String path) {
         // 设置文件 key
         String originalFileName = file.getOriginalFilename();
-        if (SmartStringUtil.isEmpty(originalFileName)) {
+        if (StringUtil.isEmpty(originalFileName)) {
             return ResponseDTO.userErrorParam("上传文件名为空");
         }
 

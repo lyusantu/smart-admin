@@ -56,7 +56,6 @@ public class AdminApiEncryptController extends SupportBaseController {
         return ResponseDTO.ok(list);
     }
 
-
     @Data
     public static class JweForm {
 

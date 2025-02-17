@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import net.lab1024.sa.base.common.constant.StringConst;
 import net.lab1024.sa.base.common.enumeration.BaseEnum;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -28,11 +28,11 @@ public class EnumSerializer extends JsonSerializer<Object> implements Contextual
         Object desc;
         // 多个枚举类 逗号分割
         if (value instanceof String && String.valueOf(value).contains(StringConst.SEPARATOR)) {
-            desc = SmartStringUtil.splitConvertToIntList(String.valueOf(value), StringConst.SEPARATOR)
-                                  .stream().map(e -> SmartEnumUtil.getEnumDescByValue(e, enumClazz)).collect(Collectors.toList());
+            desc = StringUtil.splitConvertToIntList(String.valueOf(value), StringConst.SEPARATOR)
+                                  .stream().map(e -> EnumUtil.getEnumDescByValue(e, enumClazz)).collect(Collectors.toList());
 
         } else {
-            BaseEnum anEnum = SmartEnumUtil.getEnumByValue(value, enumClazz);
+            BaseEnum anEnum = EnumUtil.getEnumByValue(value, enumClazz);
             desc = null != anEnum ? anEnum.getDesc() : null;
         }
         gen.writeObjectField(fieldName, desc);

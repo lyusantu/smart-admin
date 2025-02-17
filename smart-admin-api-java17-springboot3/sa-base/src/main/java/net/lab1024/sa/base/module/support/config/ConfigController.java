@@ -3,6 +3,7 @@ package net.lab1024.sa.base.module.support.config;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
  * 配置
  */
 @Tag(name = SwaggerTagConst.Support.CONFIG)
+@RequiredArgsConstructor
 @RestController
 public class ConfigController extends SupportBaseController {
 
-    @Resource
-    private ConfigService configService;
+    private final ConfigService configService;
 
     @Operation(summary = "查询配置详情")
     @GetMapping("/config/queryByKey")

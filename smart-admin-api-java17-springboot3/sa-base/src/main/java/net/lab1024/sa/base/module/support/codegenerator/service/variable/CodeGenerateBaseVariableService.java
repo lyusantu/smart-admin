@@ -1,7 +1,7 @@
 package net.lab1024.sa.base.module.support.codegenerator.service.variable;
 
 import com.google.common.base.CaseFormat;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.codegenerator.constant.CodeFrontComponentEnum;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorConfigForm;
 import net.lab1024.sa.base.module.support.codegenerator.domain.model.CodeField;
@@ -82,7 +82,7 @@ public abstract class CodeGenerateBaseVariableService {
         }
 
         CodeInsertAndUpdateField field = first.get();
-        return SmartStringUtil.equals(field.getFrontComponent(), CodeFrontComponentEnum.FILE_UPLOAD.getValue());
+        return StringUtil.equals(field.getFrontComponent(), CodeFrontComponentEnum.FILE_UPLOAD.getValue());
     }
 
     /**

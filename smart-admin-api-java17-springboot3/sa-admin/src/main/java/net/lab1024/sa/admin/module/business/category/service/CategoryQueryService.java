@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.admin.module.business.category.domain.dto.CategorySimpleDTO;
 import net.lab1024.sa.admin.module.business.category.domain.entity.CategoryEntity;
@@ -18,21 +19,15 @@ import java.util.stream.Collectors;
 
 /**
  * 类目 查询 业务类
- *
- * @Author 1024创新实验室: 胡克
- * @Date 2021/08/05 21:26:58
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
-@Service
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class CategoryQueryService {
 
     private static final Long DEFAULT_CATEGORY_PARENT_ID = 0L;
 
-    @Resource
-    private CategoryCacheManager categoryCacheManager;
+    private final CategoryCacheManager categoryCacheManager;
 
     /**
      * 根据 id 查询未删除的类目

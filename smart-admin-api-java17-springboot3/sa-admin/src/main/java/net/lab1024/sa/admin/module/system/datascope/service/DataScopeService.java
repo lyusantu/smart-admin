@@ -7,7 +7,7 @@ import net.lab1024.sa.admin.module.system.datascope.domain.DataScopeAndViewTypeV
 import net.lab1024.sa.admin.module.system.datascope.domain.DataScopeDTO;
 import net.lab1024.sa.admin.module.system.datascope.domain.DataScopeViewTypeVO;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -15,12 +15,6 @@ import java.util.List;
 
 /**
  * 数据范围 保存
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2020/11/28  20:59:17
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Service
 public class DataScopeService {
@@ -30,7 +24,7 @@ public class DataScopeService {
      */
     public ResponseDTO<List<DataScopeAndViewTypeVO>> dataScopeList() {
         List<DataScopeDTO> dataScopeList = this.getDataScopeType();
-        List<DataScopeAndViewTypeVO> dataScopeAndTypeList = SmartBeanUtil.copyList(dataScopeList, DataScopeAndViewTypeVO.class);
+        List<DataScopeAndViewTypeVO> dataScopeAndTypeList = BeanUtil.copyList(dataScopeList, DataScopeAndViewTypeVO.class);
         List<DataScopeViewTypeVO> typeList = this.getViewType();
         dataScopeAndTypeList.forEach(e -> {
             e.setViewTypeList(typeList);

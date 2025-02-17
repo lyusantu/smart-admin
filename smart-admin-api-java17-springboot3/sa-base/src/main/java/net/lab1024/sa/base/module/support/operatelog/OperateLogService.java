@@ -5,7 +5,7 @@ import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.operatelog.domain.OperateLogEntity;
 import net.lab1024.sa.base.module.support.operatelog.domain.OperateLogQueryForm;
@@ -51,7 +51,7 @@ public class OperateLogService {
         if(operateLogEntity == null){
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
-        OperateLogVO operateLogVO = SmartBeanUtil.copy(operateLogEntity, OperateLogVO.class);
+        OperateLogVO operateLogVO = BeanUtil.copy(operateLogEntity, OperateLogVO.class);
         return ResponseDTO.ok(operateLogVO);
     }
 }

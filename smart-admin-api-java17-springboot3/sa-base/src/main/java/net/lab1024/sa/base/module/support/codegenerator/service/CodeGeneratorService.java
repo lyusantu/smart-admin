@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.PageUtil;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.codegenerator.constant.CodeGeneratorConstant;
 import net.lab1024.sa.base.module.support.codegenerator.mapper.CodeGeneratorConfigMapper;
 import net.lab1024.sa.base.module.support.codegenerator.mapper.CodeGeneratorMapper;
@@ -76,32 +76,32 @@ public class CodeGeneratorService {
             return config;
         }
 
-        if (SmartStringUtil.isNotEmpty(codeGeneratorConfigEntity.getBasic())) {
+        if (StringUtil.isNotEmpty(codeGeneratorConfigEntity.getBasic())) {
             CodeBasic basic = JSON.parseObject(codeGeneratorConfigEntity.getBasic(), CodeBasic.class);
             config.setBasic(basic);
         }
 
-        if (SmartStringUtil.isNotEmpty(codeGeneratorConfigEntity.getFields())) {
+        if (StringUtil.isNotEmpty(codeGeneratorConfigEntity.getFields())) {
             List<CodeField> fields = JSONArray.parseArray(codeGeneratorConfigEntity.getFields(), CodeField.class);
             config.setFields(fields);
         }
 
-        if (SmartStringUtil.isNotEmpty(codeGeneratorConfigEntity.getInsertAndUpdate())) {
+        if (StringUtil.isNotEmpty(codeGeneratorConfigEntity.getInsertAndUpdate())) {
             CodeInsertAndUpdate insertAndUpdate = JSON.parseObject(codeGeneratorConfigEntity.getInsertAndUpdate(), CodeInsertAndUpdate.class);
             config.setInsertAndUpdate(insertAndUpdate);
         }
 
-        if (SmartStringUtil.isNotEmpty(codeGeneratorConfigEntity.getDeleteInfo())) {
+        if (StringUtil.isNotEmpty(codeGeneratorConfigEntity.getDeleteInfo())) {
             CodeDelete deleteInfo = JSON.parseObject(codeGeneratorConfigEntity.getDeleteInfo(), CodeDelete.class);
             config.setDeleteInfo(deleteInfo);
         }
 
-        if (SmartStringUtil.isNotEmpty(codeGeneratorConfigEntity.getQueryFields())) {
+        if (StringUtil.isNotEmpty(codeGeneratorConfigEntity.getQueryFields())) {
             List<CodeQueryField> queryFields = JSONArray.parseArray(codeGeneratorConfigEntity.getQueryFields(), CodeQueryField.class);
             config.setQueryFields(queryFields);
         }
 
-        if (SmartStringUtil.isNotEmpty(codeGeneratorConfigEntity.getTableFields())) {
+        if (StringUtil.isNotEmpty(codeGeneratorConfigEntity.getTableFields())) {
             List<CodeTableField> tableFields = JSONArray.parseArray(codeGeneratorConfigEntity.getTableFields(), CodeTableField.class);
             config.setTableFields(tableFields);
         }
@@ -192,7 +192,7 @@ public class CodeGeneratorService {
      * @return
      */
     public ResponseDTO<byte[]> download(String tableName) {
-        if (SmartStringUtil.isBlank(tableName)) {
+        if (StringUtil.isBlank(tableName)) {
             return ResponseDTO.userErrorParam("表名不能为空");
         }
 

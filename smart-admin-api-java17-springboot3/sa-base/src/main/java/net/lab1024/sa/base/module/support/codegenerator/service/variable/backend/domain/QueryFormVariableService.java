@@ -1,8 +1,8 @@
 package net.lab1024.sa.base.module.support.codegenerator.service.variable.backend.domain;
 
 import cn.hutool.core.bean.BeanUtil;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.codegenerator.constant.CodeQueryFieldQueryTypeEnum;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorConfigForm;
 import net.lab1024.sa.base.module.support.codegenerator.domain.model.CodeField;
@@ -52,7 +52,7 @@ public class QueryFormVariableService extends CodeGenerateBaseVariableService {
             finalFieldMap.putAll(BeanUtil.beanToMap(field));
 
             String queryTypeEnumStr = field.getQueryTypeEnum();
-            CodeQueryFieldQueryTypeEnum queryTypeEnum = SmartEnumUtil.getEnumByValue(queryTypeEnumStr, CodeQueryFieldQueryTypeEnum.class);
+            CodeQueryFieldQueryTypeEnum queryTypeEnum = EnumUtil.getEnumByValue(queryTypeEnumStr, CodeQueryFieldQueryTypeEnum.class);
             if (queryTypeEnum == null) {
                 continue;
             }
@@ -97,7 +97,7 @@ public class QueryFormVariableService extends CodeGenerateBaseVariableService {
                     break;
                 case DICT:
                     codeField = getCodeFieldByColumnName(field.getColumnNameList().get(0), form);
-                    if (SmartStringUtil.isNotEmpty(codeField.getDict())) {
+                    if (StringUtil.isNotEmpty(codeField.getDict())) {
                         finalFieldMap.put("dict", "\n    @JsonDeserialize(using = DictValueVoDeserializer.class)");
                         packageList.add("import com.fasterxml.jackson.databind.annotation.JsonDeserialize;");
                         packageList.add("import net.lab1024.sa.base.common.json.deserializer.DictValueVoDeserializer;");

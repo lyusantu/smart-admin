@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.v3.oas.models.Operation;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.apiencrypt.annotation.ApiDecrypt;
 import net.lab1024.sa.base.module.support.apiencrypt.annotation.ApiEncrypt;
 import org.springdoc.core.customizers.OperationCustomizer;
@@ -38,14 +38,14 @@ public class SmartOperationCustomizer implements OperationCustomizer {
         }
 
         if (!encryptBuilderList.isEmpty()) {
-            noteList.add("<br/><font style=\"color:red\" class=\"light-red\">接口安全：" + SmartStringUtil.join(",", encryptBuilderList) + "</font>");
+            noteList.add("<br/><font style=\"color:red\" class=\"light-red\">接口安全：" + StringUtil.join(",", encryptBuilderList) + "</font>");
         }
 
         // 权限
         noteList.addAll(getPermission(handlerMethod));
 
         // 更新
-        operation.setDescription(SmartStringUtil.join("<br/>", noteList));
+        operation.setDescription(StringUtil.join("<br/>", noteList));
 
         return operation;
     }

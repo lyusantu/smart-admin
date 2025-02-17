@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.constant.ReloadConst;
 import net.lab1024.sa.base.module.support.config.domain.*;
@@ -92,7 +92,7 @@ public class ConfigService {
             return null;
         }
         ConfigEntity entity = this.CONFIG_CACHE.get(configKey.toLowerCase());
-        return SmartBeanUtil.copy(entity, ConfigVO.class);
+        return BeanUtil.copy(entity, ConfigVO.class);
     }
 
     /**
@@ -119,7 +119,7 @@ public class ConfigService {
         if (null != entity) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST);
         }
-        entity = SmartBeanUtil.copy(configAddForm, ConfigEntity.class);
+        entity = BeanUtil.copy(configAddForm, ConfigEntity.class);
         configMapper.insert(entity);
 
         // 刷新缓存
@@ -142,7 +142,7 @@ public class ConfigService {
         }
 
         // 更新数据
-        entity = SmartBeanUtil.copy(updateDTO, ConfigEntity.class);
+        entity = BeanUtil.copy(updateDTO, ConfigEntity.class);
         configMapper.updateById(entity);
 
         // 刷新缓存

@@ -3,9 +3,9 @@ package net.lab1024.sa.admin.module.system.employee.manager;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
-import net.lab1024.sa.admin.module.system.employee.dao.EmployeeDao;
+import net.lab1024.sa.admin.module.system.employee.mapper.EmployeeMapper;
 import net.lab1024.sa.admin.module.system.employee.domain.entity.EmployeeEntity;
-import net.lab1024.sa.admin.module.system.role.dao.RoleEmployeeDao;
+import net.lab1024.sa.admin.module.system.role.mapper.RoleEmployeeMapper;
 import net.lab1024.sa.admin.module.system.role.domain.entity.RoleEmployeeEntity;
 import net.lab1024.sa.admin.module.system.role.service.RoleEmployeeService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -17,24 +17,18 @@ import java.util.stream.Collectors;
 
 /**
  * 员工 manager
- *
- * @Author 1024创新实验室: 胡克
- * @Date 2021-12-29 21:52:46
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Service
-public class EmployeeManager extends ServiceImpl<EmployeeDao, EmployeeEntity> {
+public class EmployeeManager extends ServiceImpl<EmployeeMapper, EmployeeEntity> {
 
     @Resource
-    private EmployeeDao employeeDao;
+    private EmployeeMapper employeeDao;
 
     @Resource
     private RoleEmployeeService roleEmployeeService;
 
     @Resource
-    private RoleEmployeeDao roleEmployeeDao;
+    private RoleEmployeeMapper roleEmployeeDao;
 
     /**
      * 保存员工

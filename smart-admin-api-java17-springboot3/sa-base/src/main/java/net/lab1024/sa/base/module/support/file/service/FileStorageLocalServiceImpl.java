@@ -7,7 +7,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.code.SystemErrorCode;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileDownloadVO;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileMetadataVO;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileUploadVO;
@@ -54,7 +54,7 @@ public class FileStorageLocalServiceImpl implements IFileStorageService {
 
     @PostConstruct
     public void initUrlPrefix() {
-        if (SmartStringUtil.isNotEmpty(urlPrefix)) {
+        if (StringUtil.isNotEmpty(urlPrefix)) {
             return;
         }
 
@@ -89,7 +89,7 @@ public class FileStorageLocalServiceImpl implements IFileStorageService {
         String time = LocalDateTimeUtil.format(LocalDateTime.now(), DatePattern.PURE_DATETIME_FORMATTER);
         String newFileName = uuid + "_" + time;
         String fileType = FilenameUtils.getExtension(originalFileName);
-        if (SmartStringUtil.isNotEmpty(fileType)) {
+        if (StringUtil.isNotEmpty(fileType)) {
             newFileName = newFileName + "." + fileType;
         }
         //生成文件key

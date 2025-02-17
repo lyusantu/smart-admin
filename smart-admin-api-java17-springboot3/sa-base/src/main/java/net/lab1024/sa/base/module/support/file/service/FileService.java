@@ -9,9 +9,9 @@ import net.lab1024.sa.base.common.constant.StringConst;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.file.constant.FileFolderTypeEnum;
 import net.lab1024.sa.base.module.support.file.dao.FileDao;
 import net.lab1024.sa.base.module.support.file.domain.entity.FileEntity;
@@ -69,7 +69,7 @@ public class FileService {
      * @return
      */
     public ResponseDTO<FileUploadVO> fileUpload(MultipartFile file, Integer folderType, RequestUser requestUser) {
-        FileFolderTypeEnum folderTypeEnum = SmartEnumUtil.getEnumByValue(folderType, FileFolderTypeEnum.class);
+        FileFolderTypeEnum folderTypeEnum = EnumUtil.getEnumByValue(folderType, FileFolderTypeEnum.class);
         if (null == folderTypeEnum) {
             return ResponseDTO.userErrorParam("文件夹错误");
         }
@@ -175,7 +175,7 @@ public class FileService {
                 fileUrlList.add(fileUrlResponse.getData());
             }
         }
-        return ResponseDTO.ok(SmartStringUtil.join(StringConst.SEPARATOR, fileUrlList));
+        return ResponseDTO.ok(StringUtil.join(StringConst.SEPARATOR, fileUrlList));
     }
 
 

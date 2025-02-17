@@ -7,7 +7,7 @@ import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.job.api.domain.*;
 import net.lab1024.sa.base.module.support.job.config.SmartJobAutoConfiguration;
@@ -59,7 +59,7 @@ public class SmartJobService {
         if (null == jobEntity) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
-        SmartJobVO jobVO = SmartBeanUtil.copy(jobEntity, SmartJobVO.class);
+        SmartJobVO jobVO = BeanUtil.copy(jobEntity, SmartJobVO.class);
         // 处理设置job详情
         this.handleJobInfo(Lists.newArrayList(jobVO));
         return ResponseDTO.ok(jobVO);
@@ -95,7 +95,7 @@ public class SmartJobService {
         if (CollectionUtils.isNotEmpty(logIdList)) {
             lastLogMap = jobLogDao.selectBatchIds(logIdList)
                     .stream()
-                    .collect(Collectors.toMap(SmartJobLogEntity::getLogId, e -> SmartBeanUtil.copy(e, SmartJobLogVO.class)));
+                    .collect(Collectors.toMap(SmartJobLogEntity::getLogId, e -> BeanUtil.copy(e, SmartJobLogVO.class)));
         }
 
         // 循环处理任务信息
@@ -146,7 +146,7 @@ public class SmartJobService {
         }
 
         // 添加数据
-        SmartJobEntity jobEntity = SmartBeanUtil.copy(addForm, SmartJobEntity.class);
+        SmartJobEntity jobEntity = BeanUtil.copy(addForm, SmartJobEntity.class);
         jobDao.insert(jobEntity);
 
         // 更新执行端
@@ -184,7 +184,7 @@ public class SmartJobService {
         }
 
         // 更新数据
-        jobEntity = SmartBeanUtil.copy(updateForm, SmartJobEntity.class);
+        jobEntity = BeanUtil.copy(updateForm, SmartJobEntity.class);
         jobDao.updateById(jobEntity);
 
         // 更新执行端

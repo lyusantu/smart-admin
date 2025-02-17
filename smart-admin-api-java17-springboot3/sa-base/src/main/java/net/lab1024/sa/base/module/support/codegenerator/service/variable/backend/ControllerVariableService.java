@@ -1,7 +1,7 @@
 package net.lab1024.sa.base.module.support.codegenerator.service.variable.backend;
 
 import com.google.common.base.CaseFormat;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
 import net.lab1024.sa.base.module.support.codegenerator.constant.CodeDeleteEnum;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorConfigForm;
 import net.lab1024.sa.base.module.support.codegenerator.domain.model.CodeInsertAndUpdateField;
@@ -46,7 +46,7 @@ public class ControllerVariableService extends CodeGenerateBaseVariableService {
         //2、其他包
         if (form.getDeleteInfo().getIsSupportDelete()) {
 
-            CodeDeleteEnum codeDeleteEnum = SmartEnumUtil.getEnumByValue(form.getDeleteInfo().getDeleteEnum(), CodeDeleteEnum.class);
+            CodeDeleteEnum codeDeleteEnum = EnumUtil.getEnumByValue(form.getDeleteInfo().getDeleteEnum(), CodeDeleteEnum.class);
             if (codeDeleteEnum == CodeDeleteEnum.BATCH || codeDeleteEnum == CodeDeleteEnum.SINGLE_AND_BATCH) {
                 //2、批量删除的话，要导入ValidateList
                 packageSet.add("import net.lab1024.sa.base.common.domain.validate.ValidateList;");

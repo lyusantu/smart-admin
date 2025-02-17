@@ -38,7 +38,7 @@ public class PageUtil {
         List<OrderItem> orderItemList = new ArrayList<>();
         for (PageParam.SortItem sortItem : sortItemList) {
 
-            if (SmartStringUtil.isEmpty(sortItem.getColumn())) {
+            if (StringUtil.isEmpty(sortItem.getColumn())) {
                 continue;
             }
 
@@ -60,7 +60,7 @@ public class PageUtil {
      * 转换为 PageResult 对象
      */
     public static <T, E> PageResult<T> convert2PageResult(Page<?> page, List<E> sourceList, Class<T> targetClazz) {
-        return convert2PageResult(page, SmartBeanUtil.copyList(sourceList, targetClazz));
+        return convert2PageResult(page, BeanUtil.copyList(sourceList, targetClazz));
     }
 
     /**
@@ -87,7 +87,7 @@ public class PageUtil {
         newPageResult.setTotal(pageResult.getTotal());
         newPageResult.setPages(pageResult.getPages());
         newPageResult.setEmptyFlag(pageResult.getEmptyFlag());
-        newPageResult.setList(SmartBeanUtil.copyList(pageResult.getList(), targetClazz));
+        newPageResult.setList(BeanUtil.copyList(pageResult.getList(), targetClazz));
         return newPageResult;
     }
 

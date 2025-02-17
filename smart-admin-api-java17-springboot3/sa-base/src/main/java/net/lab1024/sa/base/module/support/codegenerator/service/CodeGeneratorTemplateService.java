@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.base.CaseFormat;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.codegenerator.domain.entity.CodeGeneratorConfigEntity;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorConfigForm;
 import net.lab1024.sa.base.module.support.codegenerator.domain.model.*;
@@ -102,7 +102,7 @@ public class CodeGeneratorTemplateService {
         // 2、后端的枚举文件
         List<CodeField> fields = JSONArray.parseArray(codeGeneratorConfigEntity.getFields(), CodeField.class);
         if (CollectionUtils.isNotEmpty(fields)) {
-            List<CodeField> enumFiledList = fields.stream().filter(e -> SmartStringUtil.isNotBlank(e.getEnumName())).collect(Collectors.toList());
+            List<CodeField> enumFiledList = fields.stream().filter(e -> StringUtil.isNotBlank(e.getEnumName())).collect(Collectors.toList());
             for (CodeField codeField : enumFiledList) {
                 Map<String, Object> variablesMap = new HashMap<>();
 

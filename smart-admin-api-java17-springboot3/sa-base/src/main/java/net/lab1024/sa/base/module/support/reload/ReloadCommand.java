@@ -1,7 +1,7 @@
 package net.lab1024.sa.base.module.support.reload;
 
 import jakarta.annotation.Resource;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.module.support.reload.core.AbstractSmartReloadCommand;
 import net.lab1024.sa.base.module.support.reload.core.domain.SmartReloadItem;
 import net.lab1024.sa.base.module.support.reload.core.domain.SmartReloadResult;
@@ -39,7 +39,7 @@ public class ReloadCommand extends AbstractSmartReloadCommand {
     @Override
     public List<SmartReloadItem> readReloadItem() {
         List<ReloadItemEntity> reloadItemEntityList = reloadItemDao.selectList(null);
-        return SmartBeanUtil.copyList(reloadItemEntityList, SmartReloadItem.class);
+        return BeanUtil.copyList(reloadItemEntityList, SmartReloadItem.class);
     }
 
 
@@ -50,7 +50,7 @@ public class ReloadCommand extends AbstractSmartReloadCommand {
      */
     @Override
     public void handleReloadResult(SmartReloadResult smartReloadResult) {
-        ReloadResultEntity reloadResultEntity = SmartBeanUtil.copy(smartReloadResult, ReloadResultEntity.class);
+        ReloadResultEntity reloadResultEntity = BeanUtil.copy(smartReloadResult, ReloadResultEntity.class);
         reloadResultDao.insert(reloadResultEntity);
     }
 }

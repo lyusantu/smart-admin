@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.lab1024.sa.admin.module.business.oa.invoice.InvoiceDao">
+<mapper namespace="net.lab1024.sa.admin.module.business.oa.invoice.InvoiceMapper">
     <update id="deleteInvoice">
         UPDATE t_oa_invoice
         SET deleted_flag = #{deletedFlag}
@@ -20,7 +20,7 @@
     <select id="queryPage" resultType="net.lab1024.sa.admin.module.business.oa.invoice.domain.InvoiceVO">
         SELECT t_oa_invoice.*,
         t_oa_enterprise.enterprise_name
-        FROM t_oa_invoice 
+        FROM t_oa_invoice
         LEFT JOIN t_oa_enterprise  ON t_oa_invoice.enterprise_id = t_oa_enterprise.enterprise_id
         <where>
             t_oa_invoice.deleted_flag = #{queryForm.deletedFlag}
@@ -48,7 +48,7 @@
     <select id="getDetail" resultType="net.lab1024.sa.admin.module.business.oa.invoice.domain.InvoiceVO">
         SELECT t_oa_invoice.*,
                t_oa_enterprise.enterprise_name
-        FROM t_oa_invoice 
+        FROM t_oa_invoice
         LEFT JOIN t_oa_enterprise  ON t_oa_invoice.enterprise_id = t_oa_enterprise.enterprise_id
         WHERE t_oa_invoice.invoice_id = #{invoiceId}
           AND t_oa_invoice.deleted_flag = #{deletedFlag}

@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.constant.StringConst;
 import net.lab1024.sa.base.common.domain.RequestUser;
-import net.lab1024.sa.base.common.util.SmartIpUtil;
+import net.lab1024.sa.base.common.util.IpUtil;
 import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.module.support.operatelog.OperateLogDao;
 import net.lab1024.sa.base.module.support.operatelog.annotation.OperateLog;
@@ -206,7 +206,7 @@ public abstract class OperateLogAspect {
                         .method(operateMethod)
                         .param(params)
                         .ip(user.getIp())
-                        .ipRegion(SmartIpUtil.getRegion(user.getIp()))
+                        .ipRegion(IpUtil.getRegion(user.getIp()))
                         .userAgent(user.getUserAgent())
                         .failReason(failReason)
                         .successFlag(successFlag).build();

@@ -1,14 +1,14 @@
 package net.lab1024.sa.admin.module.system.role.service;
 
 import com.google.common.collect.Lists;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.module.system.role.domain.entity.RoleDataScopeEntity;
 import net.lab1024.sa.admin.module.system.role.domain.form.RoleDataScopeUpdateForm;
 import net.lab1024.sa.admin.module.system.role.domain.vo.RoleDataScopeVO;
 import net.lab1024.sa.admin.module.system.role.manager.RoleDataScopeManager;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -17,18 +17,12 @@ import java.util.List;
 
 /**
  * 角色-数据范围
- *
- * @Author 1024创新实验室: 善逸
- * @Date 2021-10-22 23:17:47
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class RoleDataScopeService {
 
-    @Resource
-    private RoleDataScopeManager roleDataScopeManager;
+    private final RoleDataScopeManager roleDataScopeManager;
 
 
     /**
@@ -40,7 +34,7 @@ public class RoleDataScopeService {
         if (CollectionUtils.isEmpty(roleDataScopeEntityList)) {
             return ResponseDTO.ok(Lists.newArrayList());
         }
-        List<RoleDataScopeVO> roleDataScopeList = SmartBeanUtil.copyList(roleDataScopeEntityList, RoleDataScopeVO.class);
+        List<RoleDataScopeVO> roleDataScopeList = BeanUtil.copyList(roleDataScopeEntityList, RoleDataScopeVO.class);
         return ResponseDTO.ok(roleDataScopeList);
     }
 
@@ -54,7 +48,7 @@ public class RoleDataScopeService {
         if (CollectionUtils.isEmpty(batchSetList)) {
             return ResponseDTO.error(UserErrorCode.PARAM_ERROR, "缺少配置信息");
         }
-        List<RoleDataScopeEntity> roleDataScopeEntityList = SmartBeanUtil.copyList(batchSetList, RoleDataScopeEntity.class);
+        List<RoleDataScopeEntity> roleDataScopeEntityList = BeanUtil.copyList(batchSetList, RoleDataScopeEntity.class);
         roleDataScopeEntityList.forEach(e -> e.setRoleId(roleDataScopeUpdateForm.getRoleId()));
         roleDataScopeManager.getBaseMapper().deleteByRoleId(roleDataScopeUpdateForm.getRoleId());
         roleDataScopeManager.saveBatch(roleDataScopeEntityList);

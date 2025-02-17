@@ -3,17 +3,18 @@ package net.lab1024.sa.base.module.support.datatracer.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartIpUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
+import net.lab1024.sa.base.common.util.IpUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.common.util.RequestUtil;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerConst;
 import net.lab1024.sa.base.module.support.datatracer.constant.DataTracerTypeEnum;
-import net.lab1024.sa.base.module.support.datatracer.dao.DataTracerDao;
+import net.lab1024.sa.base.module.support.datatracer.mapper.DataTracerMapper;
 import net.lab1024.sa.base.module.support.datatracer.domain.entity.DataTracerEntity;
 import net.lab1024.sa.base.module.support.datatracer.domain.form.DataTracerForm;
 import net.lab1024.sa.base.module.support.datatracer.domain.form.DataTracerQueryForm;
@@ -27,25 +28,17 @@ import java.util.stream.Collectors;
 
 /**
  * 数据变动记录 Service
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-07-23 19:38:52
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class DataTracerService {
 
-    @Resource
-    private DataTracerDao dataTracerDao;
+    private final DataTracerMapper dataTracerMapper;
 
-    @Resource
-    private DataTracerManger dataTracerManger;
+    private final DataTracerManger dataTracerManger;
 
-    @Resource
-    private DataTracerChangeContentService dataTracerChangeContentService;
+    private final DataTracerChangeContentService dataTracerChangeContentService;
 
     /**
      * 获取变更内容
@@ -167,11 +160,11 @@ public class DataTracerService {
      * 保存数据变动记录
      */
     public void addTrace(DataTracerForm tracerForm, RequestUser requestUser) {
-        DataTracerEntity tracerEntity = SmartBeanUtil.copy(tracerForm, DataTracerEntity.class);
+        DataTracerEntity tracerEntity = BeanUtil.copy(tracerForm, DataTracerEntity.class);
         tracerEntity.setType(tracerForm.getType().getValue());
         if (requestUser != null) {
             tracerEntity.setIp(requestUser.getIp());
-            tracerEntity.setIpRegion(SmartIpUtil.getRegion(requestUser.getIp()));
+            tracerEntity.setIpRegion(IpUtil.getRegion(requestUser.getIp()));
             tracerEntity.setUserAgent(requestUser.getUserAgent());
             tracerEntity.setUserId(requestUser.getUserId());
             tracerEntity.setUserType(requestUser.getUserType().getValue());
@@ -197,10 +190,10 @@ public class DataTracerService {
         }
 
         List<DataTracerEntity> tracerEntityList = tracerFormList.stream().map(e -> {
-            DataTracerEntity tracerEntity = SmartBeanUtil.copy(e, DataTracerEntity.class);
+            DataTracerEntity tracerEntity = BeanUtil.copy(e, DataTracerEntity.class);
             tracerEntity.setType(e.getType().getValue());
             tracerEntity.setIp(requestUser.getIp());
-            tracerEntity.setIpRegion(SmartIpUtil.getRegion(requestUser.getIp()));
+            tracerEntity.setIpRegion(IpUtil.getRegion(requestUser.getIp()));
             tracerEntity.setUserAgent(requestUser.getUserAgent());
             tracerEntity.setUserId(requestUser.getUserId());
             tracerEntity.setUserType(requestUser.getUserType().getValue());
@@ -219,7 +212,7 @@ public class DataTracerService {
      */
     public ResponseDTO<PageResult<DataTracerVO>> query(DataTracerQueryForm queryForm) {
         Page page = PageUtil.convert2PageQuery(queryForm);
-        List<DataTracerVO> list = dataTracerDao.query(page, queryForm);
+        List<DataTracerVO> list = dataTracerMapper.query(page, queryForm);
         PageResult<DataTracerVO> pageResult = PageUtil.convert2PageResult(page, list);
         return ResponseDTO.ok(pageResult);
     }

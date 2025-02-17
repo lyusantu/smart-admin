@@ -5,10 +5,10 @@ import com.google.common.collect.Maps;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.admin.constant.AdminCacheConst;
-import net.lab1024.sa.admin.module.system.department.dao.DepartmentDao;
+import net.lab1024.sa.admin.module.system.department.mapper.DepartmentMapper;
 import net.lab1024.sa.admin.module.system.department.domain.vo.DepartmentTreeVO;
 import net.lab1024.sa.admin.module.system.department.domain.vo.DepartmentVO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,19 +24,13 @@ import java.util.stream.Collectors;
 
 /**
  * 部门 缓存相关
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-01-12 20:37:48
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Slf4j
 @Service
 public class DepartmentCacheManager {
 
     @Resource
-    private DepartmentDao departmentDao;
+    private DepartmentMapper departmentMapper;
 
     private void logClearInfo(String cache) {
         log.info("clear " + cache);
@@ -53,7 +47,7 @@ public class DepartmentCacheManager {
      */
     @Cacheable(AdminCacheConst.Department.DEPARTMENT_LIST_CACHE)
     public List<DepartmentVO> getDepartmentList() {
-        return departmentDao.listAll();
+        return departmentMapper.listAll();
     }
 
     /**
@@ -62,7 +56,7 @@ public class DepartmentCacheManager {
      */
     @Cacheable(AdminCacheConst.Department.DEPARTMENT_MAP_CACHE)
     public Map<Long, DepartmentVO> getDepartmentMap() {
-        return departmentDao.listAll().stream().collect(Collectors.toMap(DepartmentVO::getDepartmentId, Function.identity()));
+        return departmentMapper.listAll().stream().collect(Collectors.toMap(DepartmentVO::getDepartmentId, Function.identity()));
     }
 
 
@@ -72,7 +66,7 @@ public class DepartmentCacheManager {
      */
     @Cacheable(AdminCacheConst.Department.DEPARTMENT_TREE_CACHE)
     public List<DepartmentTreeVO> getDepartmentTree() {
-        List<DepartmentVO> departmentVOList = departmentDao.listAll();
+        List<DepartmentVO> departmentVOList = departmentMapper.listAll();
         return this.buildTree(departmentVOList);
     }
 
@@ -82,7 +76,7 @@ public class DepartmentCacheManager {
      */
     @Cacheable(AdminCacheConst.Department.DEPARTMENT_SELF_CHILDREN_CACHE)
     public List<Long> getDepartmentSelfAndChildren(Long departmentId) {
-        List<DepartmentVO> departmentVOList = departmentDao.listAll();
+        List<DepartmentVO> departmentVOList = departmentMapper.listAll();
         return this.selfAndChildrenIdList(departmentId, departmentVOList);
     }
 
@@ -93,7 +87,7 @@ public class DepartmentCacheManager {
      */
     @Cacheable(AdminCacheConst.Department.DEPARTMENT_PATH_CACHE)
     public Map<Long, String> getDepartmentPathMap() {
-        List<DepartmentVO> departmentVOList = departmentDao.listAll();
+        List<DepartmentVO> departmentVOList = departmentMapper.listAll();
         Map<Long, DepartmentVO> departmentMap = departmentVOList.stream().collect(Collectors.toMap(DepartmentVO::getDepartmentId, Function.identity()));
 
         Map<Long, String> pathNameMap = Maps.newHashMap();
@@ -135,7 +129,7 @@ public class DepartmentCacheManager {
         if (CollectionUtils.isEmpty(rootList)) {
             return Lists.newArrayList();
         }
-        List<DepartmentTreeVO> treeVOList = SmartBeanUtil.copyList(rootList, DepartmentTreeVO.class);
+        List<DepartmentTreeVO> treeVOList = BeanUtil.copyList(rootList, DepartmentTreeVO.class);
         this.recursiveBuildTree(treeVOList, voList);
         return treeVOList;
     }
@@ -199,7 +193,7 @@ public class DepartmentCacheManager {
         if (CollectionUtils.isEmpty(childrenEntityList)) {
             return Lists.newArrayList();
         }
-        return SmartBeanUtil.copyList(childrenEntityList, DepartmentTreeVO.class);
+        return BeanUtil.copyList(childrenEntityList, DepartmentTreeVO.class);
     }
 
 

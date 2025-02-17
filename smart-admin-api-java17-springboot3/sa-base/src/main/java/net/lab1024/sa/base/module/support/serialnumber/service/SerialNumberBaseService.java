@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.exception.BusinessException;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
 import net.lab1024.sa.base.module.support.serialnumber.constant.SerialNumberIdEnum;
 import net.lab1024.sa.base.module.support.serialnumber.constant.SerialNumberRuleTypeEnum;
 import net.lab1024.sa.base.module.support.serialnumber.mapper.SerialNumberMapper;
@@ -46,7 +46,7 @@ public abstract class SerialNumberBaseService implements SerialNumberService {
             return;
         }
         for (SerialNumberEntity serialNumberEntity : serialNumberEntityList) {
-            SerialNumberRuleTypeEnum ruleTypeEnum = SmartEnumUtil.getEnumByName(serialNumberEntity.getRuleType().toUpperCase(), SerialNumberRuleTypeEnum.class);
+            SerialNumberRuleTypeEnum ruleTypeEnum = EnumUtil.getEnumByName(serialNumberEntity.getRuleType().toUpperCase(), SerialNumberRuleTypeEnum.class);
             if (ruleTypeEnum == null) {
                 throw new ExceptionInInitializerError("cannot find rule type , id : " + serialNumberEntity.getSerialNumberId());
             }

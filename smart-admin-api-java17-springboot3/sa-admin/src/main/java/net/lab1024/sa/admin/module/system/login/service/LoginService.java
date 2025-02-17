@@ -7,8 +7,8 @@ import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.admin.module.system.department.domain.vo.DepartmentVO;
 import net.lab1024.sa.admin.module.system.department.service.DepartmentService;
@@ -28,10 +28,10 @@ import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.domain.UserPermission;
 import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
-import net.lab1024.sa.base.common.util.SmartIpUtil;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
+import net.lab1024.sa.base.common.util.IpUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.constant.LoginDeviceEnum;
 import net.lab1024.sa.base.constant.RedisKeyConst;
 import net.lab1024.sa.base.module.support.apiencrypt.service.ApiEncryptService;
@@ -60,14 +60,9 @@ import java.util.stream.Collectors;
 
 /**
  * 登录
- *
- * @Author 1024创新实验室: 开云
- * @Date 2021-12-01 22:56:34
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class LoginService implements StpInterface {
 
@@ -92,47 +87,33 @@ public class LoginService implements StpInterface {
      */
     private final ConcurrentMap<Long, UserPermission> permissionCache = new ConcurrentLinkedHashMap.Builder<Long, UserPermission>().maximumWeightedCapacity(CACHE_MAX_ONLINE_PERSON_COUNT).build();
 
-    @Resource
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
-    @Resource
-    private DepartmentService departmentService;
+    private final DepartmentService departmentService;
 
-    @Resource
-    private CaptchaService captchaService;
+    private final CaptchaService captchaService;
 
-    @Resource
-    private ConfigService configService;
+    private final ConfigService configService;
 
-    @Resource
-    private LoginLogService loginLogService;
+    private final LoginLogService loginLogService;
 
-    @Resource
-    private RoleEmployeeService roleEmployeeService;
+    private final RoleEmployeeService roleEmployeeService;
 
-    @Resource
-    private RoleMenuService roleMenuService;
+    private final RoleMenuService roleMenuService;
 
-    @Resource
-    private SecurityLoginService securityLoginService;
+    private final SecurityLoginService securityLoginService;
 
-    @Resource
-    private SecurityPasswordService protectPasswordService;
+    private final SecurityPasswordService protectPasswordService;
 
-    @Resource
-    private IFileStorageService fileStorageService;
+    private final IFileStorageService fileStorageService;
 
-    @Resource
-    private ApiEncryptService apiEncryptService;
+    private final ApiEncryptService apiEncryptService;
 
-    @Resource
-    private Level3ProtectConfigService level3ProtectConfigService;
+    private final Level3ProtectConfigService level3ProtectConfigService;
 
-    @Resource
-    private MailService mailService;
+    private final MailService mailService;
 
-    @Resource
-    private RedisService redisService;
+    private final RedisService redisService;
 
     /**
      * 获取验证码
@@ -148,7 +129,7 @@ public class LoginService implements StpInterface {
      */
     public ResponseDTO<LoginResultVO> login(LoginForm loginForm, String ip, String userAgent) {
 
-        LoginDeviceEnum loginDeviceEnum = SmartEnumUtil.getEnumByValue(loginForm.getLoginDevice(), LoginDeviceEnum.class);
+        LoginDeviceEnum loginDeviceEnum = EnumUtil.getEnumByValue(loginForm.getLoginDevice(), LoginDeviceEnum.class);
         if (loginDeviceEnum == null) {
             return ResponseDTO.userErrorParam("登录设备暂不支持！");
         }
@@ -250,7 +231,7 @@ public class LoginService implements StpInterface {
     public LoginResultVO getLoginResult(RequestEmployee requestEmployee, String token) {
 
         // 基础信息
-        LoginResultVO loginResultVO = SmartBeanUtil.copy(requestEmployee, LoginResultVO.class);
+        LoginResultVO loginResultVO = BeanUtil.copy(requestEmployee, LoginResultVO.class);
 
         // 前端菜单和功能点清单
         List<RoleVO> roleList = roleEmployeeService.getRoleIdList(requestEmployee.getEmployeeId());
@@ -290,7 +271,7 @@ public class LoginService implements StpInterface {
     private RequestEmployee loadLoginInfo(EmployeeEntity employeeEntity) {
 
         // 基础信息
-        RequestEmployee requestEmployee = SmartBeanUtil.copy(employeeEntity, RequestEmployee.class);
+        RequestEmployee requestEmployee = BeanUtil.copy(employeeEntity, RequestEmployee.class);
         requestEmployee.setUserType(UserTypeEnum.ADMIN_EMPLOYEE);
 
         // 部门信息
@@ -386,7 +367,7 @@ public class LoginService implements StpInterface {
                 .userName(requestUser.getUserName())
                 .userAgent(requestUser.getUserAgent())
                 .loginIp(requestUser.getIp())
-                .loginIpRegion(SmartIpUtil.getRegion(requestUser.getIp()))
+                .loginIpRegion(IpUtil.getRegion(requestUser.getIp()))
                 .loginResult(LoginLogResultEnum.LOGIN_OUT.getValue())
                 .createTime(LocalDateTime.now())
                 .build();
@@ -413,7 +394,7 @@ public class LoginService implements StpInterface {
                 .userName(employeeEntity.getActualName())
                 .userAgent(userAgent)
                 .loginIp(ip)
-                .loginIpRegion(SmartIpUtil.getRegion(ip))
+                .loginIpRegion(IpUtil.getRegion(ip))
                 .remark(remark)
                 .loginResult(result.getValue())
                 .createTime(LocalDateTime.now())
@@ -513,7 +494,7 @@ public class LoginService implements StpInterface {
         }
 
         String mail = employeeEntity.getEmail();
-        if (SmartStringUtil.isBlank(mail)) {
+        if (StringUtil.isBlank(mail)) {
             return ResponseDTO.userErrorParam("您暂未配置邮箱地址，请联系管理员配置邮箱");
         }
 
@@ -521,7 +502,7 @@ public class LoginService implements StpInterface {
         String redisVerificationCodeKey = redisService.generateRedisKey(RedisKeyConst.Support.LOGIN_VERIFICATION_CODE, UserTypeEnum.ADMIN_EMPLOYEE.getValue() + RedisKeyConst.SEPARATOR + employeeEntity.getEmployeeId());
         String emailCode = redisService.get(redisVerificationCodeKey);
         long sendCodeTimeMills = -1;
-        if (!SmartStringUtil.isEmpty(emailCode)) {
+        if (!StringUtil.isEmpty(emailCode)) {
             sendCodeTimeMills = NumberUtil.parseLong(emailCode.split(StringConst.UNDERLINE)[1]);
         }
 
@@ -555,14 +536,14 @@ public class LoginService implements StpInterface {
             return ResponseDTO.ok();
         }
 
-        if (SmartStringUtil.isEmpty(loginForm.getEmailCode())) {
+        if (StringUtil.isEmpty(loginForm.getEmailCode())) {
             return ResponseDTO.userErrorParam("请输入邮箱验证码");
         }
 
         // 校验验证码
         String redisVerificationCodeKey = redisService.generateRedisKey(RedisKeyConst.Support.LOGIN_VERIFICATION_CODE, UserTypeEnum.ADMIN_EMPLOYEE.getValue() + RedisKeyConst.SEPARATOR + employeeEntity.getEmployeeId());
         String emailCode = redisService.get(redisVerificationCodeKey);
-        if (SmartStringUtil.isEmpty(emailCode)) {
+        if (StringUtil.isEmpty(emailCode)) {
             return ResponseDTO.userErrorParam("邮箱验证码已失效，请重新发送");
         }
 

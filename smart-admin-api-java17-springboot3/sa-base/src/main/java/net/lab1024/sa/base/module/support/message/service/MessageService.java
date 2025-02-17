@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.message.constant.MessageTemplateEnum;
 import net.lab1024.sa.base.module.support.message.dao.MessageDao;
@@ -88,7 +88,7 @@ public class MessageService {
      */
     public void sendMessage(List<MessageSendForm> sendList) {
         for (MessageSendForm sendDTO : sendList) {
-            String verify = SmartBeanUtil.verify(sendDTO);
+            String verify = BeanUtil.verify(sendDTO);
             if (null != verify) {
                 throw new RuntimeException("send msg error: " + verify);
             }

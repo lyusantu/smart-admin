@@ -2,9 +2,9 @@ package net.lab1024.sa.admin.module.business.oa.notice.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.module.business.oa.notice.constant.NoticeVisibleRangeDataTypeEnum;
-import net.lab1024.sa.admin.module.business.oa.notice.dao.NoticeDao;
+import net.lab1024.sa.admin.module.business.oa.notice.mapper.NoticeMapper;
 import net.lab1024.sa.admin.module.business.oa.notice.domain.form.NoticeEmployeeQueryForm;
 import net.lab1024.sa.admin.module.business.oa.notice.domain.form.NoticeViewRecordQueryForm;
 import net.lab1024.sa.admin.module.business.oa.notice.domain.vo.*;
@@ -13,7 +13,7 @@ import net.lab1024.sa.admin.module.system.employee.domain.entity.EmployeeEntity;
 import net.lab1024.sa.admin.module.system.employee.service.EmployeeService;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import org.springframework.stereotype.Service;
 
@@ -24,27 +24,18 @@ import java.util.stream.Collectors;
 
 /**
  * 员工查看 通知。公告
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-08-12 21:40:39
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class NoticeEmployeeService {
 
-    @Resource
-    private NoticeDao noticeDao;
+    private final NoticeMapper noticeDao;
 
-    @Resource
-    private NoticeService noticeService;
+    private final NoticeService noticeService;
 
-    @Resource
-    private DepartmentService departmentService;
+    private final EmployeeService employeeService;
 
-    @Resource
-    private EmployeeService employeeService;
+    private final DepartmentService departmentService;
 
     /**
      * 查询我的 通知、公告清单
@@ -102,7 +93,7 @@ public class NoticeEmployeeService {
             return ResponseDTO.userErrorParam("对不起，您没有权限查看内容");
         }
 
-        NoticeDetailVO noticeDetailVO = SmartBeanUtil.copy(updateFormVO, NoticeDetailVO.class);
+        NoticeDetailVO noticeDetailVO = BeanUtil.copy(updateFormVO, NoticeDetailVO.class);
         long viewCount = noticeDao.viewRecordCount(noticeId, requestEmployeeId);
         if (viewCount == 0) {
             noticeDao.insertViewRecord(noticeId, requestEmployeeId, ip, userAgent, 1);
@@ -122,7 +113,6 @@ public class NoticeEmployeeService {
 
     /**
      * 校验是否有查看权限的范围
-     *
      */
     public boolean checkVisibleRange(List<NoticeVisibleRangeVO> visibleRangeList, Long employeeId, Long departmentId) {
         // 员工范围

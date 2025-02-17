@@ -10,17 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UnexpectedErrorCode implements ErrorCode {
 
-    /**
-     * 业务错误
-     */
     BUSINESS_HANDING(20001, "呃~ 业务繁忙，请稍后重试"),
-
-    /**
-     * id错误
-     */
-    PAY_ORDER_ID_ERROR(20002, "付款单id发生了异常，请联系技术人员排查"),
-
-    ;
+    PAY_ORDER_ID_ERROR(20002, "付款单id发生了异常，请联系技术人员排查");
 
     private final int code;
 

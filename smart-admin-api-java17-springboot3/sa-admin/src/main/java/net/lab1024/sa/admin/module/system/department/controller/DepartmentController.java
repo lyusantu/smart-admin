@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.constant.AdminSwaggerTagConst;
 import net.lab1024.sa.admin.module.system.department.domain.form.DepartmentAddForm;
 import net.lab1024.sa.admin.module.system.department.domain.form.DepartmentUpdateForm;
@@ -18,19 +19,13 @@ import java.util.List;
 
 /**
  * 部门
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-01-12 20:37:48
- * @Wechat 卓大1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @RestController
 @Tag(name = AdminSwaggerTagConst.System.SYSTEM_DEPARTMENT)
 public class DepartmentController {
 
-    @Resource
-    private DepartmentService departmentService;
+    private final DepartmentService departmentService;
 
     @Operation(summary = "查询部门树形列表 @author 卓大")
     @GetMapping("/department/treeList")

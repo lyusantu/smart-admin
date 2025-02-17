@@ -2,14 +2,13 @@ package net.lab1024.sa.base.module.support.codegenerator.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.controller.SupportBaseController;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartResponseUtil;
+import net.lab1024.sa.base.common.util.ResponseUtil;
 import net.lab1024.sa.base.constant.SwaggerTagConst;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorConfigForm;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorPreviewForm;
@@ -18,7 +17,6 @@ import net.lab1024.sa.base.module.support.codegenerator.domain.vo.TableColumnVO;
 import net.lab1024.sa.base.module.support.codegenerator.domain.vo.TableConfigVO;
 import net.lab1024.sa.base.module.support.codegenerator.domain.vo.TableVO;
 import net.lab1024.sa.base.module.support.codegenerator.service.CodeGeneratorService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,10 +81,10 @@ public class CodeGeneratorController extends SupportBaseController {
         ResponseDTO<byte[]> download = codeGeneratorService.download(tableName);
 
         if (download.getOk()) {
-            SmartResponseUtil.setDownloadFileHeader(response, tableName + "_code.zip", (long) download.getData().length);
+            ResponseUtil.setDownloadFileHeader(response, tableName + "_code.zip", (long) download.getData().length);
             response.getOutputStream().write(download.getData());
         } else {
-            SmartResponseUtil.write(response, download);
+            ResponseUtil.write(response, download);
         }
     }
 

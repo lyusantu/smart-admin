@@ -14,7 +14,7 @@ import net.lab1024.sa.admin.module.system.menu.domain.vo.MenuVO;
 import net.lab1024.sa.base.common.code.SystemErrorCode;
 import net.lab1024.sa.base.common.domain.RequestUrlVO;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -47,7 +47,7 @@ public class MenuService {
         if (this.validateWebPerms(menuAddForm)) {
             return ResponseDTO.userErrorParam("前端权限字符串已存在");
         }
-        MenuEntity menuEntity = SmartBeanUtil.copy(menuAddForm, MenuEntity.class);
+        MenuEntity menuEntity = BeanUtil.copy(menuAddForm, MenuEntity.class);
         menuMapper.insert(menuEntity);
         return ResponseDTO.ok();
     }
@@ -76,7 +76,7 @@ public class MenuService {
         if (menuUpdateForm.getMenuId().equals(menuUpdateForm.getParentId())) {
             return ResponseDTO.userErrorParam("上级菜单不能为自己");
         }
-        MenuEntity menuEntity = SmartBeanUtil.copy(menuUpdateForm, MenuEntity.class);
+        MenuEntity menuEntity = BeanUtil.copy(menuUpdateForm, MenuEntity.class);
         menuMapper.updateById(menuEntity);
         return ResponseDTO.ok();
     }
@@ -190,7 +190,7 @@ public class MenuService {
     List<MenuTreeVO> buildMenuTree(Map<Long, List<MenuVO>> parentMap, Long parentId) {
         // 获取本级菜单树List
         List<MenuTreeVO> res = parentMap.getOrDefault(parentId, Lists.newArrayList()).stream()
-                .map(e -> SmartBeanUtil.copy(e, MenuTreeVO.class)).collect(Collectors.toList());
+                .map(e -> BeanUtil.copy(e, MenuTreeVO.class)).collect(Collectors.toList());
         // 循环遍历下级菜单
         res.forEach(e -> {
             e.setChildren(this.buildMenuTree(parentMap, e.getMenuId()));
@@ -211,7 +211,7 @@ public class MenuService {
         if (selectMenu.getDeletedFlag()) {
             return ResponseDTO.error(SystemErrorCode.SYSTEM_ERROR, "菜单已被删除");
         }
-        MenuVO menuVO = SmartBeanUtil.copy(selectMenu, MenuVO.class);
+        MenuVO menuVO = BeanUtil.copy(selectMenu, MenuVO.class);
         return ResponseDTO.ok(menuVO);
     }
 

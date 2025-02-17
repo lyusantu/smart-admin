@@ -1,7 +1,7 @@
 package net.lab1024.sa.base.module.support.codegenerator.service.variable.backend.domain;
 
 import cn.hutool.core.bean.BeanUtil;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorConfigForm;
 import net.lab1024.sa.base.module.support.codegenerator.domain.model.CodeField;
 import net.lab1024.sa.base.module.support.codegenerator.domain.model.CodeTableField;
@@ -62,7 +62,7 @@ public class VOVariableService extends CodeGenerateBaseVariableService {
             finalFieldMap.putAll(BeanUtil.beanToMap(codeField));
 
             // 枚举
-            if (SmartStringUtil.isNotEmpty(codeField.getEnumName())) {
+            if (StringUtil.isNotEmpty(codeField.getEnumName())) {
                 packageList.add("import net.lab1024.sa.base.common.swagger.SchemaEnum;");
                 packageList.add("import " + form.getBasic().getJavaPackageName() + ".constant." + codeField.getEnumName() + ";");
 

@@ -1,16 +1,16 @@
 package net.lab1024.sa.admin.module.system.datascope.service;
 
 import com.google.common.collect.Lists;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.module.system.datascope.constant.DataScopeTypeEnum;
 import net.lab1024.sa.admin.module.system.datascope.constant.DataScopeViewTypeEnum;
 import net.lab1024.sa.admin.module.system.department.service.DepartmentService;
-import net.lab1024.sa.admin.module.system.employee.dao.EmployeeDao;
+import net.lab1024.sa.admin.module.system.employee.mapper.EmployeeMapper;
 import net.lab1024.sa.admin.module.system.employee.domain.entity.EmployeeEntity;
-import net.lab1024.sa.admin.module.system.role.dao.RoleDataScopeDao;
-import net.lab1024.sa.admin.module.system.role.dao.RoleEmployeeDao;
+import net.lab1024.sa.admin.module.system.role.mapper.RoleDataScopeMapper;
+import net.lab1024.sa.admin.module.system.role.mapper.RoleEmployeeMapper;
 import net.lab1024.sa.admin.module.system.role.domain.entity.RoleDataScopeEntity;
-import net.lab1024.sa.base.common.util.SmartEnumUtil;
+import net.lab1024.sa.base.common.util.EnumUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -21,27 +21,18 @@ import java.util.stream.Collectors;
 
 /**
  * 数据范围
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2020/11/28  20:59:17
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class DataScopeViewService {
 
-    @Resource
-    private RoleEmployeeDao roleEmployeeDao;
+    private final EmployeeMapper employeeMapper;
 
-    @Resource
-    private RoleDataScopeDao roleDataScopeDao;
+    private final RoleEmployeeMapper roleEmployeeMapper;
 
-    @Resource
-    private EmployeeDao employeeDao;
+    private final RoleDataScopeMapper roleDataScopeMapper;
 
-    @Resource
-    private DepartmentService departmentService;
+    private final DepartmentService departmentService;
 
     /**
      * 获取某人可以查看的所有人员信息
@@ -78,12 +69,12 @@ public class DataScopeViewService {
     }
 
     public List<Long> getMeDepartmentIdList(Long employeeId) {
-        EmployeeEntity employeeEntity = employeeDao.selectById(employeeId);
+        EmployeeEntity employeeEntity = employeeMapper.selectById(employeeId);
         return Lists.newArrayList(employeeEntity.getDepartmentId());
     }
 
     public List<Long> getDepartmentAndSubIdList(Long employeeId) {
-        EmployeeEntity employeeEntity = employeeDao.selectById(employeeId);
+        EmployeeEntity employeeEntity = employeeMapper.selectById(employeeId);
         return departmentService.selfAndChildrenIdList(employeeEntity.getDepartmentId());
     }
 
@@ -95,13 +86,13 @@ public class DataScopeViewService {
             return DataScopeViewTypeEnum.ME;
         }
 
-        List<Long> roleIdList = roleEmployeeDao.selectRoleIdByEmployeeId(employeeId);
+        List<Long> roleIdList = roleEmployeeMapper.selectRoleIdByEmployeeId(employeeId);
         //未设置角色 默认本人
         if (CollectionUtils.isEmpty(roleIdList)) {
             return DataScopeViewTypeEnum.ME;
         }
         //未设置角色数据范围 默认本人
-        List<RoleDataScopeEntity> dataScopeRoleList = roleDataScopeDao.listByRoleIdList(roleIdList);
+        List<RoleDataScopeEntity> dataScopeRoleList = roleDataScopeMapper.listByRoleIdList(roleIdList);
         if (CollectionUtils.isEmpty(dataScopeRoleList)) {
             return DataScopeViewTypeEnum.ME;
         }
@@ -110,8 +101,8 @@ public class DataScopeViewService {
         if (CollectionUtils.isEmpty(viewLevelList)) {
             return DataScopeViewTypeEnum.ME;
         }
-        RoleDataScopeEntity maxLevel = viewLevelList.stream().max(Comparator.comparing(e -> SmartEnumUtil.getEnumByValue(e.getViewType(), DataScopeViewTypeEnum.class).getLevel())).get();
-        return SmartEnumUtil.getEnumByValue(maxLevel.getViewType(), DataScopeViewTypeEnum.class);
+        RoleDataScopeEntity maxLevel = viewLevelList.stream().max(Comparator.comparing(e -> EnumUtil.getEnumByValue(e.getViewType(), DataScopeViewTypeEnum.class).getLevel())).get();
+        return EnumUtil.getEnumByValue(maxLevel.getViewType(), DataScopeViewTypeEnum.class);
     }
 
     /**
@@ -125,8 +116,8 @@ public class DataScopeViewService {
      * 获取本部门相关 可查看员工id
      */
     private List<Long> getDepartmentEmployeeIdList(Long employeeId) {
-        EmployeeEntity employeeEntity = employeeDao.selectById(employeeId);
-        return employeeDao.getEmployeeIdByDepartmentId(employeeEntity.getDepartmentId(), false);
+        EmployeeEntity employeeEntity = employeeMapper.selectById(employeeId);
+        return employeeMapper.getEmployeeIdByDepartmentId(employeeEntity.getDepartmentId(), false);
     }
 
     /**
@@ -134,6 +125,6 @@ public class DataScopeViewService {
      */
     private List<Long> getDepartmentAndSubEmployeeIdList(Long employeeId) {
         List<Long> allDepartmentIds = getDepartmentAndSubIdList(employeeId);
-        return employeeDao.getEmployeeIdByDepartmentIdList(allDepartmentIds, false);
+        return employeeMapper.getEmployeeIdByDepartmentIdList(allDepartmentIds, false);
     }
 }

@@ -2,7 +2,7 @@ package net.lab1024.sa.base.module.support.helpdoc.service;
 
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocCatalogDao;
 import net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocDao;
 import net.lab1024.sa.base.module.support.helpdoc.domain.entity.HelpDocCatalogEntity;
@@ -40,7 +40,7 @@ public class HelpDocCatalogService {
      * @return
      */
     public List<HelpDocCatalogVO> getAll() {
-        return SmartBeanUtil.copyList(helpDocCatalogDao.selectList(null), HelpDocCatalogVO.class);
+        return BeanUtil.copyList(helpDocCatalogDao.selectList(null), HelpDocCatalogVO.class);
     }
 
     /**
@@ -56,7 +56,7 @@ public class HelpDocCatalogService {
             return ResponseDTO.userErrorParam("存在相同名称的目录了");
         }
 
-        helpDocCatalogDao.insert(SmartBeanUtil.copy(helpDocCatalogAddForm, HelpDocCatalogEntity.class));
+        helpDocCatalogDao.insert(BeanUtil.copy(helpDocCatalogAddForm, HelpDocCatalogEntity.class));
         return ResponseDTO.ok();
     }
 
@@ -77,7 +77,7 @@ public class HelpDocCatalogService {
         if (exist.isPresent() && !exist.get().getHelpDocCatalogId().equals(updateForm.getHelpDocCatalogId())) {
             return ResponseDTO.userErrorParam("存在相同名称的目录了");
         }
-        helpDocCatalogDao.updateById(SmartBeanUtil.copy(updateForm, HelpDocCatalogEntity.class));
+        helpDocCatalogDao.updateById(BeanUtil.copy(updateForm, HelpDocCatalogEntity.class));
         return ResponseDTO.ok();
     }
 

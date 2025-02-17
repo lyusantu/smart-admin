@@ -26,7 +26,6 @@ public class AdminHeartBeatController extends SupportBaseController {
     private final HeartBeatService heartBeatService;
 
     @PostMapping("/heartBeat/query")
-    @Operation(summary = "查询心跳记录 @author 卓大")
     public ResponseDTO<PageResult<HeartBeatRecordVO>> query(@RequestBody @Valid HeartBeatRecordQueryForm pageParam) {
         return heartBeatService.pageQuery(pageParam);
     }

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.domain.SystemEnvironment;
 import net.lab1024.sa.base.common.enumeration.SystemEnvironmentEnum;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.constant.RedisKeyConst;
 import org.slf4j.Logger;
 import org.springframework.data.redis.core.*;
@@ -72,7 +72,7 @@ public class RedisService {
      * @return
      */
     public static String redisKeyParse(String redisKey) {
-        if(SmartStringUtil.isBlank(redisKey)){
+        if(StringUtil.isBlank(redisKey)){
             return "";
         }
         int index = redisKey.lastIndexOf(RedisKeyConst.SEPARATOR);

@@ -1,7 +1,7 @@
 package net.lab1024.sa.base.module.support.codegenerator.service.variable.backend.domain;
 
 import cn.hutool.core.bean.BeanUtil;
-import net.lab1024.sa.base.common.util.SmartStringUtil;
+import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.codegenerator.constant.CodeFrontComponentEnum;
 import net.lab1024.sa.base.module.support.codegenerator.domain.form.CodeGeneratorConfigForm;
 import net.lab1024.sa.base.module.support.codegenerator.domain.model.CodeField;
@@ -65,7 +65,7 @@ public class AddFormVariableService extends CodeGenerateBaseVariableService {
             finalFieldMap.putAll(BeanUtil.beanToMap(codeField));
 
             // 枚举
-            if (SmartStringUtil.isNotEmpty(codeField.getEnumName())) {
+            if (StringUtil.isNotEmpty(codeField.getEnumName())) {
                 packageList.add("import net.lab1024.sa.base.common.swagger.SchemaEnum;");
                 packageList.add("import net.lab1024.sa.base.common.validator.enumeration.CheckEnum;");
                 packageList.add("import " + form.getBasic().getJavaPackageName() + ".constant." + codeField.getEnumName() + ";");
@@ -94,7 +94,7 @@ public class AddFormVariableService extends CodeGenerateBaseVariableService {
             }
 
             //字典
-            if (SmartStringUtil.isNotEmpty(codeField.getDict())) {
+            if (StringUtil.isNotEmpty(codeField.getDict())) {
                 finalFieldMap.put("dict", "\n    @JsonDeserialize(using = DictValueVoDeserializer.class)");
                 packageList.add("import com.fasterxml.jackson.databind.annotation.JsonDeserialize;");
                 packageList.add("import net.lab1024.sa.base.common.json.deserializer.DictValueVoDeserializer;");

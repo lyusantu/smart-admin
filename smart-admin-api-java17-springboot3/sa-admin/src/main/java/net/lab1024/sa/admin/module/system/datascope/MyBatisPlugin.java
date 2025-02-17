@@ -2,7 +2,7 @@ package net.lab1024.sa.admin.module.system.datascope;
 
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Maps;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.admin.module.system.datascope.domain.DataScopeSqlConfig;
 import net.lab1024.sa.admin.module.system.datascope.service.DataScopeSqlConfigService;
 import net.lab1024.sa.base.common.domain.DataScopePlugin;
@@ -23,19 +23,13 @@ import java.util.Properties;
 
 /**
  * mybaits sql 拦截
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2022-03-18 20:59:17
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Intercepts({@Signature(type = org.apache.ibatis.executor.Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})})
+@RequiredArgsConstructor
 @Component
 public class MyBatisPlugin extends DataScopePlugin {
 
-    @Resource
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -78,7 +72,7 @@ public class MyBatisPlugin extends DataScopePlugin {
             String[] paramNameArray = paramName.split(",");
             Map<?, ?> parameterMap = (Map) parameter;
             for (String param : paramNameArray) {
-                if(parameterMap.containsKey(param)){
+                if (parameterMap.containsKey(param)) {
                     paramMap.put(param, parameterMap.get(param));
                 }
             }

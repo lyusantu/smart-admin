@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocDao;
 import net.lab1024.sa.base.module.support.helpdoc.domain.entity.HelpDocEntity;
@@ -57,7 +57,7 @@ public class HelpDocService {
      * @return
      */
     public ResponseDTO<String> add(HelpDocAddForm addForm) {
-        HelpDocEntity helpDaoEntity = SmartBeanUtil.copy(addForm, HelpDocEntity.class);
+        HelpDocEntity helpDaoEntity = BeanUtil.copy(addForm, HelpDocEntity.class);
         helpDaoManager.save(helpDaoEntity, addForm.getRelationList());
         return ResponseDTO.ok();
     }
@@ -71,7 +71,7 @@ public class HelpDocService {
      */
     public ResponseDTO<String> update(HelpDocUpdateForm updateForm) {
         // 更新
-        HelpDocEntity helpDaoEntity = SmartBeanUtil.copy(updateForm, HelpDocEntity.class);
+        HelpDocEntity helpDaoEntity = BeanUtil.copy(updateForm, HelpDocEntity.class);
         helpDaoManager.update(helpDaoEntity, updateForm.getRelationList());
         return ResponseDTO.ok();
     }
@@ -101,7 +101,7 @@ public class HelpDocService {
      */
     public HelpDocDetailVO getDetail(Long helpDocId) {
         HelpDocEntity helpDaoEntity = helpDocDao.selectById(helpDocId);
-        HelpDocDetailVO detail = SmartBeanUtil.copy(helpDaoEntity, HelpDocDetailVO.class);
+        HelpDocDetailVO detail = BeanUtil.copy(helpDaoEntity, HelpDocDetailVO.class);
         if (detail != null) {
             detail.setRelationList(helpDocDao.queryRelationByHelpDoc(helpDocId));
         }

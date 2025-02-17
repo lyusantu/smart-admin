@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.common.util.SmartBeanUtil;
+import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.heartbeat.core.HeartBeatRecord;
 import net.lab1024.sa.base.module.support.heartbeat.domain.HeartBeatRecordEntity;
@@ -33,7 +33,7 @@ public class HeartBeatService {
     }
 
     public void saveOrUpdate(HeartBeatRecord heartBeatRecord) {
-        HeartBeatRecordEntity heartBeatRecordEntity = SmartBeanUtil.copy(heartBeatRecord, HeartBeatRecordEntity.class);
+        HeartBeatRecordEntity heartBeatRecordEntity = BeanUtil.copy(heartBeatRecord, HeartBeatRecordEntity.class);
         HeartBeatRecordEntity heartBeatRecordOld = heartBeatRecordMapper.query(heartBeatRecordEntity);
         if (heartBeatRecordOld == null) {
             heartBeatRecordMapper.insert(heartBeatRecordEntity);

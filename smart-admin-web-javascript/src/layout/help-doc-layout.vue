@@ -1,12 +1,3 @@
-<!--
-  *  帮助文档 layout
-  *
-  * @Author:    1024创新实验室-主任：卓大
-  * @Date:      2022-09-06 20:40:16
-  * @Wechat:    zhuda1024
-  * @Email:     lab1024@163.com
-  * @Copyright  1024创新实验室 （ https://1024lab.net ），Since 2012
--->
 <template>
   <!--
       中间内容，一共三部分：
@@ -69,7 +60,7 @@
   import SmartFooter from './components/smart-footer/index.vue';
   import { helpDocApi } from '/@/api/support/help-doc-api';
   import { helpDocCatalogApi } from '/@/api/support/help-doc-catalog-api';
-  import logoImg from '/@/assets/images/logo/smart-admin-logo-white.png';
+  import logoImg from '/@/assets/images/logo/logo.png';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
   import watermark from '../lib/smart-watermark';

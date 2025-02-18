@@ -1,12 +1,3 @@
-<!--
-  *  客服人员弹窗 
-  *
-  * @Author:    1024创新实验室-主任：卓大 
-  * @Date:      2022-09-06 20:40:16 
-  * @Wechat:    zhuda1024 
-  * @Email:     lab1024@163.com 
-  * @Copyright  1024创新实验室 （ https://1024lab.net ），Since 2012 
--->
 <template>
   <a-modal :open="visible" width="600px" title="联系客服人员" :closable="false" :maskClosable="true">
     <a-row><div style="margin-left: 180px;font-weight:bolder">客服(卓大)电话：18637925892 ;</div> </a-row>

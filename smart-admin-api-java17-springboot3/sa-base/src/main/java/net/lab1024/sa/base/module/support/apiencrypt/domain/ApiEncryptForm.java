@@ -9,4 +9,5 @@ import lombok.Data;
 public class ApiEncryptForm {
 
     private String encryptData;
+
 }

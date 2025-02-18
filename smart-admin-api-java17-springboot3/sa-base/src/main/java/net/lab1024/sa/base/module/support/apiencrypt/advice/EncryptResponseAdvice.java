@@ -1,9 +1,8 @@
 package net.lab1024.sa.base.module.support.apiencrypt.advice;
 
-import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.enumeration.DataTypeEnum;
@@ -21,14 +20,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  * 加密
  */
 @Slf4j
+@RequiredArgsConstructor
 @ControllerAdvice
 public class EncryptResponseAdvice implements ResponseBodyAdvice<ResponseDTO> {
 
-    @Resource
-    private ApiEncryptService apiEncryptService;
+    private final ObjectMapper objectMapper;
 
-    @Resource
-    private ObjectMapper objectMapper;
+    private final ApiEncryptService apiEncryptService;
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -37,20 +35,18 @@ public class EncryptResponseAdvice implements ResponseBodyAdvice<ResponseDTO> {
 
     @Override
     public ResponseDTO beforeBodyWrite(ResponseDTO body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        if (body.getData() == null) {
+        if (body == null || body.getData() == null) {
             return body;
         }
-
-        String encrypt = null;
         try {
-            encrypt = apiEncryptService.encrypt(objectMapper.writeValueAsString(body.getData()));
+            body.setData(apiEncryptService.encrypt(objectMapper.writeValueAsString(body.getData())));
+            body.setDataType(DataTypeEnum.ENCRYPT.getValue());
+            return body;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        body.setData(encrypt);
-        body.setDataType(DataTypeEnum.ENCRYPT.getValue());
-        return body;
     }
+
 }
 
 

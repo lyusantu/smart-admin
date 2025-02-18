@@ -22,9 +22,6 @@ import java.util.stream.Collectors;
 
 /**
  * 定时任务 作业启动类
- *
- * @author huke
- * @date 2024/6/17 21:30
  */
 @Slf4j
 public class SmartJobLauncher {
@@ -127,7 +124,7 @@ public class SmartJobLauncher {
      * @return
      */
     private List<SmartJobEntity> queryJob() {
-        return jobRepository.getJobDao().selectList(null);
+        return jobRepository.getJobMapper().selectList(null);
     }
 
     /**

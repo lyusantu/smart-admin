@@ -8,12 +8,7 @@ import java.time.LocalDate;
 
 /**
  * 登录失败 分页查询表单
- *
- * @Author 1024创新实验室-主任-卓大
- * @Date 2023-10-17 18:02:37
- * @Copyright 1024创新实验室
  */
-
 @Data
 public class LoginFailQueryForm extends PageParam {
 

@@ -9,9 +9,6 @@ import java.util.Map;
 
 /**
  * 消息发送form
- *
- * @author luoyi
- * @date 2024/06/22 20:20
  */
 @Data
 public class MessageTemplateSendForm {

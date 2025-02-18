@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * SmartReloadManager 管理器
- * <p>
  * 可以在此类中添加 检测任务 以及注册 处理程序
  */
 @Slf4j

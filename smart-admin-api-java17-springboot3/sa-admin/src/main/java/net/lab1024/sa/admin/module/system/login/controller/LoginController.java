@@ -35,7 +35,7 @@ public class LoginController {
 
     @NoNeedLogin
     @PostMapping("/login")
-    @Operation(summary = "登录 @author 卓大")
+    @Operation(summary = "登录")
     public ResponseDTO<LoginResultVO> login(@Valid @RequestBody LoginForm loginForm, HttpServletRequest request) {
         String ip = JakartaServletUtil.getClientIP(request);
         String userAgent = JakartaServletUtil.getHeaderIgnoreCase(request, RequestHeaderConst.USER_AGENT);
@@ -43,7 +43,7 @@ public class LoginController {
     }
 
     @GetMapping("/login/getLoginInfo")
-    @Operation(summary = "获取登录结果信息  @author 卓大")
+    @Operation(summary = "获取登录结果信息")
     public ResponseDTO<LoginResultVO> getLoginInfo() {
         String tokenValue = StpUtil.getTokenValue();
         LoginResultVO loginResult = loginService.getLoginResult(AdminRequestUtil.getRequestUser(), tokenValue);
@@ -57,7 +57,7 @@ public class LoginController {
         return loginService.logout(token, RequestUtil.getRequestUser());
     }
 
-    @Operation(summary = "获取验证码  @author 卓大")
+    @Operation(summary = "获取验证码")
     @GetMapping("/login/getCaptcha")
     @NoNeedLogin
     public ResponseDTO<CaptchaVO> getCaptcha() {
@@ -66,7 +66,7 @@ public class LoginController {
 
     @NoNeedLogin
     @GetMapping("/login/sendEmailCode/{loginName}")
-    @Operation(summary = "获取邮箱登录验证码 @author 卓大")
+    @Operation(summary = "获取邮箱登录验证码")
     public ResponseDTO<String> sendEmailCode(@PathVariable String loginName) {
         return loginService.sendEmailCode(loginName);
     }
@@ -74,7 +74,7 @@ public class LoginController {
 
     @NoNeedLogin
     @GetMapping("/login/getTwoFactorLoginFlag")
-    @Operation(summary = "获取双因子登录标识 @author 卓大")
+    @Operation(summary = "获取双因子登录标识")
     public ResponseDTO<Boolean> getTwoFactorLoginFlag() {
         // 双因子登录
         boolean twoFactorLoginEnabled = level3ProtectConfigService.isTwoFactorLoginEnabled();

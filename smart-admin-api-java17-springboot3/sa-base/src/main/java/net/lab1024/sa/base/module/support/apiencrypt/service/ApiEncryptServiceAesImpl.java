@@ -25,7 +25,7 @@ public class ApiEncryptServiceAesImpl implements ApiEncryptService {
 
     private static final String CHARSET = "UTF-8";
 
-    private static final String AES_KEY = "1024lab__1024lab";
+    private static final String AES_KEY = "__hello__world__";
 
     static {
         Security.addProvider(new BouncyCastleProvider());

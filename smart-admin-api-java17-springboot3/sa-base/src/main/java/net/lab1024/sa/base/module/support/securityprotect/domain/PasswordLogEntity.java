@@ -7,11 +7,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * @author yandy
- * @description:
- * @date 2024/7/15 1:39 下午
- */
 @Data
 @TableName("t_password_log")
 public class PasswordLogEntity {

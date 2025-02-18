@@ -3,12 +3,13 @@ package net.lab1024.sa.base.module.support.message.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
 import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.module.support.message.constant.MessageTemplateEnum;
-import net.lab1024.sa.base.module.support.message.dao.MessageDao;
+import net.lab1024.sa.base.module.support.message.mapper.MessageMapper;
 import net.lab1024.sa.base.module.support.message.domain.*;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.stereotype.Service;
@@ -16,25 +17,20 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * @author luoyi
- * @date 2024/6/27 12:14 上午
- */
+@RequiredArgsConstructor
 @Service
 public class MessageService {
 
-    @Resource
-    private MessageDao messageDao;
+    private final MessageMapper messageMapper;
 
-    @Resource
-    private MessageManager messageManager;
+    private final MessageManager messageManager;
 
     /**
      * 分页查询 消息
      */
     public PageResult<MessageVO> query(MessageQueryForm queryForm) {
         Page page = PageUtil.convert2PageQuery(queryForm);
-        List<MessageVO> messageVOList = messageDao.query(page, queryForm);
+        List<MessageVO> messageVOList = messageMapper.query(page, queryForm);
         return PageUtil.convert2PageResult(page, messageVOList);
     }
 
@@ -42,14 +38,14 @@ public class MessageService {
      * 查询未读消息数量
      */
     public Long getUnreadCount(UserTypeEnum userType, Long userId) {
-        return messageDao.getUnreadCount(userType.getValue(), userId);
+        return messageMapper.getUnreadCount(userType.getValue(), userId);
     }
 
     /**
      * 更新已读状态
      */
     public void updateReadFlag(Long messageId, UserTypeEnum userType, Long receiverUserId) {
-        messageDao.updateReadFlag(messageId, userType.getValue(), receiverUserId, true);
+        messageMapper.updateReadFlag(messageId, userType.getValue(), receiverUserId, true);
     }
 
 

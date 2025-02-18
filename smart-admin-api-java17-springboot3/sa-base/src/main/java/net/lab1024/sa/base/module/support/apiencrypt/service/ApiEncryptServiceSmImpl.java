@@ -22,7 +22,7 @@ import java.util.Base64;
 public class ApiEncryptServiceSmImpl implements ApiEncryptService {
 
     private static final String CHARSET = "UTF-8";
-    private static final String SM4_KEY = "1024lab__1024lab";
+    private static final String SM4_KEY = "__hello__world__";
 
     static {
         Security.addProvider(new BouncyCastleProvider());

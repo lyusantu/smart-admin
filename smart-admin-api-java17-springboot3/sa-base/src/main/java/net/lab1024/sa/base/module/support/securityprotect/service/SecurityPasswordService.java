@@ -4,7 +4,7 @@ import jakarta.annotation.Resource;
 import net.lab1024.sa.base.common.domain.RequestUser;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.StringUtil;
-import net.lab1024.sa.base.module.support.securityprotect.dao.PasswordLogDao;
+import net.lab1024.sa.base.module.support.securityprotect.mapper.PasswordLogMapper;
 import net.lab1024.sa.base.module.support.securityprotect.domain.PasswordLogEntity;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -16,12 +16,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 三级等保 密码 相关
- *
- * @Author 1024创新实验室-主任:卓大
- * @Date 2023/10/11 19:25:59
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>，Since 2012
  */
 
 @Service
@@ -41,7 +35,7 @@ public class SecurityPasswordService {
 
 
     @Resource
-    private PasswordLogDao passwordLogDao;
+    private PasswordLogMapper passwordLogDao;
 
     @Resource
     private Level3ProtectConfigService level3ProtectConfigService;

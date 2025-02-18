@@ -1,4 +1,4 @@
-package net.lab1024.sa.base.module.support.securityprotect.dao;
+package net.lab1024.sa.base.module.support.securityprotect.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,16 +13,10 @@ import java.util.List;
 
 /**
  * 登录失败
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022/07/22 19:46:23
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Mapper
 @Component
-public interface LoginFailDao extends BaseMapper<LoginFailEntity> {
+public interface LoginFailMapper extends BaseMapper<LoginFailEntity> {
 
     /**
      * 根据用户id和类型查询

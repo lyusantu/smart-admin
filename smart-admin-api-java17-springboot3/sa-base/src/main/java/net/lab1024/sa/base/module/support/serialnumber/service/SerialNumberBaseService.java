@@ -8,7 +8,7 @@ import net.lab1024.sa.base.common.util.EnumUtil;
 import net.lab1024.sa.base.module.support.serialnumber.constant.SerialNumberIdEnum;
 import net.lab1024.sa.base.module.support.serialnumber.constant.SerialNumberRuleTypeEnum;
 import net.lab1024.sa.base.module.support.serialnumber.mapper.SerialNumberMapper;
-import net.lab1024.sa.base.module.support.serialnumber.mapper.SerialNumberRecordDao;
+import net.lab1024.sa.base.module.support.serialnumber.mapper.SerialNumberRecordMapper;
 import net.lab1024.sa.base.module.support.serialnumber.domain.*;
 import org.apache.commons.lang3.RandomUtils;
 
@@ -20,17 +20,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 单据序列号 基类
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-03-25 21:46:07
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 public abstract class SerialNumberBaseService implements SerialNumberService {
 
     @Resource
-    protected SerialNumberRecordDao serialNumberRecordDao;
+    protected SerialNumberRecordMapper serialNumberRecordDao;
 
     @Resource
     protected SerialNumberMapper serialNumberDao;

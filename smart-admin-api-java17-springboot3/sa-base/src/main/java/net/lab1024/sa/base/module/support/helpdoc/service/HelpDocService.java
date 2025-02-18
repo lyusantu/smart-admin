@@ -2,11 +2,12 @@ package net.lab1024.sa.base.module.support.helpdoc.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
-import net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocDao;
+import net.lab1024.sa.base.module.support.helpdoc.mapper.HelpDocMapper;
 import net.lab1024.sa.base.module.support.helpdoc.domain.entity.HelpDocEntity;
 import net.lab1024.sa.base.module.support.helpdoc.domain.form.HelpDocAddForm;
 import net.lab1024.sa.base.module.support.helpdoc.domain.form.HelpDocQueryForm;
@@ -21,21 +22,14 @@ import java.util.List;
 
 /**
  * 后台管理业务
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-08-20 23:11:42
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class HelpDocService {
 
-    @Resource
-    private HelpDocDao helpDocDao;
+    private final HelpDocMapper helpDocMapper;
 
-    @Resource
-    private HelpDocManager helpDaoManager;
+    private final HelpDocManager helpDaoManager;
 
 
     /**
@@ -46,7 +40,7 @@ public class HelpDocService {
      */
     public PageResult<HelpDocVO> query(HelpDocQueryForm queryForm) {
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<HelpDocVO> list = helpDocDao.query(page, queryForm);
+        List<HelpDocVO> list = helpDocMapper.query(page, queryForm);
         return PageUtil.convert2PageResult(page, list);
     }
 
@@ -85,10 +79,10 @@ public class HelpDocService {
      */
     @Transactional(rollbackFor = Exception.class)
     public ResponseDTO<String> delete(Long helpDocId) {
-        HelpDocEntity helpDaoEntity = helpDocDao.selectById(helpDocId);
+        HelpDocEntity helpDaoEntity = helpDocMapper.selectById(helpDocId);
         if (helpDaoEntity != null) {
-            helpDocDao.deleteById(helpDocId);
-            helpDocDao.deleteRelation(helpDocId);
+            helpDocMapper.deleteById(helpDocId);
+            helpDocMapper.deleteRelation(helpDocId);
         }
         return ResponseDTO.ok();
     }
@@ -100,10 +94,10 @@ public class HelpDocService {
      * @return
      */
     public HelpDocDetailVO getDetail(Long helpDocId) {
-        HelpDocEntity helpDaoEntity = helpDocDao.selectById(helpDocId);
+        HelpDocEntity helpDaoEntity = helpDocMapper.selectById(helpDocId);
         HelpDocDetailVO detail = BeanUtil.copy(helpDaoEntity, HelpDocDetailVO.class);
         if (detail != null) {
-            detail.setRelationList(helpDocDao.queryRelationByHelpDoc(helpDocId));
+            detail.setRelationList(helpDocMapper.queryRelationByHelpDoc(helpDocId));
         }
         return detail;
     }
@@ -115,6 +109,6 @@ public class HelpDocService {
      * @return
      */
     public List<HelpDocVO> queryHelpDocByRelationId(Long relationId) {
-        return helpDocDao.queryHelpDocByRelationId(relationId);
+        return helpDocMapper.queryHelpDocByRelationId(relationId);
     }
 }

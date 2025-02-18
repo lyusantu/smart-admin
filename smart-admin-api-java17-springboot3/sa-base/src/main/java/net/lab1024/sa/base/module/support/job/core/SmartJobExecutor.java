@@ -18,9 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 定时任务 执行器
- *
- * @author huke
- * @date 2024/6/17 21:30
  */
 @Slf4j
 public class SmartJobExecutor implements Runnable {
@@ -59,7 +56,7 @@ public class SmartJobExecutor implements Runnable {
                 return;
             }
             // 查询上次执行时间 校验执行间隔
-            SmartJobEntity dbJobEntity = jobRepository.getJobDao().selectById(jobId);
+            SmartJobEntity dbJobEntity = jobRepository.getJobMapper().selectById(jobId);
             if (null == dbJobEntity) {
                 return;
             }
@@ -118,7 +115,7 @@ public class SmartJobExecutor implements Runnable {
         logEntity.setExecuteTimeMillis(totalTimeMillis);
         logEntity.setExecuteEndTime(startTime.plus(totalTimeMillis, ChronoUnit.MILLIS));
         logEntity.setExecuteResult(executeResult);
-        jobRepository.getJobLogDao().updateById(logEntity);
+        jobRepository.getJobLogMapper().updateById(logEntity);
         return logEntity;
     }
 

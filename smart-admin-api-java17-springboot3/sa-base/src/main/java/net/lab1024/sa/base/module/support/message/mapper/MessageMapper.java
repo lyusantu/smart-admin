@@ -1,4 +1,4 @@
-package net.lab1024.sa.base.module.support.message.dao;
+package net.lab1024.sa.base.module.support.message.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,13 +13,10 @@ import java.util.List;
 
 /**
  * 消息 接受者类型枚举
- *
- * @author luoyi
- * @date 2024/06/22 20:20
  */
 @Component
 @Mapper
-public interface MessageDao extends BaseMapper<MessageEntity> {
+public interface MessageMapper extends BaseMapper<MessageEntity> {
 
     /**
      * 分页查询消息

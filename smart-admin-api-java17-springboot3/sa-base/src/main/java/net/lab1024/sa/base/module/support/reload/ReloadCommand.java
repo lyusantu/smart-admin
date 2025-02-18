@@ -1,12 +1,13 @@
 package net.lab1024.sa.base.module.support.reload;
 
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.util.BeanUtil;
 import net.lab1024.sa.base.module.support.reload.core.AbstractSmartReloadCommand;
 import net.lab1024.sa.base.module.support.reload.core.domain.SmartReloadItem;
 import net.lab1024.sa.base.module.support.reload.core.domain.SmartReloadResult;
-import net.lab1024.sa.base.module.support.reload.dao.ReloadItemDao;
-import net.lab1024.sa.base.module.support.reload.dao.ReloadResultDao;
+import net.lab1024.sa.base.module.support.reload.mapper.ReloadItemMapper;
+import net.lab1024.sa.base.module.support.reload.mapper.ReloadResultMapper;
 import net.lab1024.sa.base.module.support.reload.domain.ReloadItemEntity;
 import net.lab1024.sa.base.module.support.reload.domain.ReloadResultEntity;
 import org.springframework.stereotype.Component;
@@ -15,21 +16,14 @@ import java.util.List;
 
 /**
  * reload 操作
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2015-03-02 19:11:52
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Component
 public class ReloadCommand extends AbstractSmartReloadCommand {
 
-    @Resource
-    private ReloadItemDao reloadItemDao;
+    private final ReloadItemMapper reloadItemMapper;
 
-    @Resource
-    private ReloadResultDao reloadResultDao;
+    private final ReloadResultMapper reloadResultMapper;
 
     /**
      * 读取数据库中SmartReload项
@@ -38,7 +32,7 @@ public class ReloadCommand extends AbstractSmartReloadCommand {
      */
     @Override
     public List<SmartReloadItem> readReloadItem() {
-        List<ReloadItemEntity> reloadItemEntityList = reloadItemDao.selectList(null);
+        List<ReloadItemEntity> reloadItemEntityList = reloadItemMapper.selectList(null);
         return BeanUtil.copyList(reloadItemEntityList, SmartReloadItem.class);
     }
 
@@ -51,6 +45,6 @@ public class ReloadCommand extends AbstractSmartReloadCommand {
     @Override
     public void handleReloadResult(SmartReloadResult smartReloadResult) {
         ReloadResultEntity reloadResultEntity = BeanUtil.copy(smartReloadResult, ReloadResultEntity.class);
-        reloadResultDao.insert(reloadResultEntity);
+        reloadResultMapper.insert(reloadResultEntity);
     }
 }

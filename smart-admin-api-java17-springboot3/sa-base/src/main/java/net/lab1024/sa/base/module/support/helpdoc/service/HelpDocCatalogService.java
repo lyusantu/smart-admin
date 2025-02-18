@@ -1,10 +1,10 @@
 package net.lab1024.sa.base.module.support.helpdoc.service;
 
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.util.BeanUtil;
-import net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocCatalogDao;
-import net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocDao;
+import net.lab1024.sa.base.module.support.helpdoc.mapper.HelpDocCatalogMapper;
+import net.lab1024.sa.base.module.support.helpdoc.mapper.HelpDocMapper;
 import net.lab1024.sa.base.module.support.helpdoc.domain.entity.HelpDocCatalogEntity;
 import net.lab1024.sa.base.module.support.helpdoc.domain.form.HelpDocCatalogAddForm;
 import net.lab1024.sa.base.module.support.helpdoc.domain.form.HelpDocCatalogUpdateForm;
@@ -18,21 +18,14 @@ import java.util.Optional;
 
 /**
  * 帮助文档 目录
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-08-20 23:11:42
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class HelpDocCatalogService {
 
-    @Resource
-    private HelpDocCatalogDao helpDocCatalogDao;
+    private final HelpDocMapper helpDocMapper;
 
-    @Resource
-    private HelpDocDao helpDocDao;
+    private final HelpDocCatalogMapper helpDocCatalogMapper;
 
     /**
      * 查询全部目录
@@ -40,7 +33,7 @@ public class HelpDocCatalogService {
      * @return
      */
     public List<HelpDocCatalogVO> getAll() {
-        return BeanUtil.copyList(helpDocCatalogDao.selectList(null), HelpDocCatalogVO.class);
+        return BeanUtil.copyList(helpDocCatalogMapper.selectList(null), HelpDocCatalogVO.class);
     }
 
     /**
@@ -56,7 +49,7 @@ public class HelpDocCatalogService {
             return ResponseDTO.userErrorParam("存在相同名称的目录了");
         }
 
-        helpDocCatalogDao.insert(BeanUtil.copy(helpDocCatalogAddForm, HelpDocCatalogEntity.class));
+        helpDocCatalogMapper.insert(BeanUtil.copy(helpDocCatalogAddForm, HelpDocCatalogEntity.class));
         return ResponseDTO.ok();
     }
 
@@ -67,7 +60,7 @@ public class HelpDocCatalogService {
      * @return
      */
     public synchronized ResponseDTO<String> update(HelpDocCatalogUpdateForm updateForm) {
-        HelpDocCatalogEntity helpDocCatalogEntity = helpDocCatalogDao.selectById(updateForm.getHelpDocCatalogId());
+        HelpDocCatalogEntity helpDocCatalogEntity = helpDocCatalogMapper.selectById(updateForm.getHelpDocCatalogId());
         if (helpDocCatalogEntity == null) {
             return ResponseDTO.userErrorParam("目录不存在");
         }
@@ -77,7 +70,7 @@ public class HelpDocCatalogService {
         if (exist.isPresent() && !exist.get().getHelpDocCatalogId().equals(updateForm.getHelpDocCatalogId())) {
             return ResponseDTO.userErrorParam("存在相同名称的目录了");
         }
-        helpDocCatalogDao.updateById(BeanUtil.copy(updateForm, HelpDocCatalogEntity.class));
+        helpDocCatalogMapper.updateById(BeanUtil.copy(updateForm, HelpDocCatalogEntity.class));
         return ResponseDTO.ok();
     }
 
@@ -92,7 +85,7 @@ public class HelpDocCatalogService {
             return ResponseDTO.ok();
         }
 
-        HelpDocCatalogEntity helpDocCatalogEntity = helpDocCatalogDao.selectById(helpDocCatalogId);
+        HelpDocCatalogEntity helpDocCatalogEntity = helpDocCatalogMapper.selectById(helpDocCatalogId);
         if (helpDocCatalogEntity == null) {
             return ResponseDTO.userErrorParam("目录不存在");
         }
@@ -104,11 +97,11 @@ public class HelpDocCatalogService {
         }
 
         //查询是否有帮助文档
-        List<HelpDocVO> helpDocVOList = helpDocDao.queryHelpDocByCatalogId(helpDocCatalogId);
+        List<HelpDocVO> helpDocVOList = helpDocMapper.queryHelpDocByCatalogId(helpDocCatalogId);
         if (CollectionUtils.isNotEmpty(helpDocVOList)) {
             return ResponseDTO.userErrorParam("目录下存在文档，不能删除");
         }
-        helpDocCatalogDao.deleteById(helpDocCatalogId);
+        helpDocCatalogMapper.deleteById(helpDocCatalogId);
         return ResponseDTO.ok();
     }
 

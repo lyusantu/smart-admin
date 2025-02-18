@@ -1,7 +1,7 @@
 package net.lab1024.sa.base.module.support.helpdoc.manager;
 
-import jakarta.annotation.Resource;
-import net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocDao;
+import lombok.RequiredArgsConstructor;
+import net.lab1024.sa.base.module.support.helpdoc.mapper.HelpDocMapper;
 import net.lab1024.sa.base.module.support.helpdoc.domain.entity.HelpDocEntity;
 import net.lab1024.sa.base.module.support.helpdoc.domain.form.HelpDocRelationForm;
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,18 +12,12 @@ import java.util.List;
 
 /**
  * 帮助文档 manager
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-08-20 23:11:42
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class HelpDocManager {
 
-    @Resource
-    private HelpDocDao helpDocDao;
+    private final HelpDocMapper helpDocMapper;
 
     /**
      * 保存
@@ -33,11 +27,11 @@ public class HelpDocManager {
      */
     @Transactional(rollbackFor = Throwable.class)
     public void save(HelpDocEntity helpDocEntity, List<HelpDocRelationForm> relationList) {
-        helpDocDao.insert(helpDocEntity);
+        helpDocMapper.insert(helpDocEntity);
         Long helpDocId = helpDocEntity.getHelpDocId();
         // 保存关联
         if (CollectionUtils.isNotEmpty(relationList)) {
-            helpDocDao.insertRelation(helpDocId, relationList);
+            helpDocMapper.insertRelation(helpDocId, relationList);
         }
     }
 
@@ -49,12 +43,12 @@ public class HelpDocManager {
      */
     @Transactional(rollbackFor = Throwable.class)
     public void update(HelpDocEntity helpDocEntity, List<HelpDocRelationForm> relationList) {
-        helpDocDao.updateById(helpDocEntity);
+        helpDocMapper.updateById(helpDocEntity);
         Long helpDocId = helpDocEntity.getHelpDocId();
         // 保存关联
         if (CollectionUtils.isNotEmpty(relationList)) {
-            helpDocDao.deleteRelation(helpDocId);
-            helpDocDao.insertRelation(helpDocId, relationList);
+            helpDocMapper.deleteRelation(helpDocId);
+            helpDocMapper.insertRelation(helpDocId, relationList);
         }
     }
 }

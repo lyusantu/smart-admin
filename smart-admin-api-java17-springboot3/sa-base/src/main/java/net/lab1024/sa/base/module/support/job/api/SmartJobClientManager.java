@@ -26,9 +26,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * smart job 执行端管理
  * 分布式系统之间 用发布/订阅消息的形式 来管理多个job
- *
- * @author huke
- * @date 2024/6/22 20:31
  */
 @ConditionalOnBean(SmartJobAutoConfiguration.class)
 @Slf4j
@@ -112,7 +109,7 @@ public class SmartJobClientManager {
      * @param jobId
      */
     private void updateJob(Integer jobId) {
-        SmartJobEntity jobEntity = jobRepository.getJobDao().selectById(jobId);
+        SmartJobEntity jobEntity = jobRepository.getJobMapper().selectById(jobId);
         if (null == jobEntity) {
             return;
         }
@@ -126,7 +123,7 @@ public class SmartJobClientManager {
      */
     private void executeJob(SmartJobMsg msg) {
         Integer jobId = msg.getJobId();
-        SmartJobEntity jobEntity = jobRepository.getJobDao().selectById(jobId);
+        SmartJobEntity jobEntity = jobRepository.getJobMapper().selectById(jobId);
         if (null == jobEntity) {
             return;
         }

@@ -8,6 +8,7 @@ import freemarker.template.Template;
 import jakarta.annotation.Resource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.domain.SystemEnvironment;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -32,29 +34,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
- * 发生邮件：<br/>
- * 1、支持直接发送 <br/>
+ * 发送邮件：
+ * 1、支持直接发送
  * 2、支持使用邮件模板发送
- *
- * @Author 1024创新实验室-创始人兼主任:卓大
- * @Date 2024/8/5
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a> ，Since 2012
  */
 @Slf4j
-@Component
+@RequiredArgsConstructor
+@Service
 public class MailService {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
-    @Resource
-    private MailTemplateDao mailTemplateDao;
+    private final MailTemplateMapper mailTemplateMapper;
 
-    @Resource
-    private SystemEnvironment systemEnvironment;
+    private final SystemEnvironment systemEnvironment;
 
     @Value("${spring.mail.username}")
     private String clientMail;
@@ -65,7 +58,7 @@ public class MailService {
      */
     public ResponseDTO<String> sendMail(MailTemplateCodeEnum templateCode, Map<String, Object> templateParamsMap, List<String> receiverUserList, List<File> fileList) {
 
-        MailTemplateEntity mailTemplateEntity = mailTemplateDao.selectById(templateCode.name().toLowerCase());
+        MailTemplateEntity mailTemplateEntity = mailTemplateMapper.selectById(templateCode.name().toLowerCase());
         if (mailTemplateEntity == null) {
             return ResponseDTO.userErrorParam("模版不存在");
         }

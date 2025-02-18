@@ -9,12 +9,6 @@ import java.util.function.Function;
 
 /**
  * 凭证（内存实现）
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2020-11-25 20:56:58
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 public class RepeatSubmitCaffeineTicket extends AbstractRepeatSubmitTicket {
 

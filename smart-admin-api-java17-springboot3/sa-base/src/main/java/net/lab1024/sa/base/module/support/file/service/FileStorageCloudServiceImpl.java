@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.lab1024.sa.base.common.code.SystemErrorCode;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
@@ -14,7 +15,7 @@ import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.config.FileConfig;
 import net.lab1024.sa.base.constant.RedisKeyConst;
 import net.lab1024.sa.base.module.support.file.constant.FileFolderTypeEnum;
-import net.lab1024.sa.base.module.support.file.dao.FileDao;
+import net.lab1024.sa.base.module.support.file.mapper.FileMapper;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileDownloadVO;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileMetadataVO;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileUploadVO;
@@ -40,12 +41,6 @@ import java.util.UUID;
 
 /**
  * 云计算 实现
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2019年10月11日 15:34:47
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Slf4j
 public class FileStorageCloudServiceImpl implements IFileStorageService {
@@ -71,11 +66,9 @@ public class FileStorageCloudServiceImpl implements IFileStorageService {
     @Resource
     private FileConfig cloudConfig;
 
-    @Resource
     private RedisService redisService;
 
-    @Resource
-    private FileDao fileDao;
+    private FileMapper fileMapper;
 
     @Override
     public ResponseDTO<FileUploadVO> upload(MultipartFile file, String path) {
@@ -155,7 +148,7 @@ public class FileStorageCloudServiceImpl implements IFileStorageService {
         String fileRedisKey = RedisKeyConst.Support.FILE_PRIVATE_VO + fileKey;
         FileVO fileVO = redisService.getObject(fileRedisKey, FileVO.class);
         if (fileVO == null) {
-            fileVO = fileDao.getByFileKey(fileKey);
+            fileVO = fileMapper.getByFileKey(fileKey);
             if (fileVO == null) {
                 return ResponseDTO.userErrorParam("文件不存在");
             }

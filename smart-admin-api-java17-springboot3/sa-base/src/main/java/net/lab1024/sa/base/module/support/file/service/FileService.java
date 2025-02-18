@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.constant.StringConst;
 import net.lab1024.sa.base.common.domain.page.PageResult;
@@ -13,7 +14,7 @@ import net.lab1024.sa.base.common.util.EnumUtil;
 import net.lab1024.sa.base.common.util.PageUtil;
 import net.lab1024.sa.base.common.util.StringUtil;
 import net.lab1024.sa.base.module.support.file.constant.FileFolderTypeEnum;
-import net.lab1024.sa.base.module.support.file.dao.FileDao;
+import net.lab1024.sa.base.module.support.file.mapper.FileMapper;
 import net.lab1024.sa.base.module.support.file.domain.entity.FileEntity;
 import net.lab1024.sa.base.module.support.file.domain.form.FileQueryForm;
 import net.lab1024.sa.base.module.support.file.domain.vo.FileDownloadVO;
@@ -34,13 +35,8 @@ import java.util.stream.Collectors;
 
 /**
  * 文件服务
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2019年10月11日 15:34:47
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
+@RequiredArgsConstructor
 @Service
 public class FileService {
 
@@ -49,17 +45,13 @@ public class FileService {
      */
     private static final int FILE_NAME_MAX_LENGTH = 100;
 
-    @Resource
-    private IFileStorageService fileStorageService;
+    private final IFileStorageService fileStorageService;
 
-    @Resource
-    private FileDao fileDao;
+    private final FileMapper fileMapper;
 
-    @Resource
-    private RedisService redisService;
+    private final RedisService redisService;
 
-    @Resource
-    private SecurityFileService securityFileService;
+    private final SecurityFileService securityFileService;
 
     /**
      * 文件上传服务
@@ -111,7 +103,7 @@ public class FileService {
         fileEntity.setCreatorId(requestUser == null ? null : requestUser.getUserId());
         fileEntity.setCreatorName(requestUser == null ? null : requestUser.getUserName());
         fileEntity.setCreatorUserType(requestUser == null ? null : requestUser.getUserType().getValue());
-        fileDao.insert(fileEntity);
+        fileMapper.insert(fileEntity);
 
         // 将fileId 返回给前端
         uploadVO.setFileId(fileEntity.getFileId());
@@ -132,7 +124,7 @@ public class FileService {
 
         // 查询数据库，并获取 file url
         HashSet<String> fileKeySet = new HashSet<>(fileKeyList);
-        Map<String, FileVO> fileMap = fileDao.selectByFileKeyList(fileKeySet)
+        Map<String, FileVO> fileMap = fileMapper.selectByFileKeyList(fileKeySet)
                 .stream().collect(Collectors.toMap(FileVO::getFileKey, Function.identity()));
 
         for (FileVO fileVO : fileMap.values()) {
@@ -183,7 +175,7 @@ public class FileService {
      * 根据文件服务类型 和 FileKey 下载文件
      */
     public ResponseDTO<FileDownloadVO> getDownloadFile(String fileKey, String userAgent) {
-        FileVO fileVO = fileDao.getByFileKey(fileKey);
+        FileVO fileVO = fileMapper.getByFileKey(fileKey);
         if (fileVO == null) {
             return ResponseDTO.userErrorParam("文件不存在");
         }
@@ -201,7 +193,7 @@ public class FileService {
      */
     public PageResult<FileVO> queryPage(FileQueryForm queryForm) {
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<FileVO> list = fileDao.queryPage(page, queryForm);
+        List<FileVO> list = fileMapper.queryPage(page, queryForm);
         return PageUtil.convert2PageResult(page, list);
     }
 

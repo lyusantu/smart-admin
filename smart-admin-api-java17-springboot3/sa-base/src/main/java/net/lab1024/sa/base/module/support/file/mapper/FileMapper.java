@@ -1,4 +1,4 @@
-package net.lab1024.sa.base.module.support.file.dao;
+package net.lab1024.sa.base.module.support.file.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,16 +14,10 @@ import java.util.List;
 
 /**
  * 文件服务
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2019年10月11日 15:34:47
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Mapper
 @Component
-public interface FileDao extends BaseMapper<FileEntity> {
+public interface FileMapper extends BaseMapper<FileEntity> {
 
     /**
      * 文件key单个查询

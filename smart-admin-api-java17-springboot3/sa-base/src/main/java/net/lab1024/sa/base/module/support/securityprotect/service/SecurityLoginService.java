@@ -8,7 +8,7 @@ import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
 import net.lab1024.sa.base.common.enumeration.UserTypeEnum;
 import net.lab1024.sa.base.common.util.PageUtil;
-import net.lab1024.sa.base.module.support.securityprotect.dao.LoginFailDao;
+import net.lab1024.sa.base.module.support.securityprotect.mapper.LoginFailMapper;
 import net.lab1024.sa.base.module.support.securityprotect.domain.LoginFailEntity;
 import net.lab1024.sa.base.module.support.securityprotect.domain.LoginFailQueryForm;
 import net.lab1024.sa.base.module.support.securityprotect.domain.LoginFailVO;
@@ -20,12 +20,6 @@ import java.util.List;
 
 /**
  * 三级等保 登录 相关
- *
- * @Author 1024创新实验室-主任:卓大
- * @Date 2023/10/11 19:25:59
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>，Since 2012
  */
 
 @Service
@@ -39,7 +33,7 @@ public class SecurityLoginService {
     private Level3ProtectConfigService level3ProtectConfigService;
 
     @Resource
-    private LoginFailDao loginFailDao;
+    private LoginFailMapper loginFailDao;
 
 
     /**

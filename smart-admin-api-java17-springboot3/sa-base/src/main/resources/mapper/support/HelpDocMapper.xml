@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="net.lab1024.sa.base.module.support.helpdoc.dao.HelpDocDao">
+<mapper namespace="net.lab1024.sa.base.module.support.helpdoc.mapper.HelpDocMapper">
 
 
     <!-- ================================== 帮助文档【主表 t_help_doc 】 ================================== -->

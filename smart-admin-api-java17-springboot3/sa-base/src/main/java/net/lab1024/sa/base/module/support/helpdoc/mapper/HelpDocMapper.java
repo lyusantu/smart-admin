@@ -1,4 +1,4 @@
-package net.lab1024.sa.base.module.support.helpdoc.dao;
+package net.lab1024.sa.base.module.support.helpdoc.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,17 +16,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 帮助文档 dao
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022-08-20 23:11:42
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
+ * 帮助文档 Mapper
  */
 @Mapper
 @Component
-public interface HelpDocDao extends BaseMapper<HelpDocEntity> {
+public interface HelpDocMapper extends BaseMapper<HelpDocEntity> {
 
     // ================================= 帮助文档【主表 t_help_doc 】   =================================
 

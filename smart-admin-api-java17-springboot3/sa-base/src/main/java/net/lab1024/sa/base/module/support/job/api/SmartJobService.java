@@ -2,7 +2,7 @@ package net.lab1024.sa.base.module.support.job.api;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.RequestUser;
@@ -13,8 +13,8 @@ import net.lab1024.sa.base.module.support.job.api.domain.*;
 import net.lab1024.sa.base.module.support.job.config.SmartJobAutoConfiguration;
 import net.lab1024.sa.base.module.support.job.constant.SmartJobTriggerTypeEnum;
 import net.lab1024.sa.base.module.support.job.constant.SmartJobUtil;
-import net.lab1024.sa.base.module.support.job.repository.SmartJobDao;
-import net.lab1024.sa.base.module.support.job.repository.SmartJobLogDao;
+import net.lab1024.sa.base.module.support.job.repository.SmartJobMapper;
+import net.lab1024.sa.base.module.support.job.repository.SmartJobLogMapper;
 import net.lab1024.sa.base.module.support.job.repository.domain.SmartJobEntity;
 import net.lab1024.sa.base.module.support.job.repository.domain.SmartJobLogEntity;
 import org.apache.commons.collections4.CollectionUtils;
@@ -31,22 +31,17 @@ import java.util.stream.Collectors;
 /**
  * 定时任务 接口业务管理
  * 如果不需要通过接口管理定时任务 可以删除此类
- *
- * @author huke
- * @date 2024/6/17 20:41
  */
 @ConditionalOnBean(SmartJobAutoConfiguration.class)
+@RequiredArgsConstructor
 @Service
 public class SmartJobService {
 
-    @Resource
-    private SmartJobDao jobDao;
+    private final SmartJobMapper jobMapper;
 
-    @Resource
-    private SmartJobLogDao jobLogDao;
+    private final SmartJobLogMapper jobLogMapper;
 
-    @Resource
-    private SmartJobClientManager jobClientManager;
+    private final SmartJobClientManager jobClientManager;
 
     /**
      * 查询 定时任务详情
@@ -55,7 +50,7 @@ public class SmartJobService {
      * @return
      */
     public ResponseDTO<SmartJobVO> queryJobInfo(Integer jobId) {
-        SmartJobEntity jobEntity = jobDao.selectById(jobId);
+        SmartJobEntity jobEntity = jobMapper.selectById(jobId);
         if (null == jobEntity) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
@@ -73,7 +68,7 @@ public class SmartJobService {
      */
     public ResponseDTO<PageResult<SmartJobVO>> queryJob(SmartJobQueryForm queryForm) {
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<SmartJobVO> jobList = jobDao.query(page, queryForm);
+        List<SmartJobVO> jobList = jobMapper.query(page, queryForm);
         PageResult<SmartJobVO> pageResult = PageUtil.convert2PageResult(page, jobList);
         // 处理设置job详情
         this.handleJobInfo(jobList);
@@ -93,7 +88,7 @@ public class SmartJobService {
         List<Long> logIdList = jobList.stream().map(SmartJobVO::getLastExecuteLogId).filter(Objects::nonNull).collect(Collectors.toList());
         Map<Long, SmartJobLogVO> lastLogMap = Collections.emptyMap();
         if (CollectionUtils.isNotEmpty(logIdList)) {
-            lastLogMap = jobLogDao.selectBatchIds(logIdList)
+            lastLogMap = jobLogMapper.selectBatchIds(logIdList)
                     .stream()
                     .collect(Collectors.toMap(SmartJobLogEntity::getLogId, e -> BeanUtil.copy(e, SmartJobLogVO.class)));
         }
@@ -121,7 +116,7 @@ public class SmartJobService {
      */
     public ResponseDTO<PageResult<SmartJobLogVO>> queryJobLog(SmartJobLogQueryForm queryForm) {
         Page<?> page = PageUtil.convert2PageQuery(queryForm);
-        List<SmartJobLogVO> jobList = jobLogDao.query(page, queryForm);
+        List<SmartJobLogVO> jobList = jobLogMapper.query(page, queryForm);
         PageResult<SmartJobLogVO> pageResult = PageUtil.convert2PageResult(page, jobList);
         return ResponseDTO.ok(pageResult);
     }
@@ -140,14 +135,14 @@ public class SmartJobService {
         }
 
         // 校验重复的执行类
-        SmartJobEntity existJobClass = jobDao.selectByJobClass(addForm.getJobClass());
+        SmartJobEntity existJobClass = jobMapper.selectByJobClass(addForm.getJobClass());
         if (null != existJobClass && !existJobClass.getDeletedFlag()) {
             return ResponseDTO.userErrorParam("已经存在相同的执行类");
         }
 
         // 添加数据
         SmartJobEntity jobEntity = BeanUtil.copy(addForm, SmartJobEntity.class);
-        jobDao.insert(jobEntity);
+        jobMapper.insert(jobEntity);
 
         // 更新执行端
         SmartJobMsg jobMsg = new SmartJobMsg();
@@ -167,7 +162,7 @@ public class SmartJobService {
     public synchronized ResponseDTO<String> updateJob(SmartJobUpdateForm updateForm) {
         // 校验参数
         Integer jobId = updateForm.getJobId();
-        SmartJobEntity jobEntity = jobDao.selectById(jobId);
+        SmartJobEntity jobEntity = jobMapper.selectById(jobId);
         if (null == jobEntity) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
@@ -178,14 +173,14 @@ public class SmartJobService {
         }
 
         // 校验重复的执行类
-        SmartJobEntity existJobClass = jobDao.selectByJobClass(updateForm.getJobClass());
+        SmartJobEntity existJobClass = jobMapper.selectByJobClass(updateForm.getJobClass());
         if (null != existJobClass && !existJobClass.getDeletedFlag() && !existJobClass.getJobId().equals(jobId)) {
             return ResponseDTO.userErrorParam("已经存在相同的执行类");
         }
 
         // 更新数据
         jobEntity = BeanUtil.copy(updateForm, SmartJobEntity.class);
-        jobDao.updateById(jobEntity);
+        jobMapper.updateById(jobEntity);
 
         // 更新执行端
         SmartJobMsg jobMsg = new SmartJobMsg();
@@ -225,7 +220,7 @@ public class SmartJobService {
      */
     public ResponseDTO<String> updateJobEnabled(SmartJobEnabledUpdateForm updateForm) {
         Integer jobId = updateForm.getJobId();
-        SmartJobEntity jobEntity = jobDao.selectById(jobId);
+        SmartJobEntity jobEntity = jobMapper.selectById(jobId);
         if (null == jobEntity) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
@@ -238,7 +233,7 @@ public class SmartJobService {
         jobEntity.setJobId(jobId);
         jobEntity.setEnabledFlag(enabledFlag);
         jobEntity.setUpdateName(updateForm.getUpdateName());
-        jobDao.updateById(jobEntity);
+        jobMapper.updateById(jobEntity);
 
         // 更新执行端
         SmartJobMsg jobMsg = new SmartJobMsg();
@@ -258,7 +253,7 @@ public class SmartJobService {
      */
     public ResponseDTO<String> execute(SmartJobExecuteForm executeForm) {
         Integer jobId = executeForm.getJobId();
-        SmartJobEntity jobEntity = jobDao.selectById(jobId);
+        SmartJobEntity jobEntity = jobMapper.selectById(jobId);
         if (null == jobEntity) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
@@ -282,7 +277,7 @@ public class SmartJobService {
      */
     public synchronized ResponseDTO<String> deleteJob(Integer jobId, RequestUser requestUser) {
         // 删除任务
-        jobDao.updateDeletedFlag(jobId, Boolean.TRUE);
+        jobMapper.updateDeletedFlag(jobId, Boolean.TRUE);
 
         // 更新执行端
         SmartJobMsg jobMsg = new SmartJobMsg();

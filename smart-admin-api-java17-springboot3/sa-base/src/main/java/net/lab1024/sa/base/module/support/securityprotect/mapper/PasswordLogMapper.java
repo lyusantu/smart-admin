@@ -1,4 +1,4 @@
-package net.lab1024.sa.base.module.support.securityprotect.dao;
+package net.lab1024.sa.base.module.support.securityprotect.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import net.lab1024.sa.base.module.support.securityprotect.domain.PasswordLogEntity;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper
 @Component
-public interface PasswordLogDao extends BaseMapper<PasswordLogEntity> {
+public interface PasswordLogMapper extends BaseMapper<PasswordLogEntity> {
 
     /**
      * 查询最后一次修改密码记录

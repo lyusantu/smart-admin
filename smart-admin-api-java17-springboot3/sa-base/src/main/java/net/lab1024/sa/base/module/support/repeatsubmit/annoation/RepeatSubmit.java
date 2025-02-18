@@ -8,12 +8,6 @@ import java.lang.annotation.Target;
 /**
  * 标记 需要防止重复提交 的注解<br>
  * 单位：毫秒
- *
- * @Author 1024创新实验室: 胡克
- * @Date 2020-11-25 20:56:58
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

@@ -12,17 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 登录日志
- *
- * @Author 1024创新实验室-主任: 卓大
- * @Date 2022/07/22 19:46:23
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
+ * 登录日志 Mapper
  */
 @Mapper
 @Component
-public interface LoginLogDao extends BaseMapper<LoginLogEntity> {
+public interface LoginLogMapper extends BaseMapper<LoginLogEntity> {
 
     /**
      * 分页查询

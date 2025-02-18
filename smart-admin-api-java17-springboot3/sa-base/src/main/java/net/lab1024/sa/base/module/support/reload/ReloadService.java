@@ -1,10 +1,10 @@
 package net.lab1024.sa.base.module.support.reload;
 
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
-import net.lab1024.sa.base.module.support.reload.dao.ReloadItemDao;
-import net.lab1024.sa.base.module.support.reload.dao.ReloadResultDao;
+import net.lab1024.sa.base.module.support.reload.mapper.ReloadItemMapper;
+import net.lab1024.sa.base.module.support.reload.mapper.ReloadResultMapper;
 import net.lab1024.sa.base.module.support.reload.domain.ReloadForm;
 import net.lab1024.sa.base.module.support.reload.domain.ReloadItemEntity;
 import net.lab1024.sa.base.module.support.reload.domain.ReloadItemVO;
@@ -17,14 +17,13 @@ import java.util.List;
 /**
  * reload (内存热加载、钩子等)
  */
+@RequiredArgsConstructor
 @Service
 public class ReloadService {
 
-    @Resource
-    private ReloadItemDao reloadItemDao;
+    private final ReloadItemMapper reloadItemMapper;
 
-    @Resource
-    private ReloadResultDao reloadResultDao;
+    private final ReloadResultMapper reloadResultMapper;
 
     /**
      * 查询
@@ -32,12 +31,12 @@ public class ReloadService {
      * @return
      */
     public ResponseDTO<List<ReloadItemVO>> query() {
-        List<ReloadItemVO> list = reloadItemDao.query();
+        List<ReloadItemVO> list = reloadItemMapper.query();
         return ResponseDTO.ok(list);
     }
 
     public ResponseDTO<List<ReloadResultVO>> queryReloadItemResult(String tag) {
-        List<ReloadResultVO> reloadResultList = reloadResultDao.query(tag);
+        List<ReloadResultVO> reloadResultList = reloadResultMapper.query(tag);
         return ResponseDTO.ok(reloadResultList);
     }
 
@@ -49,14 +48,14 @@ public class ReloadService {
      * @return
      */
     public ResponseDTO<String> updateByTag(ReloadForm reloadForm) {
-        ReloadItemEntity reloadItemEntity = reloadItemDao.selectById(reloadForm.getTag());
+        ReloadItemEntity reloadItemEntity = reloadItemMapper.selectById(reloadForm.getTag());
         if (null == reloadItemEntity) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
         reloadItemEntity.setIdentification(reloadForm.getIdentification());
         reloadItemEntity.setUpdateTime(LocalDateTime.now());
         reloadItemEntity.setArgs(reloadForm.getArgs());
-        reloadItemDao.updateById(reloadItemEntity);
+        reloadItemMapper.updateById(reloadItemEntity);
         return ResponseDTO.ok();
     }
 }

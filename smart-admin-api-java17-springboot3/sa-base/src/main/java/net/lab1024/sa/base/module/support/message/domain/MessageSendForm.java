@@ -9,9 +9,6 @@ import net.lab1024.sa.base.common.swagger.SchemaEnum;
 import net.lab1024.sa.base.module.support.message.constant.MessageTypeEnum;
 /**
  * 消息发送form
- *
- * @author luoyi
- * @date 2024/06/22 20:20
  */
 @Data
 public class MessageSendForm {

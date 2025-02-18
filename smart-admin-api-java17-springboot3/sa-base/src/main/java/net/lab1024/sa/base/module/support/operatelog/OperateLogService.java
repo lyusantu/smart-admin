@@ -2,6 +2,7 @@ package net.lab1024.sa.base.module.support.operatelog;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import net.lab1024.sa.base.common.code.UserErrorCode;
 import net.lab1024.sa.base.common.domain.page.PageResult;
 import net.lab1024.sa.base.common.domain.ResponseDTO;
@@ -15,19 +16,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- *  操作日志
- *
- * @Author 1024创新实验室: 罗伊
- * @Date 2021-12-08 20:48:52
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
+ * 操作日志
  */
+@RequiredArgsConstructor
 @Service
 public class OperateLogService {
 
-    @Resource
-    private OperateLogDao operateLogDao;
+    private final OperateLogMapper operateLogMapper;
 
     /**
      * @author 罗伊
@@ -35,7 +30,7 @@ public class OperateLogService {
      */
     public ResponseDTO<PageResult<OperateLogVO>> queryByPage(OperateLogQueryForm queryForm) {
         Page page = PageUtil.convert2PageQuery(queryForm);
-        List<OperateLogEntity> logEntityList = operateLogDao.queryByPage(page, queryForm);
+        List<OperateLogEntity> logEntityList = operateLogMapper.queryByPage(page, queryForm);
         PageResult<OperateLogVO> pageResult = PageUtil.convert2PageResult(page, logEntityList, OperateLogVO.class);
         return ResponseDTO.ok(pageResult);
     }
@@ -43,12 +38,13 @@ public class OperateLogService {
 
     /**
      * 查询详情
+     *
      * @param operateLogId
      * @return
      */
     public ResponseDTO<OperateLogVO> detail(Long operateLogId) {
-        OperateLogEntity operateLogEntity = operateLogDao.selectById(operateLogId);
-        if(operateLogEntity == null){
+        OperateLogEntity operateLogEntity = operateLogMapper.selectById(operateLogId);
+        if (operateLogEntity == null) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
         }
         OperateLogVO operateLogVO = BeanUtil.copy(operateLogEntity, OperateLogVO.class);

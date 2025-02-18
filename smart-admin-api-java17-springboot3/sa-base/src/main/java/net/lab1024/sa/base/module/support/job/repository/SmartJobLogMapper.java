@@ -12,14 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 定时任务-执行记录 dao
- *
- * @author huke
- * @date 2024/6/17 21:30
+ * 定时任务-执行记录 Mapper
  */
 @Mapper
 @Component
-public interface SmartJobLogDao extends BaseMapper<SmartJobLogEntity> {
+public interface SmartJobLogMapper extends BaseMapper<SmartJobLogEntity> {
 
     /**
      * 定时任务-执行记录-分页查询

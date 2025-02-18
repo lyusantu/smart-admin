@@ -8,25 +8,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * job 持久化业务
- *
- * @author huke
- * @date 2024/6/22 22:28
  */
 @Service
 public class SmartJobRepository {
 
     @Autowired
-    private SmartJobDao jobDao;
+    private SmartJobMapper jobMapper;
 
     @Autowired
-    private SmartJobLogDao jobLogDao;
+    private SmartJobLogMapper jobLogMapper;
 
-    public SmartJobDao getJobDao() {
-        return jobDao;
+    public SmartJobMapper getJobMapper() {
+        return jobMapper;
     }
 
-    public SmartJobLogDao getJobLogDao() {
-        return jobLogDao;
+    public SmartJobLogMapper getJobLogMapper() {
+        return jobLogMapper;
     }
 
     /**
@@ -37,9 +34,9 @@ public class SmartJobRepository {
      */
     @Transactional(rollbackFor = Throwable.class)
     public void saveLog(SmartJobLogEntity logEntity, SmartJobEntity jobEntity) {
-        jobLogDao.insert(logEntity);
+        jobLogMapper.insert(logEntity);
 
         jobEntity.setLastExecuteLogId(logEntity.getLogId());
-        jobDao.updateById(jobEntity);
+        jobMapper.updateById(jobEntity);
     }
 }

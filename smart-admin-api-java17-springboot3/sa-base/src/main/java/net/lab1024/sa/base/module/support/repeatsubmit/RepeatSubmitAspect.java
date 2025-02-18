@@ -17,12 +17,6 @@ import java.lang.reflect.Method;
 
 /**
  * 重复提交 aop切口
- *
- * @Author 1024创新实验室: 胡克
- * @Date 2020-11-25 20:56:58
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright  <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Aspect
 @Slf4j

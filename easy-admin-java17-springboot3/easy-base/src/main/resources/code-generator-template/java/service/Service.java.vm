@@ -1,0 +1,107 @@
+package ${packageName};
+
+#foreach ($importClass in $importPackageList)
+$importClass
+#end
+import lombok.RequiredArgsConstructor;
+import com.lyusantu.easy.base.common.util.BeanUtil;
+import com.lyusantu.easy.base.common.util.PageUtil;
+import com.lyusantu.easy.base.common.domain.ResponseDTO;
+import com.lyusantu.easy.base.common.domain.page.PageResult;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.collections4.CollectionUtils;
+
+/**
+ * ${basic.description} Service
+ *
+ * @Author ${basic.backendAuthor}
+ * @Date ${basic.backendDate}
+ * @Copyright ${basic.copyright}
+ */
+
+@RequiredArgsConstructor
+@Service
+public class ${name.upperCamel}Service {
+
+    private final ${name.upperCamel}Mapper ${name.lowerCamel}Mapper;
+
+    /**
+     * 分页查询
+     *
+     * @param queryForm
+     * @return
+     */
+    public PageResult<${name.upperCamel}VO> queryPage(${name.upperCamel}QueryForm queryForm) {
+        Page<?> page = PageUtil.convert2PageQuery(queryForm);
+        List<${name.upperCamel}VO> list = ${name.lowerCamel}Mapper.queryPage(page, queryForm);
+        PageResult<${name.upperCamel}VO> pageResult = PageUtil.convert2PageResult(page, list);
+        return pageResult;
+    }
+
+#if($insertAndUpdate.isSupportInsertAndUpdate)
+    /**
+     * 添加
+     */
+    public ResponseDTO<String> add(${name.upperCamel}AddForm addForm) {
+        ${name.upperCamel}Entity ${name.lowerCamel}Entity = BeanUtil.copy(addForm, ${name.upperCamel}Entity.class);
+        ${name.lowerCamel}Mapper.insert(${name.lowerCamel}Entity);
+        return ResponseDTO.ok();
+    }
+
+    /**
+     * 更新
+     *
+     * @param updateForm
+     * @return
+     */
+    public ResponseDTO<String> update(${name.upperCamel}UpdateForm updateForm) {
+        ${name.upperCamel}Entity ${name.lowerCamel}Entity = BeanUtil.copy(updateForm, ${name.upperCamel}Entity.class);
+        ${name.lowerCamel}Mapper.updateById(${name.lowerCamel}Entity);
+        return ResponseDTO.ok();
+    }
+#end
+
+#if($deleteInfo.isSupportDelete)
+    #if($deleteInfo.deleteEnum == "Batch" || $deleteInfo.deleteEnum == "SingleAndBatch")
+    /**
+     * 批量删除
+     *
+     * @param idList
+     * @return
+     */
+    public ResponseDTO<String> batchDelete(List<${primaryKeyJavaType}> idList) {
+        if (CollectionUtils.isEmpty(idList)){
+            return ResponseDTO.ok();
+        }
+
+### 真删除 or 假删除
+#if(!${deleteInfo.isPhysicallyDeleted})
+        ${name.lowerCamel}Mapper.batchUpdateDeleted(idList, true);
+#else
+        ${name.lowerCamel}Mapper.deleteBatchIds(idList);
+#end
+        return ResponseDTO.ok();
+    }
+    #end
+
+    #if($deleteInfo.deleteEnum == "Single" || $deleteInfo.deleteEnum == "SingleAndBatch")
+    /**
+     * 单个删除
+     */
+    public ResponseDTO<String> delete(${primaryKeyJavaType} ${primaryKeyFieldName}) {
+        if (null == ${primaryKeyFieldName}){
+            return ResponseDTO.ok();
+        }
+
+### 真删除 or 假删除
+#if(!${deleteInfo.isPhysicallyDeleted})
+        ${name.lowerCamel}Mapper.updateDeleted(${primaryKeyFieldName}, true);
+#end
+#if(${deleteInfo.isPhysicallyDeleted})
+        ${name.lowerCamel}Mapper.deleteById(${primaryKeyFieldName});
+#end
+        return ResponseDTO.ok();
+    }
+    #end
+#end
+}

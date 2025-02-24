@@ -32,6 +32,35 @@ export const projectApi = {
     return getRequest(`/pm/project/node/list/${projectId}`);
   },
 
+  addProjectStage: (param) => {
+    return postRequest("/pm/project/stage/add", param);
+  },
+
+  updateProjectStage: (param) => {
+    return postRequest("/pm/project/stage/update", param);
+  },
+
+  getProjectStage: (stageId) => {
+    return getRequest(`/pm/project/stage/get/${stageId}`);
+  },
+
+  listProjectExpenses: (projectId) => {
+    return getRequest(`/pm/project/expenses/list/${projectId}`);
+  },
+
+  addProjectExpenses: (param) => {
+    return postRequest("/pm/project/expenses/add", param);
+  },
+
+  updateProjectExpenses: (param) => {
+    return postRequest("/pm/project/expenses/update", param);
+  },
+
+  deleteProjectExpenses: (id) => {
+    return getRequest(`/pm/project/expenses/delete/${id}`);
+  },
+
+
   /**
    * 分页查询
    */

@@ -1,4 +1,4 @@
-package com.lyusantu.easy.admin.module.pm.project.domain.form;
+package com.lyusantu.easy.admin.module.pm.project.domain.form.node;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

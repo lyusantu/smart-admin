@@ -22,6 +22,7 @@ import codeGeneratorConst from './support/code-generator-const';
 import changeLogConst from './support/change-log-const';
 import jobConst from './support/job-const';
 import projectStageStateConst from "./project/project-stage-state-const.js";
+import ProjectExpensesType from "./project/project-expenses-type.js";
 
 export default {
   FLAG_NUMBER_ENUM,
@@ -41,4 +42,5 @@ export default {
   ...changeLogConst,
   ...jobConst,
   ...projectStageStateConst,
+  ...ProjectExpensesType,
 };

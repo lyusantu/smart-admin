@@ -86,11 +86,11 @@ file:
       url-prefix:
     cloud:
       region: oss-cn-hangzhou
-      endpoint: oss-cn-hangzhou.aliyuncs.com
-      bucket-name: easy-admin-dev
-      access-key:
-      secret-key:
-      url-prefix: https://${file.storage.cloud.bucket-name}.${file.storage.cloud.endpoint}/
+      endpoint: 192.168.0.120:9001
+      bucket-name: sungle-dev
+      access-key: zHb9ZcyUIRu6EDjb
+      secret-key: H21qc1PUZJxy5uBsgd53AOR2cSEcdmOK
+      url-prefix: https://${file.storage.cloud.endpoint}/${file.storage.cloud.bucket-name}/
       private-url-expire-seconds: 3600
 
 # open api配置

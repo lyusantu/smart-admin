@@ -1,27 +1,33 @@
 package com.lyusantu.easy.admin.module.pm.project.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import cn.dev33.satoken.stp.StpUtil;
+import com.alibaba.fastjson2.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lyusantu.easy.admin.module.pm.node.domain.entity.NodeDetailEntity;
-import com.lyusantu.easy.admin.module.pm.node.domain.entity.NodeEntity;
-import com.lyusantu.easy.admin.module.pm.node.domain.vo.NodeListVO;
-import com.lyusantu.easy.admin.module.pm.node.domain.vo.NodeTemplateListVO;
 import com.lyusantu.easy.admin.module.pm.node.manager.NodeDetailMapper;
-import com.lyusantu.easy.admin.module.pm.node.mapper.NodeMapper;
+import com.lyusantu.easy.admin.module.pm.project.constant.ProjectStageStateEnum;
 import com.lyusantu.easy.admin.module.pm.project.domain.entity.ProjectEntity;
+import com.lyusantu.easy.admin.module.pm.project.domain.entity.ProjectExpensesEntity;
 import com.lyusantu.easy.admin.module.pm.project.domain.entity.ProjectNodeEntity;
 import com.lyusantu.easy.admin.module.pm.project.domain.entity.ProjectStageEntity;
 import com.lyusantu.easy.admin.module.pm.project.domain.form.*;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.expenses.ProjectExpensesAddForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.expenses.ProjectExpensesUpdateForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.node.ProjectNodeAddForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.node.ProjectNodeUpdateForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.stage.ProjectStageAddForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.stage.ProjectStageUpdateForm;
 import com.lyusantu.easy.admin.module.pm.project.domain.vo.*;
+import com.lyusantu.easy.admin.module.pm.project.mapper.ProjectExpensesMapper;
 import com.lyusantu.easy.admin.module.pm.project.mapper.ProjectMapper;
 import com.lyusantu.easy.admin.module.pm.project.mapper.ProjectNodeMapper;
 import com.lyusantu.easy.admin.module.pm.project.mapper.ProjectStageMapper;
 import com.lyusantu.easy.base.common.domain.page.PageResult;
 import com.lyusantu.easy.base.common.util.RequestUtil;
+import com.lyusantu.easy.base.common.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import com.lyusantu.easy.base.common.util.BeanUtil;
 import com.lyusantu.easy.base.common.util.PageUtil;
@@ -50,6 +56,8 @@ public class ProjectService {
     private final ProjectNodeMapper projectNodeMapper;
 
     private final ProjectStageMapper projectStageMapper;
+
+    private final ProjectExpensesMapper projectExpensesMapper;
 
     /**
      * 分页查询
@@ -195,9 +203,73 @@ public class ProjectService {
         return ResponseDTO.ok();
     }
 
+    public ResponseDTO<String> addProjectStage(ProjectStageAddForm form) {
+        ProjectStageEntity projectStage = BeanUtil.copy(form, ProjectStageEntity.class);
+        projectStage.setState(ProjectStageStateEnum.NOT_STARTED.getValue());
+        projectStageMapper.insert(projectStage);
+        return ResponseDTO.ok();
+    }
+
+    public ResponseDTO<String> updateProjectStage(ProjectStageUpdateForm form) {
+        ProjectStageEntity projectStage = projectStageMapper.selectById(form.getStageId());
+        if (null == projectStage) {
+            return ResponseDTO.userErrorParam("阶段不存在或已被删除");
+        }
+        BeanUtil.copyProperties(form, projectStage);
+        projectStageMapper.updateById(projectStage);
+        return ResponseDTO.ok();
+    }
+
     public ResponseDTO<List<ProjectNodeListVO>> listProjectNode(Long projectId) {
         List<ProjectNodeEntity> list = projectNodeMapper.selectList(new LambdaQueryWrapper<ProjectNodeEntity>().eq(ProjectNodeEntity::getProjectId, projectId).orderByAsc(ProjectNodeEntity::getProjectNodeSign));
         return ResponseDTO.ok(BeanUtil.copyList(list, ProjectNodeListVO.class));
+    }
+
+    public ResponseDTO<ProjectStageVO> getStage(Long stageId) {
+        ProjectStageEntity projectStage = projectStageMapper.selectById(stageId);
+        ProjectStageVO vo = BeanUtil.copy(projectStage, ProjectStageVO.class);
+        return ResponseDTO.ok(vo);
+    }
+
+    public ResponseDTO<List<ProjectExpensesVO>> listProjectExpenses(Long projectId) {
+        List<ProjectExpensesEntity> listProjectExpenses = projectExpensesMapper.selectList(new LambdaQueryWrapper<ProjectExpensesEntity>().eq(ProjectExpensesEntity::getProjectId, projectId).orderByAsc(ProjectExpensesEntity::getExpensesId));
+        if (listProjectExpenses.isEmpty()) {
+            return ResponseDTO.ok();
+        }
+        List<ProjectExpensesVO> list = BeanUtil.copyList(listProjectExpenses, ProjectExpensesVO.class);
+        AtomicInteger serialNumber = new AtomicInteger(1);
+        list.forEach(projectExpensesVO -> {
+            projectExpensesVO.setSerialNumber(serialNumber.getAndIncrement());
+            projectExpensesVO.setInvoicesCount(0);
+            if (StringUtil.isNotBlank(projectExpensesVO.getInvoices())) {
+                JSONArray array = JSONArray.parse(projectExpensesVO.getInvoices());
+                projectExpensesVO.setInvoicesCount(array.size());
+            }
+        });
+        return ResponseDTO.ok(list);
+    }
+
+    public ResponseDTO<String> addProjectExpenses(ProjectExpensesAddForm form) {
+        ProjectExpensesEntity projectExpenses = BeanUtil.copy(form, ProjectExpensesEntity.class);
+        projectExpenses.setInvoices(form.getInvoices().toJSONString());
+        projectExpensesMapper.insert(projectExpenses);
+        return ResponseDTO.ok();
+    }
+
+    public ResponseDTO<String> updateProjectExpenses(ProjectExpensesUpdateForm form) {
+        ProjectExpensesEntity projectExpenses = projectExpensesMapper.selectById(form.getExpensesId());
+        if (null == projectExpenses) {
+            return ResponseDTO.userErrorParam("支出信息不存在或已被删除");
+        }
+        BeanUtil.copyProperties(form, projectExpenses);
+        projectExpenses.setInvoices(form.getInvoices() == null ? null : form.getInvoices().toJSONString());
+        projectExpensesMapper.updateById(projectExpenses);
+        return ResponseDTO.ok();
+    }
+
+    public ResponseDTO<String> deleteProjectExpenses(Long expensesId){
+        projectExpensesMapper.deleteById(expensesId);
+        return ResponseDTO.ok();
     }
 
 }

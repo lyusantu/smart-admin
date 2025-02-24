@@ -1,12 +1,9 @@
-package com.lyusantu.easy.admin.module.pm.project.domain.form;
+package com.lyusantu.easy.admin.module.pm.project.domain.form.node;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 
 /**
  * 项目节点新增

@@ -1,10 +1,13 @@
 package com.lyusantu.easy.admin.module.pm.project.controller;
 
-import com.lyusantu.easy.admin.module.pm.node.domain.vo.NodeTemplateListVO;
 import com.lyusantu.easy.admin.module.pm.project.domain.form.*;
-import com.lyusantu.easy.admin.module.pm.project.domain.vo.ProjectDetailVO;
-import com.lyusantu.easy.admin.module.pm.project.domain.vo.ProjectNodeListVO;
-import com.lyusantu.easy.admin.module.pm.project.domain.vo.ProjectVO;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.expenses.ProjectExpensesAddForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.expenses.ProjectExpensesUpdateForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.node.ProjectNodeAddForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.node.ProjectNodeUpdateForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.stage.ProjectStageAddForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.form.stage.ProjectStageUpdateForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.vo.*;
 import com.lyusantu.easy.admin.module.pm.project.service.ProjectService;
 import com.lyusantu.easy.base.common.domain.validate.ValidateList;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +32,6 @@ import java.util.List;
  * @Date 2025-02-20 10:29:51
  * @Copyright lyusantu
  */
-
 @RequiredArgsConstructor
 @RestController
 @Tag(name = "项目信息表")
@@ -98,6 +100,55 @@ public class ProjectController {
     @SaCheckPermission("node:query")
     public ResponseDTO<List<ProjectNodeListVO>> listProjectNode(@PathVariable Long projectId) {
         return projectService.listProjectNode(projectId);
+    }
+
+    @Operation(summary = "添加项目阶段")
+    @PostMapping("/pm/project/stage/add")
+    @SaCheckPermission("project:add")
+    public ResponseDTO<String> addProjectStage(@RequestBody @Valid ProjectStageAddForm form) {
+        return projectService.addProjectStage(form);
+    }
+
+    @Operation(summary = "更新项目阶段")
+    @PostMapping("/pm/project/stage/update")
+    @SaCheckPermission("project:update")
+    public ResponseDTO<String> updateProjectStage(@RequestBody @Valid ProjectStageUpdateForm form) {
+        return projectService.updateProjectStage(form);
+    }
+
+    @Operation(summary = "项目阶段详情")
+    @GetMapping("/pm/project/stage/get/{stageId}")
+    @SaCheckPermission("project:query")
+    public ResponseDTO<ProjectStageVO> getStage(@PathVariable Long stageId) {
+        return projectService.getStage(stageId);
+    }
+
+    @Operation(summary = "项目支出明细列表")
+    @GetMapping("/pm/project/expenses/list/{projectId}")
+    @SaCheckPermission("node:query")
+    public ResponseDTO<List<ProjectExpensesVO>> listProjectExpenses(@PathVariable Long projectId) {
+        return projectService.listProjectExpenses(projectId);
+    }
+
+    @Operation(summary = "添加支出明细")
+    @PostMapping("/pm/project/expenses/add")
+    @SaCheckPermission("project:add")
+    public ResponseDTO<String> addProjectExpenses(@RequestBody @Valid ProjectExpensesAddForm form) {
+        return projectService.addProjectExpenses(form);
+    }
+
+    @Operation(summary = "更新支出明细")
+    @PostMapping("/pm/project/expenses/update")
+    @SaCheckPermission("project:update")
+    public ResponseDTO<String> updateProjectExpenses(@RequestBody @Valid ProjectExpensesUpdateForm form) {
+        return projectService.updateProjectExpenses(form);
+    }
+
+    @Operation(summary = "删除支出明细")
+    @GetMapping("/pm/project/expenses/delete/{expensesId}")
+    @SaCheckPermission("project:delete")
+    public ResponseDTO<String> deleteProjectExpenses(@PathVariable Long expensesId) {
+        return projectService.deleteProjectExpenses(expensesId);
     }
 
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lyusantu.easy.admin.module.pm.project.mapper.ProjectExpensesMapper">
+
+    <!-- 查询结果列 -->
+    <sql id="base_columns">
+        t_project_expenses.expenses_id,
+        t_project_expenses.project_id,
+        t_project_expenses.expenses_type,
+        t_project_expenses.expenses_name,
+        t_project_expenses.amount,
+        t_project_expenses.invoices,
+        t_project_expenses.create_time,
+        t_project_expenses.update_time
+    </sql>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultType="com.lyusantu.easy.admin.module.pm.project.domain.vo.ProjectExpensesVO">
+        SELECT
+        <include refid="base_columns"/>
+        FROM t_project_expenses
+    </select>
+
+
+</mapper>

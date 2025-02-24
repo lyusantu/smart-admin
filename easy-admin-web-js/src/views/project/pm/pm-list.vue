@@ -159,7 +159,6 @@
   import { PAGE_SIZE_OPTIONS } from '/@/constants/common-const';
   import { smartSentry } from '/@/lib/smart-sentry';
   import TableOperator from '/@/components/support/table-operator/index.vue';
-  import { defaultTimeRanges } from '/@/lib/default-time-ranges';
   import DictSelect from '/@/components/support/dict-select/index.vue';
   import ProjectForm from './pm-form.vue';
   import {useRouter} from "vue-router";

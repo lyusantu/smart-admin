@@ -1,8 +1,9 @@
 <template>
   <div class="detail-header">
-    <a-page-header :title="'项目名称：' + detail.projectName + '（' + getState(detail.state) + '）'">
+    <a-page-header :title="'项目名称：' + detail.projectName">
       <div>
-        <a-descriptions size="small" :column="6">
+        <a-descriptions size="small" :column="1">
+          <a-descriptions-item label="项目状态">{{ getState(detail.state) }}</a-descriptions-item>
           <a-descriptions-item label="项目开始时间">{{ detail.startTime }}</a-descriptions-item>
           <a-descriptions-item label="项目结束时间">{{ detail.endTime }}</a-descriptions-item>
           <a-descriptions-item label="预估采购成本">{{ detail.cost }}</a-descriptions-item>
@@ -16,12 +17,11 @@
         <NodeDetail :projectId="projectId" />
       </a-tab-pane>
       <a-tab-pane key="bank" tab="支出明细">
-        <NodeDetail :projectId="projectId" />
+        <ExpensesList :projectId="projectId" />
       </a-tab-pane>
     </a-tabs>
   </a-card>
 
-  <NodeAddForm ref="addNodeForm" @reloadList="getDetail" />
 </template>
 
 <script setup>
@@ -31,7 +31,7 @@
   import { smartSentry } from '/@/lib/smart-sentry';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import NodeDetail from './components/pm-node-detail.vue';
-  import NodeAddForm from './components/pm-node-form.vue';
+  import ExpensesList from './components/pm-expenses-list.vue';
   import { CATEGORY_TYPE_ENUM } from '../../../constants/business/erp/category-const.js';
 
   const route = useRoute();

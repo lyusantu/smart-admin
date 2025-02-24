@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Data;
 
@@ -54,12 +56,12 @@ public class ProjectStageEntity {
     /**
      * 阶段开始时间
      */
-    private LocalDateTime startTime;
+    private LocalDate startTime;
 
     /**
      * 阶段结束时间
      */
-    private LocalDateTime endTime;
+    private LocalDate endTime;
 
     /**
      * 阶段完成时间

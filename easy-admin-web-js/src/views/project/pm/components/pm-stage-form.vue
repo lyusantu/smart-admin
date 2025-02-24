@@ -32,8 +32,8 @@
         <a-range-picker v-model:value="form.stageTime" :presets="defaultTimeRanges" style="width: 100%" @change="onChangeStartTime" />
       </a-form-item>
 
-      <a-form-item label="阶段内容：" name="content">
-        <a-textarea v-model:value="form.content" placeholder="请输入阶段内容" :rows="3" />
+      <a-form-item label="阶段内容：" name="context">
+        <a-textarea v-model:value="form.context" placeholder="请输入阶段内容" :rows="3" />
       </a-form-item>
 
       <a-form-item label="备注：" name="remark">
@@ -59,6 +59,7 @@
   import { smartSentry } from '/@/lib/smart-sentry';
   import { defaultTimeRanges } from '/@/lib/default-time-ranges';
   import EmployeeSelect from '/@/components/system/employee-select/index.vue';
+  import dayjs from "dayjs";
 
   // ------------------------ 事件 ------------------------
   const emits = defineEmits(['reloadList']);
@@ -77,6 +78,19 @@
     let result = await projectApi.listProjectNode(form.projectId);
     listProjectState.value = result.data;
 
+    if (form.stageId) {
+      let stage = await projectApi.getProjectStage(form.stageId);
+      form.stageName = stage.data.stageName;
+      form.priority = stage.data.priority;
+      form.director = stage.data.director;
+      form.projectNodeId = stage.data.projectNodeId;
+      form.context = stage.data.context;
+      form.remark = stage.data.remark;
+      form.startTime = stage.data.startTime;
+      form.endTime = stage.data.endTime;
+      form.stageTime = [dayjs(form.startTime), dayjs(form.endTime)];
+    }
+
     visibleFlag.value = true;
     await nextTick(() => {
       formRef.value.clearValidate();
@@ -89,7 +103,7 @@
   }
 
   function onChangeStartTime(dates, dateStrings) {
-    form.starTime = dateStrings[0];
+    form.startTime = dateStrings[0];
     form.endTime = dateStrings[1];
   }
 
@@ -102,9 +116,15 @@
 
   const formDefault = {
     stageId: undefined,
-    projectNodeId: undefined,
-    projectId: undefined, //项目ID
-    nodeName: undefined, //节点名称
+    projectNodeName: undefined,
+    stageName: undefined,
+    priority: undefined,
+    director: undefined,
+    stageTime: undefined,
+    context: undefined,
+    remark: undefined,
+    startTime: undefined,
+    endTime: undefined,
   };
 
   let form = reactive({ ...formDefault });
@@ -115,7 +135,7 @@
     priority: [{ required: true, message: '请选择优先级' }],
     director: [{ required: true, message: '请选择负责人' }],
     stageTime: [{ required: true, message: '请选择阶段时间' }],
-    content: [{ required: true, message: '请输入阶段内容' }],
+    context: [{ required: true, message: '请输入阶段内容' }],
   };
 
   // 点击确定，验证表单
@@ -132,11 +152,11 @@
   async function save() {
     SmartLoading.show();
     try {
-      if (form.projectNodeId) {
+      if (form.stageId) {
         // 编辑
-        await projectApi.updateProjectNode(form);
+        await projectApi.updateProjectStage(form);
       } else {
-        await projectApi.addProjectNode(form);
+        await projectApi.addProjectStage(form);
       }
       message.success('操作成功');
       emits('reloadList');

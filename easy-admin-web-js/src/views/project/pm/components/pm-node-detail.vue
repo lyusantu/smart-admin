@@ -40,7 +40,7 @@
         </a-col>
         <a-col :span="20">
           <!--   :percent=0 percent指的是process占比的百分比, label-placement="vertical"文字展示在下方 -->
-          <a-steps :current="item.stepChange" size="small" style="padding-top: 10px" label-placement="vertical">
+          <a-steps :current="-1" size="small" style="padding-top: 10px" label-placement="vertical">
             <a-step
               v-for="(stage, index) in item.listProjectStage"
               :key="stage.stageId"
@@ -67,35 +67,6 @@
   import NodeAddForm from './pm-node-form.vue';
   import StageAddForm from './pm-stage-form.vue';
 
-  const stepsList = ref([
-    {
-      id: 1,
-      name: '节点1',
-      isEditing: false,
-      isComplete: 0,
-      inputValue: '',
-      stepChange: 0,
-      list: [
-        { id: 1, name: '步骤1', status: 'finish' },
-        { id: 2, name: '步骤2', status: 'process' },
-      ],
-    },
-    {
-      id: 2,
-      name: '节点2',
-      isEditing: true,
-      isComplete: 1,
-      inputValue: '',
-      stepChange: 0,
-      list: [
-        { id: 1, name: '步骤1', status: 'finish' },
-        { id: 2, name: '步骤2', status: 'error' },
-        { id: 3, name: '步骤3', status: 'process' },
-        { id: 4, name: '步骤4', status: 'finish' },
-        { id: 5, name: '步骤5', status: 'wait' },
-      ],
-    },
-  ]);
   const list = ref([]);
   const props = defineProps({
     projectId: {
@@ -177,7 +148,11 @@
   };
 
   const itemNodeClick = (item, stepIndex) => {
-    console.log('点击步骤', item, stepIndex);
+    let data = {
+      stageId: item.stageId,
+      projectId: props.projectId,
+    };
+    addStageForm.value.show(data);
   };
 </script>
 
@@ -337,7 +312,8 @@
   }
 
   .rectangle {
-    width: 120px;
+    color: white;
+    width: 150px;
     height: 100%;
     background-color: skyblue;
     line-height: 50px;

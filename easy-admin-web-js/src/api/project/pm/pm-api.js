@@ -60,6 +60,9 @@ export const projectApi = {
     return getRequest(`/pm/project/expenses/delete/${id}`);
   },
 
+  listMyTask: () => {
+    return getRequest(`/pm/project/myTask`);
+  },
 
   /**
    * 分页查询

@@ -251,7 +251,7 @@ public class ProjectService {
 
     public ResponseDTO<String> addProjectExpenses(ProjectExpensesAddForm form) {
         ProjectExpensesEntity projectExpenses = BeanUtil.copy(form, ProjectExpensesEntity.class);
-        projectExpenses.setInvoices(form.getInvoices().toJSONString());
+        projectExpenses.setInvoices(form.getInvoices() == null ? null : form.getInvoices().toJSONString());
         projectExpensesMapper.insert(projectExpenses);
         return ResponseDTO.ok();
     }
@@ -267,9 +267,13 @@ public class ProjectService {
         return ResponseDTO.ok();
     }
 
-    public ResponseDTO<String> deleteProjectExpenses(Long expensesId){
+    public ResponseDTO<String> deleteProjectExpenses(Long expensesId) {
         projectExpensesMapper.deleteById(expensesId);
         return ResponseDTO.ok();
+    }
+
+    public ResponseDTO<List<MyTaskVO>> myTask() {
+        return ResponseDTO.ok(projectMapper.myTask(RequestUtil.getRequestUserId()));
     }
 
 }

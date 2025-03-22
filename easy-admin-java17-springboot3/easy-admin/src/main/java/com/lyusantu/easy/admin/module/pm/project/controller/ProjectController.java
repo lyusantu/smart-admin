@@ -151,4 +151,10 @@ public class ProjectController {
         return projectService.deleteProjectExpenses(expensesId);
     }
 
+    @Operation(summary = "我的任务")
+    @GetMapping("/pm/project/myTask")
+    public ResponseDTO<List<MyTaskVO>> myTask() {
+        return projectService.myTask();
+    }
+
 }

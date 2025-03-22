@@ -21,7 +21,7 @@
       </a-form-item>
 
       <a-form-item label="优先级" name="priority">
-        <smart-enum-select class="form-item" v-model:value="form.priority" placeholder="请选择优先级" enum-name="PROJECT_STAGE_STATE" />
+        <smart-enum-select class="form-item" v-model:value="form.priority" placeholder="请选择优先级" enum-name="PROJECT_STAGE_PRIORITY" />
       </a-form-item>
 
       <a-form-item label="负责人" name="director">

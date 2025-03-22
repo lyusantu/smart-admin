@@ -19,7 +19,7 @@
             <a-button type="link">无</a-button>
           </template>
           <template v-else>
-            <a-button @click="download(record.expensesId)" type="link">下载{{ record.invoicesCount }}张发票</a-button>
+            <a-button @click="download(record.invoices)" type="link">下载{{ record.invoicesCount }}张发票</a-button>
           </template>
         </template>
 
@@ -41,6 +41,7 @@
 </template>
 <script setup>
   import { ref, watch } from 'vue';
+  import { fileApi } from '/@/api/support/file-api';
   import { projectApi } from '/@/api/project/pm/pm-api';
   import { SmartLoading } from '/@/components/framework/smart-loading';
   import { Modal } from 'ant-design-vue';
@@ -115,7 +116,17 @@
     addForm.value.show(data);
   }
 
-  function download(expensesId) {}
+  async function download(invoices) {
+    console.log(invoices);
+    const array = JSON.parse(invoices);
+    try {
+      for (const invoice of array) {
+        await fileApi.downLoadFile(invoice.fileKey);
+      }
+    } catch (e) {
+      smartSentry.captureError(e);
+    }
+  }
 
   function update(data) {
     let param = {

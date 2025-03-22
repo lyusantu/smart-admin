@@ -7,33 +7,25 @@
  * @Email:     lab1024@163.com
  * @Copyright  1024创新实验室 （ https://1024lab.net ），Since 2012
  */
-export const PROJECT_STAGE_STATE = {
+export const PROJECT_STAGE_PRIORITY = {
   NOT_STARTED: {
     value: 0,
-    desc: '未开始',
+    desc: '紧急',
   },
-  IN_PROGRESS: {
+  IMPORTANT: {
     value: 1,
-    desc: '进行中',
+    desc: '重要',
   },
-  AHEAD_COMPLETED: {
+  GENERAL: {
     value: 2,
-    desc: '提前完成',
+    desc: '一般',
   },
-  COMPLETED: {
+  ORDINARY: {
     value: 3,
-    desc: '已完成',
-  },
-  DELAYED: {
-    value: 4,
-    desc: '已延期',
-  },
-  CLOSED: {
-    value: 5,
-    desc: '已关闭',
+    desc: '普通',
   },
 }
 
 export default {
-  PROJECT_STAGE_STATE,
+  PROJECT_STAGE_PRIORITY,
 }

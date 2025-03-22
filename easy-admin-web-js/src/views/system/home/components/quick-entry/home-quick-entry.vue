@@ -64,7 +64,7 @@
 
   //----------------  编辑快捷入口 --------------------
   let editFlag = ref(false);
-  let maxCount = ref(6);
+  let maxCount = ref(20);
 
   // 快捷入口删除
   function deleteQuickEntry(index) {

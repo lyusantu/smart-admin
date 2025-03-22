@@ -40,6 +40,29 @@
                 AND t_project.state = #{queryForm.state}
             </if>
         </where>
+        ORDER BY t_project.start_time
+    </select>
+
+    <select id="myTask" resultType="com.lyusantu.easy.admin.module.pm.project.domain.vo.MyTaskVO">
+        SELECT
+            t_project_stage.stage_id,
+            t_project_stage.priority,
+            t_project.project_name,
+            t_project_node.project_node_name,
+            t_project_stage.stage_name,
+            t_project_stage.state,
+            t_project_stage.start_time,
+            t_project_stage.end_time
+        FROM
+            t_project_stage
+                INNER JOIN t_project_node ON t_project_stage.project_node_id = t_project_node.project_node_id
+                INNER JOIN t_project ON t_project_node.project_id = t_project.project_id
+        WHERE
+            t_project_stage.director = 1
+          AND ( t_project_stage.state = 0 OR t_project_stage.state = 1 OR t_project_stage.state = 4 )
+        ORDER BY
+            t_project_stage.priority ASC,
+            end_time ASC
     </select>
 
 

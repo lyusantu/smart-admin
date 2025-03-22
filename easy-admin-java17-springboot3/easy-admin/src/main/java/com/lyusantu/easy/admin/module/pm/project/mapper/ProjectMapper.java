@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lyusantu.easy.admin.module.pm.project.domain.entity.ProjectEntity;
 import com.lyusantu.easy.admin.module.pm.project.domain.form.ProjectQueryForm;
+import com.lyusantu.easy.admin.module.pm.project.domain.vo.MyTaskVO;
 import com.lyusantu.easy.admin.module.pm.project.domain.vo.ProjectVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -31,5 +32,10 @@ public interface ProjectMapper extends BaseMapper<ProjectEntity> {
      * @return
      */
     List<ProjectVO> queryPage(Page page, @Param("queryForm") ProjectQueryForm queryForm);
+
+    /**
+     * 我的任务
+     */
+    List<MyTaskVO> myTask(@Param("userId") Long userId);
 
 }

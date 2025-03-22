@@ -15,8 +15,8 @@ public enum ProjectStageStateEnum implements BaseEnum {
     IN_PROGRESS(1, "1进行中"),
     AHEAD_COMPLETED(2, "提前完成"),
     COMPLETED(3, "已完成"),
-    DELAYED(3, "已延期"),
-    CLOSED(3, "已关闭");
+    DELAYED(4, "已延期"),
+    CLOSED(5, "已关闭");
 
 
     private final Integer value;

@@ -91,7 +91,7 @@
             <a-tag color="gray">已关闭</a-tag>
           </template>
           <template v-else-if="text === 5">
-            <a-tag color="warning">已延期{{ record.projectId }}天</a-tag>
+            <a-tag color="warning">已延期{{ dayjs().diff(dayjs(record.endTime), "day") }}天</a-tag>
           </template>
           <template v-else>
             <a-tag color="error">状态异常</a-tag>
@@ -162,6 +162,7 @@
   import DictSelect from '/@/components/support/dict-select/index.vue';
   import ProjectForm from './pm-form.vue';
   import {useRouter} from "vue-router";
+  import dayjs from "dayjs";
   //import FilePreview from '/@/components/support/file-preview/index.vue'; // 图片预览组件
 
   // ---------------------------- 表格列 ----------------------------

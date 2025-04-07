@@ -8,6 +8,7 @@ import com.lyusantu.easy.base.common.domain.ResponseDTO;
 import com.lyusantu.easy.base.common.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,10 +36,12 @@ public class SecurityPasswordService {
 
 
     @Resource
-    private PasswordLogMapper passwordLogDao;
+    private PasswordLogMapper passwordLogMapper;
 
     @Resource
     private Level3ProtectConfigService level3ProtectConfigService;
+
+    static Argon2PasswordEncoder ARGON2_PASSWORD_ENCODER = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
     /**
      * 校验密码复杂度
@@ -77,11 +80,11 @@ public class SecurityPasswordService {
         }
 
         // 检查最近几次是否有重复密码
-        List<String> oldPasswords = passwordLogDao.selectOldPassword(requestUser.getUserType().getValue(), requestUser.getUserId(), level3ProtectConfigService.getRegularChangePasswordNotAllowRepeatTimes());
-        if (oldPasswords != null && oldPasswords.contains(getEncryptPwd(newPassword))) {
-            return ResponseDTO.userErrorParam(String.format("与前%s个历史密码重复，请换个密码!", level3ProtectConfigService.getRegularChangePasswordNotAllowRepeatTimes()));
+        List<String> oldPasswords = passwordLogMapper.selectOldPassword(requestUser.getUserType().getValue(), requestUser.getUserId(), level3ProtectConfigService.getRegularChangePasswordNotAllowRepeatTimes());
+        boolean isDuplicate = oldPasswords.stream().anyMatch(oldPassword -> ARGON2_PASSWORD_ENCODER.matches(newPassword, oldPassword));
+        if (isDuplicate) {
+            return ResponseDTO.userErrorParam(String.format("与前%d个历史密码重复，请换个密码!", level3ProtectConfigService.getRegularChangePasswordNotAllowRepeatTimes()));
         }
-
         return ResponseDTO.ok();
     }
 
@@ -112,7 +115,7 @@ public class SecurityPasswordService {
         passwordLogEntity.setOldPassword(oldPassword);
         passwordLogEntity.setUserId(requestUser.getUserId());
         passwordLogEntity.setUserType(requestUser.getUserType().getValue());
-        passwordLogDao.insert(passwordLogEntity);
+        passwordLogMapper.insert(passwordLogEntity);
     }
 
     /**
@@ -124,7 +127,7 @@ public class SecurityPasswordService {
             return false;
         }
 
-        PasswordLogEntity passwordLogEntity = passwordLogDao.selectLastByUserTypeAndUserId(userType, userId);
+        PasswordLogEntity passwordLogEntity = passwordLogMapper.selectLastByUserTypeAndUserId(userType, userId);
         if (passwordLogEntity == null) {
             return false;
         }
@@ -137,7 +140,14 @@ public class SecurityPasswordService {
      * 获取 加密后 的密码
      */
     public static String getEncryptPwd(String password) {
-        return DigestUtils.md5Hex(String.format(PASSWORD_SALT_FORMAT, password));
+        return ARGON2_PASSWORD_ENCODER.encode(password);
+    }
+
+    /**
+     * 校验密码是否匹配
+     */
+    public static Boolean matchesPwd( String password,  String encodedPassword){
+        return ARGON2_PASSWORD_ENCODER.matches( password, encodedPassword);
     }
 
 }

@@ -1,11 +1,11 @@
 <!--
   * 目录 表单 弹窗
-  * 
-  * @Author:    1024创新实验室-主任：卓大 
-  * @Date:      2022-08-21 19:52:43 
-  * @Wechat:    zhuda1024 
-  * @Email:     lab1024@163.com 
-  * @Copyright  1024创新实验室 （ https://1024lab.net ），Since 2012 
+  *
+  * @Author:    1024创新实验室-主任：卓大
+  * @Date:      2022-08-21 19:52:43
+  * @Wechat:    zhuda1024
+  * @Email:     lab1024@163.com
+  * @Copyright  1024创新实验室 （ https://1024lab.net ），Since 2012
 -->
 <template>
   <a-modal :open="visible" :title="form.categoryId ? '编辑' : '添加'" ok-text="确认" cancel-text="取消" @ok="onSubmit" @cancel="onClose">
@@ -17,55 +17,70 @@
   </a-modal>
 </template>
 <script setup>
-  import { ref, reactive } from 'vue';
-  import { message } from 'ant-design-vue';
-  import { SmartLoading } from '/@/components/framework/smart-loading';
-  import _ from 'lodash';
-  import { categoryApi } from '/@/api/business/category/category-api';
-  import { smartSentry } from '/@/lib/smart-sentry';
+import { ref, reactive, nextTick } from 'vue';
+import { message } from 'ant-design-vue';
+import { SmartLoading } from '/@/components/framework/smart-loading';
+import _ from 'lodash';
+import { categoryApi } from '/@/api/business/category/category-api';
+import { smartSentry } from '/@/lib/smart-sentry';
 
-  // emit
-  const emit = defineEmits(['reloadList']);
+// emit
+const emit = defineEmits(['reloadList']);
 
-  //  组件
-  const formRef = ref();
+//  组件
+const formRef = ref();
 
-  // ------------------------------ 显示 、隐藏 ------------------------------
+// ------------------------------ 显示 、隐藏 ------------------------------
 
-  // 是否展示抽屉
-  const visible = ref(false);
+// 是否展示抽屉
+const visible = ref(false);
 
-  function showModal(categoryType, parentId, rowData) {
-    Object.assign(form, formDefault);
-    form.categoryType = categoryType;
-    form.parentId = parentId;
-    if (rowData && !_.isEmpty(rowData)) {
-      Object.assign(form, rowData);
+function showModal(categoryType, parentId, rowData) {
+  Object.assign(form, formDefault);
+  form.categoryType = categoryType;
+  form.parentId = parentId;
+  if (rowData && !_.isEmpty(rowData)) {
+    Object.assign(form, rowData);
+  }
+  visible.value = true;
+  nextTick(() => {
+    // 解决弹窗错误信息显示,没有可忽略
+    const domArr = document.getElementsByClassName('ant-modal');
+    if (domArr && domArr.length > 0) {
+      Array.from(domArr).forEach((item) => {
+        if (item.childNodes && item.childNodes.length > 0) {
+          Array.from(item.childNodes).forEach((child) => {
+            if (child.setAttribute) {
+              child.setAttribute('aria-hidden', 'false');
+            }
+          });
+        }
+      });
     }
-    visible.value = true;
-  }
+  });
+}
 
-  function onClose() {
-    Object.assign(form, formDefault);
-    visible.value = false;
-  }
+function onClose() {
+  Object.assign(form, formDefault);
+  visible.value = false;
+}
 
-  // ------------------------------ 表单 ------------------------------
+// ------------------------------ 表单 ------------------------------
 
-  const formDefault = {
-    categoryId: undefined,
-    categoryName: '',
-    categoryType: 1,
-    parentId: undefined,
-    disabledFlag: false,
-  };
-  let form = reactive({ ...formDefault });
-  const rules = {
-    categoryName: [{ required: true, message: '请输入分类名称' }],
-  };
+const formDefault = {
+  categoryId: undefined,
+  categoryName: '',
+  categoryType: 1,
+  parentId: undefined,
+  disabledFlag: false,
+};
+let form = reactive({ ...formDefault });
+const rules = {
+  categoryName: [{ required: true, message: '请输入分类名称' }],
+};
 
-  function onSubmit() {
-    formRef.value
+function onSubmit() {
+  formRef.value
       .validate()
       .then(async () => {
         SmartLoading.show();
@@ -88,9 +103,9 @@
         console.log('error', error);
         message.error('参数验证错误，请仔细填写表单数据!');
       });
-  }
+}
 
-  defineExpose({
-    showModal,
-  });
+defineExpose({
+  showModal,
+});
 </script>

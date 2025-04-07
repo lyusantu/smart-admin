@@ -1,11 +1,11 @@
 <!--
   * 展开菜单
-  * 
-  * @Author:    1024创新实验室-主任：卓大 
-  * @Date:      2022-09-06 20:29:12 
-  * @Wechat:    zhuda1024 
-  * @Email:     lab1024@163.com 
-  * @Copyright  1024创新实验室 （ https://1024lab.net ），Since 2012 
+  *
+  * @Author:    1024创新实验室-主任：卓大
+  * @Date:      2022-09-06 20:29:12
+  * @Wechat:    zhuda1024
+  * @Email:     lab1024@163.com
+  * @Copyright  1024创新实验室 （ https://1024lab.net ），Since 2012
 -->
 <template>
   <div class="menu-container">
@@ -46,7 +46,6 @@ let currentRoute = useRoute();
 function updateSelectKeyAndOpenKey() {
   // 第一步，根据路由 更新选中 顶级菜单
   let parentList = useUserStore().menuParentIdListMap.get(currentRoute.name) || [];
-  console.log('parentList', parentList)
   if (parentList.length === 0) {
     topMenuRef.value.updateSelectKey(currentRoute.name);
     return;

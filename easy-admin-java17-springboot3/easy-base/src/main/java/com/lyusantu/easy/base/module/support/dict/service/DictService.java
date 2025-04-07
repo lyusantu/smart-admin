@@ -59,7 +59,8 @@ public class DictService {
      * @return
      */
     public synchronized ResponseDTO<String> valueAdd(DictValueAddForm valueAddForm) {
-        DictValueEntity dictValueEntity = dictValueMapper.selectByCode(valueAddForm.getValueCode(), false);
+        DictValueEntity dictValueEntity = dictValueMapper.selectByCode(valueAddForm.getDictKeyId(), valueAddForm.getValueCode(), false);
+
         if (dictValueEntity != null) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST);
         }
@@ -97,9 +98,9 @@ public class DictService {
     public synchronized ResponseDTO<String> valueEdit(DictValueUpdateForm valueUpdateForm) {
         DictKeyEntity dictKeyEntity = dictKeyMapper.selectById(valueUpdateForm.getDictKeyId());
         if (dictKeyEntity == null || dictKeyEntity.getDeletedFlag()) {
-            return ResponseDTO.userErrorParam("key不能存在");
+            return ResponseDTO.userErrorParam("key不能存在" );
         }
-        DictValueEntity dictValueEntity = dictValueMapper.selectByCode(valueUpdateForm.getValueCode(), false);
+        DictValueEntity dictValueEntity = dictValueMapper.selectByCode(valueUpdateForm.getDictKeyId(), valueUpdateForm.getValueCode(), false);
         if (dictValueEntity != null && !dictValueEntity.getDictValueId().equals(valueUpdateForm.getDictValueId())) {
             return ResponseDTO.error(UserErrorCode.ALREADY_EXIST);
         }

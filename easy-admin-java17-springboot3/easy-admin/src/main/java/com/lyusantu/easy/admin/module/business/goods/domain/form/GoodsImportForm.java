@@ -1,6 +1,6 @@
 package com.lyusantu.easy.admin.module.business.goods.domain.form;
 
-import com.alibaba.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;

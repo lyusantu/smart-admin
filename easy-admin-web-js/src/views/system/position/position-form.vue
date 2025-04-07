@@ -17,16 +17,16 @@
   >
     <a-form ref="formRef" :model="form" :rules="rules" :label-col="{ span: 6 }">
       <a-form-item label="职务名称" name="positionName">
-        <a-input style="width: 100%" v-model:value="form.positionName" placeholder="职务名称"/>
+        <a-input style="width: 100%" v-model:value="form.positionName" placeholder="职务名称" />
       </a-form-item>
       <a-form-item label="职级" name="level">
-        <a-input style="width: 100%" v-model:value="form.level" placeholder="职级"/>
+        <a-input style="width: 100%" v-model:value="form.level" placeholder="职级" />
       </a-form-item>
       <a-form-item label="排序" name="sort">
-        <a-input-number :min="0" :step="1" :precision="0" style="width: 100%" v-model:value="form.sort" placeholder="排序"/>
+        <a-input-number :min="0" :step="1" :precision="0" style="width: 100%" v-model:value="form.sort" placeholder="排序" />
       </a-form-item>
       <a-form-item label="备注" name="remark">
-        <a-input style="width: 100%" v-model:value="form.remark" placeholder="备注"/>
+        <a-input style="width: 100%" v-model:value="form.remark" placeholder="备注" />
       </a-form-item>
     </a-form>
 
@@ -54,7 +54,7 @@ const emits = defineEmits(['reloadList']);
 // 是否显示
 const visibleFlag = ref(false);
 
-function show (rowData) {
+function show(rowData) {
   Object.assign(form, formDefault);
   if (rowData && !_.isEmpty(rowData)) {
     Object.assign(form, rowData);
@@ -62,10 +62,24 @@ function show (rowData) {
   visibleFlag.value = true;
   nextTick(() => {
     formRef.value.clearValidate();
+
+    // 解决弹窗错误信息显示,没有可忽略
+    const domArr = document.getElementsByClassName('ant-modal');
+    if (domArr && domArr.length > 0) {
+      Array.from(domArr).forEach((item) => {
+        if (item.childNodes && item.childNodes.length > 0) {
+          Array.from(item.childNodes).forEach((child) => {
+            if (child.setAttribute) {
+              child.setAttribute('aria-hidden', 'false');
+            }
+          });
+        }
+      });
+    }
   });
 }
 
-function onClose () {
+function onClose() {
   Object.assign(form, formDefault);
   visibleFlag.value = false;
 }
@@ -78,7 +92,7 @@ const formRef = ref();
 const formDefault = {
   positionId: undefined,
   positionName: undefined, //职务名称
-  level: undefined,//职纪
+  level: undefined, //职纪
   sort: 0,
   remark: undefined, //备注
 };
@@ -90,7 +104,7 @@ const rules = {
 };
 
 // 点击确定，验证表单
-async function onSubmit () {
+async function onSubmit() {
   try {
     await formRef.value.validateFields();
     save();
@@ -100,7 +114,7 @@ async function onSubmit () {
 }
 
 // 新建、编辑API
-async function save () {
+async function save() {
   SmartLoading.show();
   try {
     if (form.positionId) {

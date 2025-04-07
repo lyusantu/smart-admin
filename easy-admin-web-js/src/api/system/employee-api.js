@@ -36,10 +36,10 @@ export const employeeApi = {
     return postRequest('/employee/update', params);
   },
   /**
-   * 更新登录人信息
+   * 更新员工个人中心信息
    */
-  updateByLogin: (params) => {
-    return postRequest('/employee/update/login', params);
+  updateCenter: (params) => {
+    return postRequest('/employee/update/center', params);
   },
   /**
    * 更新登录人头像
@@ -96,6 +96,6 @@ export const employeeApi = {
    * 查询员工-根据部门id
    */
   queryEmployeeByDeptId: (departmentId) => {
-    return getRequest(`/employee/query/dept/${departmentId}`);
+    return getRequest(`/employee/getAllEmployeeByDepartmentId/${departmentId}`);
   },
 };

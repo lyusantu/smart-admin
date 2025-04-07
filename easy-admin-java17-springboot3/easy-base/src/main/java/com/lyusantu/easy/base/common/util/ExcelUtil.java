@@ -1,9 +1,10 @@
 package com.lyusantu.easy.base.common.util;
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.write.handler.SheetWriteHandler;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+import cn.idev.excel.EasyExcel;
+import cn.idev.excel.FastExcel;
+import cn.idev.excel.write.handler.SheetWriteHandler;
+import cn.idev.excel.write.metadata.holder.WriteSheetHolder;
+import cn.idev.excel.write.metadata.holder.WriteWorkbookHolder;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

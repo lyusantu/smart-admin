@@ -20,7 +20,7 @@
         <SmartEnumSelect enum-name="GOODS_STATUS_ENUM" v-model:value="form.goodsStatus" />
       </a-form-item>
       <a-form-item label="产地" name="place">
-        <DictSelect width="100%" key-code="GODOS_PLACE" v-model:value="form.place" mode="tags" />
+        <DictSelect width="100%" key-code="GOODS_PLACE" v-model:value="form.place" mode="tags" />
       </a-form-item>
       <a-form-item label="上架状态" name="shelvesFlag">
         <a-radio-group v-model:value="form.shelvesFlag">
@@ -36,7 +36,7 @@
       </a-form-item>
     </a-form>
     <div
-      :style="{
+        :style="{
         position: 'absolute',
         right: 0,
         bottom: 0,
@@ -54,74 +54,74 @@
   </a-drawer>
 </template>
 <script setup>
-  import { ref, nextTick, reactive } from 'vue';
-  import CategoryTree from '/@/components/business/category-tree-select/index.vue';
-  import { CATEGORY_TYPE_ENUM } from '/@/constants/business/erp/category-const';
-  import { message } from 'ant-design-vue';
-  import { SmartLoading } from '/@/components/framework/smart-loading';
-  import { GOODS_STATUS_ENUM } from '/@/constants/business/erp/goods-const';
-  import _ from 'lodash';
-  import { goodsApi } from '/@/api/business/goods/goods-api';
-  import { smartSentry } from '/@/lib/smart-sentry';
-  import SmartEnumSelect from '/@/components/framework/smart-enum-select/index.vue';
-  import DictSelect from '/@/components/support/dict-select/index.vue';
+import { ref, nextTick, reactive } from 'vue';
+import CategoryTree from '/@/components/business/category-tree-select/index.vue';
+import { CATEGORY_TYPE_ENUM } from '/@/constants/business/erp/category-const';
+import { message } from 'ant-design-vue';
+import { SmartLoading } from '/@/components/framework/smart-loading';
+import { GOODS_STATUS_ENUM } from '/@/constants/business/erp/goods-const';
+import _ from 'lodash';
+import { goodsApi } from '/@/api/business/goods/goods-api';
+import { smartSentry } from '/@/lib/smart-sentry';
+import SmartEnumSelect from '/@/components/framework/smart-enum-select/index.vue';
+import DictSelect from '/@/components/support/dict-select/index.vue';
 
-  // emit
-  const emit = defineEmits(['reloadList']);
+// emit
+const emit = defineEmits(['reloadList']);
 
-  // 组件ref
-  const formRef = ref();
+// 组件ref
+const formRef = ref();
 
-  const formDefault = {
-    //商品分类
-    categoryId: undefined,
-    //商品名称
-    goodsName: undefined,
-    //商品状态
-    goodsStatus: GOODS_STATUS_ENUM.APPOINTMENT.value,
-    //产地
-    place: [],
-    //商品价格
-    price: undefined,
-    //上架状态
-    shelvesFlag: true,
-    //备注
-    remark: '',
-    //商品id
-    goodsId: undefined,
-  };
-  let form = reactive({ ...formDefault });
-  const rules = {
-    categoryId: [{ required: true, message: '请选择商品分类' }],
-    goodsName: [{ required: true, message: '商品名称不能为空' }],
-    goodsStatus: [{ required: true, message: '商品状态不能为空' }],
-    price: [{ required: true, message: '商品价格不能为空' }],
-    place: [{ required: true, message: '产地不能为空' }],
-  };
-  // 是否展示抽屉
-  const visible = ref(false);
+const formDefault = {
+  //商品分类
+  categoryId: undefined,
+  //商品名称
+  goodsName: undefined,
+  //商品状态
+  goodsStatus: GOODS_STATUS_ENUM.APPOINTMENT.value,
+  //产地
+  place: [],
+  //商品价格
+  price: undefined,
+  //上架状态
+  shelvesFlag: true,
+  //备注
+  remark: '',
+  //商品id
+  goodsId: undefined,
+};
+let form = reactive({ ...formDefault });
+const rules = {
+  categoryId: [{ required: true, message: '请选择商品分类' }],
+  goodsName: [{ required: true, message: '商品名称不能为空' }],
+  goodsStatus: [{ required: true, message: '商品状态不能为空' }],
+  price: [{ required: true, message: '商品价格不能为空' }],
+  place: [{ required: true, message: '产地不能为空' }],
+};
+// 是否展示抽屉
+const visible = ref(false);
 
-  function showDrawer(rowData) {
-    Object.assign(form, formDefault);
-    if (rowData && !_.isEmpty(rowData)) {
-      Object.assign(form, rowData);
-    }
-    if (form.place && form.place.length > 0) {
-      form.place = form.place.map((e) => e.valueCode);
-    }
-    visible.value = true;
-    nextTick(() => {
-      formRef.value.clearValidate();
-    });
+function showDrawer(rowData) {
+  Object.assign(form, formDefault);
+  if (rowData && !_.isEmpty(rowData)) {
+    Object.assign(form, rowData);
   }
-
-  function onClose() {
-    Object.assign(form, formDefault);
-    visible.value = false;
+  if (form.place && form.place.length > 0) {
+    form.place = form.place.split(',');
   }
+  visible.value = true;
+  nextTick(() => {
+    formRef.value.clearValidate();
+  });
+}
 
-  function onSubmit() {
-    formRef.value
+function onClose() {
+  Object.assign(form, formDefault);
+  visible.value = false;
+}
+
+function onSubmit() {
+  formRef.value
       .validate()
       .then(async () => {
         SmartLoading.show();
@@ -144,9 +144,9 @@
         console.log('error', error);
         message.error('参数验证错误，请仔细填写表单数据!');
       });
-  }
+}
 
-  defineExpose({
-    showDrawer,
-  });
+defineExpose({
+  showDrawer,
+});
 </script>

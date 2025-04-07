@@ -43,7 +43,7 @@
           新建
         </a-button>
 
-        <a-button @click="confirmBatchDelete" v-privilege="'support:dict:batchDelete'" type="text" danger :disabled="selectedRowKeyList.length === 0">
+        <a-button @click="confirmBatchDelete" v-privilege="'support:dict:batchDelete'" type="primary" danger :disabled="selectedRowKeyList.length === 0">
           <template #icon>
             <DeleteOutlined />
           </template>
@@ -63,14 +63,14 @@
     </a-row>
 
     <a-table
-      size="small"
-      :dataSource="tableData"
-      :columns="columns"
-      :loading="tableLoading"
-      rowKey="dictKeyId"
-      :pagination="false"
-      bordered
-      :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
+        size="small"
+        :dataSource="tableData"
+        :columns="columns"
+        :loading="tableLoading"
+        rowKey="dictKeyId"
+        :pagination="false"
+        bordered
+        :row-selection="{ selectedRowKeys: selectedRowKeyList, onChange: onSelectChange }"
     >
       <template #bodyCell="{ record, column }">
         <template v-if="column.dataIndex === 'keyCode'">
@@ -86,17 +86,17 @@
 
     <div class="smart-query-table-page">
       <a-pagination
-        showSizeChanger
-        showQuickJumper
-        show-less-items
-        :pageSizeOptions="PAGE_SIZE_OPTIONS"
-        :defaultPageSize="queryForm.pageSize"
-        v-model:current="queryForm.pageNum"
-        v-model:pageSize="queryForm.pageSize"
-        :total="total"
-        @change="ajaxQuery"
-        @showSizeChange="ajaxQuery"
-        :show-total="(total) => `共${total}条`"
+          showSizeChanger
+          showQuickJumper
+          show-less-items
+          :pageSizeOptions="PAGE_SIZE_OPTIONS"
+          :defaultPageSize="queryForm.pageSize"
+          v-model:current="queryForm.pageNum"
+          v-model:pageSize="queryForm.pageSize"
+          :total="total"
+          @change="ajaxQuery"
+          @showSizeChange="ajaxQuery"
+          :show-total="(total) => `共${total}条`"
       />
     </div>
 
@@ -106,138 +106,138 @@
   </a-card>
 </template>
 <script setup>
-  import DictKeyOperateModal from './components/dict-key-operate-modal.vue';
-  import DictValueModal from './components/dict-value-modal.vue';
-  import { reactive, ref, onMounted } from 'vue';
-  import { message, Modal } from 'ant-design-vue';
-  import { SmartLoading } from '/@/components/framework/smart-loading';
-  import { dictApi } from '/@/api/support/dict-api';
-  import { PAGE_SIZE_OPTIONS } from '/@/constants/common-const';
-  import { smartSentry } from '/@/lib/smart-sentry';
-  import TableOperator from '/@/components/support/table-operator/index.vue';
-  import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
+import DictKeyOperateModal from './components/dict-key-operate-modal.vue';
+import DictValueModal from './components/dict-value-modal.vue';
+import { reactive, ref, onMounted } from 'vue';
+import { message, Modal } from 'ant-design-vue';
+import { SmartLoading } from '/@/components/framework/smart-loading';
+import { dictApi } from '/@/api/support/dict-api';
+import { PAGE_SIZE_OPTIONS } from '/@/constants/common-const';
+import { smartSentry } from '/@/lib/smart-sentry';
+import TableOperator from '/@/components/support/table-operator/index.vue';
+import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
 
-  const columns = ref([
-    {
-      title: 'ID',
-      width: 90,
-      dataIndex: 'dictKeyId',
-    },
-    {
-      title: '编码',
-      dataIndex: 'keyCode',
-    },
-    {
-      title: '名称',
-      dataIndex: 'keyName',
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      fixed: 'right',
-      width: 50,
-    },
-  ]);
+const columns = ref([
+  {
+    title: 'ID',
+    width: 90,
+    dataIndex: 'dictKeyId',
+  },
+  {
+    title: '编码',
+    dataIndex: 'keyCode',
+  },
+  {
+    title: '名称',
+    dataIndex: 'keyName',
+  },
+  {
+    title: '备注',
+    dataIndex: 'remark',
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    fixed: 'right',
+    width: 50,
+  },
+]);
 
-  // ---------------- 查询数据 -----------------
+// ---------------- 查询数据 -----------------
 
-  const queryFormState = {
-    searchWord: '',
-    pageNum: 1,
-    pageSize: 10,
-  };
-  const queryForm = reactive({ ...queryFormState });
-  const tableLoading = ref(false);
-  const selectedRowKeyList = ref([]);
-  const tableData = ref([]);
-  const total = ref(0);
-  const operateModal = ref();
-  const dictValueModal = ref();
+const queryFormState = {
+  searchWord: '',
+  pageNum: 1,
+  pageSize: 10,
+};
+const queryForm = reactive({ ...queryFormState });
+const tableLoading = ref(false);
+const selectedRowKeyList = ref([]);
+const tableData = ref([]);
+const total = ref(0);
+const operateModal = ref();
+const dictValueModal = ref();
 
-  // 显示操作记录弹窗
-  function showValueList(dictKeyId) {
-    dictValueModal.value.showModal(dictKeyId);
+// 显示操作记录弹窗
+function showValueList(dictKeyId) {
+  dictValueModal.value.showModal(dictKeyId);
+}
+
+function onSelectChange(selectedRowKeys) {
+  selectedRowKeyList.value = selectedRowKeys;
+}
+
+function resetQuery() {
+  Object.assign(queryForm, queryFormState);
+  ajaxQuery();
+}
+function onSearch() {
+  queryForm.pageNum = 1;
+  ajaxQuery();
+}
+async function ajaxQuery() {
+  try {
+    tableLoading.value = true;
+    let responseModel = await dictApi.keyQuery(queryForm);
+    const list = responseModel.data.list;
+    total.value = responseModel.data.total;
+    tableData.value = list;
+  } catch (e) {
+    smartSentry.captureError(e);
+  } finally {
+    tableLoading.value = false;
   }
+}
 
-  function onSelectChange(selectedRowKeys) {
-    selectedRowKeyList.value = selectedRowKeys;
-  }
+// ---------------- 刷新缓存 -----------------
 
-  function resetQuery() {
-    Object.assign(queryForm, queryFormState);
+async function cacheRefresh() {
+  try {
+    SmartLoading.show();
+    await dictApi.cacheRefresh();
+    message.success('缓存刷新成功');
     ajaxQuery();
+  } catch (e) {
+    smartSentry.captureError(e);
+  } finally {
+    SmartLoading.hide();
   }
-  function onSearch() {
-    queryForm.pageNum = 1;
+}
+
+// ---------------- 批量 删除 -----------------
+
+function confirmBatchDelete() {
+  Modal.confirm({
+    title: '提示',
+    content: '确定要删除选中Key吗?',
+    okText: '删除',
+    okType: 'danger',
+    onOk() {
+      batchDelete();
+    },
+    cancelText: '取消',
+    onCancel() {},
+  });
+}
+
+const batchDelete = async () => {
+  try {
+    SmartLoading.show();
+    await dictApi.keyDelete(selectedRowKeyList.value);
+    message.success('删除成功');
     ajaxQuery();
+  } catch (e) {
+    smartSentry.captureError(e);
+  } finally {
+    SmartLoading.hide();
   }
-  async function ajaxQuery() {
-    try {
-      tableLoading.value = true;
-      let responseModel = await dictApi.keyQuery(queryForm);
-      const list = responseModel.data.list;
-      total.value = responseModel.data.total;
-      tableData.value = list;
-    } catch (e) {
-      smartSentry.captureError(e);
-    } finally {
-      tableLoading.value = false;
-    }
-  }
+};
 
-  // ---------------- 刷新缓存 -----------------
+// ---------------- 添加/更新 -----------------
 
-  async function cacheRefresh() {
-    try {
-      SmartLoading.show();
-      await dictApi.cacheRefresh();
-      message.success('缓存刷新成功');
-      ajaxQuery();
-    } catch (e) {
-      smartSentry.captureError(e);
-    } finally {
-      SmartLoading.hide();
-    }
-  }
+function addOrUpdateKey(rowData) {
+  operateModal.value.showModal(rowData);
+}
 
-  // ---------------- 批量 删除 -----------------
-
-  function confirmBatchDelete() {
-    Modal.confirm({
-      title: '提示',
-      content: '确定要删除选中Key吗?',
-      okText: '删除',
-      okType: 'danger',
-      onOk() {
-        batchDelete();
-      },
-      cancelText: '取消',
-      onCancel() {},
-    });
-  }
-
-  const batchDelete = async () => {
-    try {
-      SmartLoading.show();
-      await dictApi.keyDelete(selectedRowKeyList.value);
-      message.success('删除成功');
-      ajaxQuery();
-    } catch (e) {
-      smartSentry.captureError(e);
-    } finally {
-      SmartLoading.hide();
-    }
-  };
-
-  // ---------------- 添加/更新 -----------------
-
-  function addOrUpdateKey(rowData) {
-    operateModal.value.showModal(rowData);
-  }
-
-  onMounted(ajaxQuery);
+onMounted(ajaxQuery);
 </script>

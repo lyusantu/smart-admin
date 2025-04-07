@@ -7,7 +7,7 @@ import com.lyusantu.easy.base.common.enumeration.BaseEnum;
 
 
 /**
- * 数据范围 种类
+ *  数据可见范围类型
  */
 @AllArgsConstructor
 @Getter

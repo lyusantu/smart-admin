@@ -7,11 +7,11 @@
 
       <a-form-item label="企业logo" name="enterpriseLogo">
         <Upload
-          accept=".jpg,.jpeg,.png,.gif"
-          :maxUploadSize="1"
-          buttonText="点击上传企业logo"
-          :default-file-list="form.enterpriseLogo"
-          @change="enterpriseLogoChange"
+            accept=".jpg,.jpeg,.png,.gif"
+            :maxUploadSize="1"
+            buttonText="点击上传企业logo"
+            :default-file-list="form.enterpriseLogo"
+            @change="enterpriseLogoChange"
         />
       </a-form-item>
 
@@ -46,11 +46,11 @@
 
       <a-form-item label="营业执照" name="businessLicense">
         <Upload
-          accept=".jpg,.jpeg,.png,.gif"
-          :maxUploadSize="1"
-          buttonText="点击上传营业执照"
-          :default-file-list="form.businessLicense"
-          @change="businessLicenseChange"
+            accept=".jpg,.jpeg,.png,.gif"
+            :maxUploadSize="1"
+            buttonText="点击上传营业执照"
+            :default-file-list="form.businessLicense"
+            @change="businessLicenseChange"
         />
       </a-form-item>
     </a-form>
@@ -58,108 +58,123 @@
 </template>
 
 <script setup>
-  import { message } from 'ant-design-vue';
-  import _ from 'lodash';
-  import { nextTick, reactive, ref } from 'vue';
-  import { enterpriseApi } from '/@/api/business/oa/enterprise-api';
-  import AreaCascader from '/@/components/framework/area-cascader/index.vue';
-  import { SmartLoading } from '/@/components/framework/smart-loading';
-  import Upload from '/@/components/support/file-upload/index.vue';
-  import { regular } from '/@/constants/regular-const';
-  import { smartSentry } from '/@/lib/smart-sentry';
-  import SmartEnumSelect from '/@/components/framework/smart-enum-select/index.vue';
+import { message } from 'ant-design-vue';
+import _ from 'lodash';
+import { nextTick, reactive, ref } from 'vue';
+import { enterpriseApi } from '/@/api/business/oa/enterprise-api';
+import AreaCascader from '/@/components/framework/area-cascader/index.vue';
+import { SmartLoading } from '/@/components/framework/smart-loading';
+import Upload from '/@/components/support/file-upload/index.vue';
+import { regular } from '/@/constants/regular-const';
+import { smartSentry } from '/@/lib/smart-sentry';
+import SmartEnumSelect from '/@/components/framework/smart-enum-select/index.vue';
 
-  defineExpose({
-    showModal,
-  });
-  const emit = defineEmits(['refresh']);
+defineExpose({
+  showModal,
+});
+const emit = defineEmits(['refresh']);
 
-  // --------------------- modal 显示与隐藏 ---------------------
-  // 是否展示
-  const visible = ref(false);
+// --------------------- modal 显示与隐藏 ---------------------
+// 是否展示
+const visible = ref(false);
 
-  function showModal(enterpriseId) {
-    Object.assign(form, formDefault);
-    area.value = [];
-    if (enterpriseId) {
-      detail(enterpriseId);
-    }
-    visible.value = true;
+function showModal(enterpriseId) {
+  Object.assign(form, formDefault);
+  area.value = [];
+  if (enterpriseId) {
+    detail(enterpriseId);
   }
-
-  function onClose() {
-    visible.value = false;
-  }
-
-  async function detail(enterpriseId) {
-    try {
-      let result = await enterpriseApi.detail(enterpriseId);
-      let data = result.data;
-      Object.assign(form, data);
-      nextTick(() => {
-        // 省市区不存在，不需要赋值
-        if (!data.provinceName) {
-          return;
+  visible.value = true;
+  nextTick(() => {
+    // 解决弹窗错误信息显示,没有可忽略
+    const domArr = document.getElementsByClassName('ant-modal');
+    if (domArr && domArr.length > 0) {
+      Array.from(domArr).forEach((item) => {
+        if (item.childNodes && item.childNodes.length > 0) {
+          Array.from(item.childNodes).forEach((child) => {
+            if (child.setAttribute) {
+              child.setAttribute('aria-hidden', 'false');
+            }
+          });
         }
-        area.value = [
-          {
-            value: data.province,
-            label: data.provinceName,
-          },
-          {
-            value: data.city,
-            label: data.cityName,
-          },
-          {
-            value: data.district,
-            label: data.districtName,
-          },
-        ];
       });
-    } catch (error) {
-      smartSentry.captureError(error);
-    } finally {
-      SmartLoading.hide();
     }
+  });
+}
+
+function onClose() {
+  visible.value = false;
+}
+
+async function detail(enterpriseId) {
+  try {
+    let result = await enterpriseApi.detail(enterpriseId);
+    let data = result.data;
+    Object.assign(form, data);
+    nextTick(() => {
+      // 省市区不存在，不需要赋值
+      if (!data.provinceName) {
+        return;
+      }
+      area.value = [
+        {
+          value: data.province,
+          label: data.provinceName,
+        },
+        {
+          value: data.city,
+          label: data.cityName,
+        },
+        {
+          value: data.district,
+          label: data.districtName,
+        },
+      ];
+    });
+  } catch (error) {
+    smartSentry.captureError(error);
+  } finally {
+    SmartLoading.hide();
   }
+}
 
-  // --------------------- 表单 ---------------------
+// --------------------- 表单 ---------------------
 
-  //  组件
-  const formRef = ref();
+//  组件
+const formRef = ref();
 
-  const formDefault = {
-    enterpriseId: undefined,
-    enterpriseName: undefined,
-    unifiedSocialCreditCode: undefined,
-    businessLicense: undefined,
-    contact: undefined,
-    enterpriseLogo: undefined,
-    contactPhone: undefined,
-    email: undefined,
-    province: undefined,
-    provinceName: undefined,
-    city: undefined,
-    cityName: undefined,
-    district: undefined,
-    districtName: undefined,
-    address: undefined,
-    disabledFlag: false,
-  };
-  let form = reactive({ ...formDefault });
-  const rules = {
-    enterpriseName: [{ required: true, message: '请输入企业名称' }],
-    unifiedSocialCreditCode: [{ required: true, message: '请输入统一社会信用代码' }],
-    contact: [{ required: true, message: '请输入联系人' }],
-    contactPhone: [
-      { required: true, message: '请输入联系人电话' },
-      { pattern: regular.phone, message: '请输入正确的联系人电话', trigger: 'blur' },
-    ],
-    type: [{ required: true, message: '请选择类型' }],
-  };
+const formDefault = {
+  enterpriseId: undefined,
+  enterpriseName: undefined,
+  unifiedSocialCreditCode: undefined,
+  businessLicense: undefined,
+  contact: undefined,
+  enterpriseLogo: undefined,
+  contactPhone: undefined,
+  email: undefined,
+  province: undefined,
+  provinceName: undefined,
+  city: undefined,
+  cityName: undefined,
+  district: undefined,
+  districtName: undefined,
+  address: undefined,
+  disabledFlag: false,
+};
+let form = reactive({ ...formDefault });
+const rules = {
+  enterpriseName: [{ required: true, message: '请输入企业名称' }],
+  unifiedSocialCreditCode: [{ required: true, message: '请输入统一社会信用代码' }],
+  contact: [{ required: true, message: '请输入联系人' }],
+  contactPhone: [
+    { required: true, message: '请输入联系人电话' },
+    { pattern: regular.phone, message: '请输入正确的联系人电话', trigger: 'blur' },
+  ],
+  type: [{ required: true, message: '请选择类型' }],
+};
 
-  function onSubmit() {
-    formRef.value
+function onSubmit() {
+  formRef.value
       .validate()
       .then(async () => {
         SmartLoading.show();
@@ -182,62 +197,62 @@
         console.log('error', error);
         message.error('参数验证错误，请仔细填写表单数据!');
       });
-  }
+}
 
-  // 状态
-  const enabledChecked = ref(true);
+// 状态
+const enabledChecked = ref(true);
 
-  function enabledCheckedChange(checked) {
-    form.disabledFlag = !checked;
-  }
+function enabledCheckedChange(checked) {
+  form.disabledFlag = !checked;
+}
 
-  // 地区
-  const area = ref([]);
+// 地区
+const area = ref([]);
 
-  function changeArea(value, selectedOptions) {
-    Object.assign(form, {
-      province: '',
-      provinceName: '',
-      city: '',
-      cityName: '',
-      district: '',
-      districtName: '',
-    });
-    if (!_.isEmpty(selectedOptions)) {
-      // 地区信息
-      form.province = area.value[0].value;
-      form.provinceName = area.value[0].label;
+function changeArea(value, selectedOptions) {
+  Object.assign(form, {
+    province: '',
+    provinceName: '',
+    city: '',
+    cityName: '',
+    district: '',
+    districtName: '',
+  });
+  if (!_.isEmpty(selectedOptions)) {
+    // 地区信息
+    form.province = area.value[0].value;
+    form.provinceName = area.value[0].label;
 
-      form.city = area.value[1].value;
-      form.cityName = area.value[1].label;
-      if (area.value[2]) {
-        form.district = area.value[2].value;
-        form.districtName = area.value[2].label;
-      }
+    form.city = area.value[1].value;
+    form.cityName = area.value[1].label;
+    if (area.value[2]) {
+      form.district = area.value[2].value;
+      form.districtName = area.value[2].label;
     }
   }
+}
 
-  function enterpriseLogoChange(fileList) {
-    form.enterpriseLogo = fileList;
-  }
+function enterpriseLogoChange(fileList) {
+  form.enterpriseLogo = fileList;
+}
 
-  function businessLicenseChange(fileList) {
-    form.businessLicense = fileList;
-  }
+function businessLicenseChange(fileList) {
+  form.businessLicense = fileList;
+}
 </script>
 
 <style lang="less" scoped>
-  .form-width {
-    width: 100% !important;
-  }
+.form-width {
+  width: 100% !important;
+}
 
-  .footer {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-  }
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
 
-  :deep(.ant-card-body) {
-    padding: 10px;
-  }
+:deep(.ant-card-body) {
+  padding: 10px;
+}
 </style>

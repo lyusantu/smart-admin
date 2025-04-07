@@ -1,11 +1,11 @@
 <!--
   *  展开菜单模式
-  * 
-  * @Author:    1024创新实验室-主任：卓大 
-  * @Date:      2022-09-06 20:40:16 
-  * @Wechat:    zhuda1024 
-  * @Email:     lab1024@163.com 
-  * @Copyright  1024创新实验室 （ https://1024lab.net ），Since 2012 
+  *
+  * @Author:    1024创新实验室-主任：卓大
+  * @Date:      2022-09-06 20:40:16
+  * @Wechat:    zhuda1024
+  * @Email:     lab1024@163.com
+  * @Copyright  1024创新实验室 （ https://1024lab.net ），Since 2012
 -->
 <template>
   <a-layout class="admin-layout" style="min-height: 100%">
@@ -20,7 +20,12 @@
       <!-- 顶部头部信息 -->
       <a-layout-header class="smart-layout-header">
         <a-row justify="space-between" class="smart-layout-header-user">
-          <a-col class="smart-layout-header-left">
+          <a-col
+              class="smart-layout-header-left"
+              :style="{
+              'max-width': `calc(100% - ${rightWidth}px)`,
+            }"
+          >
             <span class="collapsed-button">
               <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)" />
               <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
@@ -32,7 +37,8 @@
               </span>
             </a-tooltip>
             <span class="location-breadcrumb">
-              <MenuLocationBreadcrumb />
+              <PageTag v-if="pageTagLocation === 'top'" />
+              <MenuLocationBreadcrumb v-if="pageTagLocation === 'center'" />
             </span>
           </a-col>
           <!---用戶操作区域-->
@@ -40,7 +46,7 @@
             <HeaderUserSpace />
           </a-col>
         </a-row>
-        <PageTag />
+        <PageTag v-if="pageTagLocation === 'center'" />
       </a-layout-header>
 
       <!--中间内容-->
@@ -49,11 +55,11 @@
         <IframeIndex v-show="iframeNotKeepAlivePageFlag" :key="route.name" :name="route.name" :url="route.meta.frameUrl" />
         <!--keepAlive的iframe 每个页面一个iframe组件-->
         <IframeIndex
-          v-for="item in keepAliveIframePages"
-          v-show="route.name == item.name"
-          :key="item.name"
-          :name="item.name"
-          :url="item.meta.frameUrl"
+            v-for="item in keepAliveIframePages"
+            v-show="route.name == item.name"
+            :key="item.name"
+            :name="item.name"
+            :url="item.meta.frameUrl"
         />
         <!--非iframe使用router-view-->
         <div v-show="!iframeNotKeepAlivePageFlag && keepAliveIframePages.every((e) => route.name != e.name)">
@@ -76,7 +82,7 @@
   </a-layout>
 </template>
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import HeaderUserSpace from './components/header-user-space/index.vue';
 import MenuLocationBreadcrumb from './components/menu-location-breadcrumb/index.vue';
 import PageTag from './components/page-tag/index.vue';
@@ -103,6 +109,8 @@ const helpDocFlag = computed(() => useAppConfigStore().$state.helpDocExpandFlag)
 const footerFlag = computed(() => useAppConfigStore().$state.footerFlag);
 // 是否显示水印
 const watermarkFlag = computed(() => useAppConfigStore().$state.watermarkFlag);
+// 标签页位置
+const pageTagLocation = computed(() => useAppConfigStore().$state.pageTagLocation);
 // 多余高度
 const dueHeight = computed(() => {
   let due = 40;
@@ -114,6 +122,33 @@ const dueHeight = computed(() => {
   }
   return due;
 });
+watch(
+    pageTagLocation,
+    (newVal) => {
+      if (newVal == 'top') {
+        nextTick(() => {
+          sizeComputed();
+        });
+      }
+    },
+    {
+      immediate: true,
+    }
+);
+const rightWidth = ref(0);
+function sizeComputed() {
+  const tagParentElement = document.querySelector('.location-breadcrumb');
+  const tagsElement = tagParentElement.querySelector('.ant-tabs-nav-list');
+  const parentElement = document.querySelector('.smart-layout-header-user');
+  const rightElement = document.querySelector('.smart-layout-header-right');
+  rightWidth.value = rightElement.offsetWidth;
+  let ro = new ResizeObserver((e) => {
+    rightWidth.value = rightElement.offsetWidth + 10;
+  });
+  ro.observe(rightElement);
+  ro.observe(tagsElement);
+  ro.observe(parentElement);
+}
 //是否隐藏菜单
 const collapsed = ref(false);
 
@@ -127,14 +162,14 @@ onMounted(() => {
 });
 
 watch(
-  () => watermarkFlag.value,
-  (newValue) => {
-    if (newValue) {
-      watermark.set('smartAdminLayoutContent', useUserStore().actualName);
-    } else {
-      watermark.clear();
+    () => watermarkFlag.value,
+    (newValue) => {
+      if (newValue) {
+        watermark.set('smartAdminLayoutContent', useUserStore().actualName);
+      } else {
+        watermark.clear();
+      }
     }
-  }
 );
 
 window.addEventListener('resize', function () {
@@ -192,6 +227,7 @@ function goHome() {
   }
 
   .location-breadcrumb {
+    width: calc(100% - 56px);
     margin-left: 15px;
     line-height: @header-user-height;
   }

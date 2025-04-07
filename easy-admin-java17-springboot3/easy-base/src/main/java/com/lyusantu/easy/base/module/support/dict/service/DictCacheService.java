@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -30,12 +31,10 @@ import java.util.stream.Collectors;
 public class DictCacheService {
 
     private final DictKeyMapper dictKeyMapper;
+
     private final DictValueMapper dictValueMapper;
 
     private ConcurrentHashMap<String, List<DictValueVO>> DICT_CACHE = new ConcurrentHashMap<>();
-
-    private ConcurrentHashMap<String, DictValueVO> VALUE_CACHE = new ConcurrentHashMap<>();
-
 
     @PostConstruct
     public void dictCache() {
@@ -56,10 +55,6 @@ public class DictCacheService {
             Long dictKeyId = dictKeyEntity.getDictKeyId();
             DICT_CACHE.put(keyCode, valueListMap.getOrDefault(dictKeyId, Lists.newArrayList()));
         }
-        //字典值缓存
-        dictValueVOList.forEach(e -> {
-            VALUE_CACHE.put(e.getValueCode(), e);
-        });
         log.info("数据字典缓存初始化完毕，缓存数量：{}", DICT_CACHE.size());
     }
 
@@ -68,7 +63,6 @@ public class DictCacheService {
      */
     public ResponseDTO<String> cacheRefresh() {
         DICT_CACHE.clear();
-        VALUE_CACHE.clear();
         this.cacheInit();
         return ResponseDTO.ok();
     }
@@ -85,37 +79,45 @@ public class DictCacheService {
 
     /**
      * 查询值code名称
-     *
+     * @param keyCode
      * @param valueCode
      * @return
      */
-    public String selectValueNameByValueCode(String valueCode) {
-        if (StrUtil.isEmpty(valueCode)) {
-            return null;
-        }
-
-        DictValueVO dictValueVO = VALUE_CACHE.get(valueCode);
-        if (dictValueVO == null) {
+    public String selectValueNameByValueCode(String keyCode, String valueCode) {
+        DictValueVO dictValueVO = this.selectValueByValueCode(keyCode, valueCode);
+        if (dictValueVO == null){
             return "";
         }
         return dictValueVO.getValueName();
     }
 
-    public DictValueVO selectValueByValueCode(String valueCode) {
+    public DictValueVO selectValueByValueCode(String keyCode, String valueCode) {
         if (StrUtil.isEmpty(valueCode)) {
             return null;
         }
-        return VALUE_CACHE.get(valueCode);
+        if (StrUtil.isEmpty(keyCode)) {
+            return null;
+        }
+
+        List<DictValueVO> dictValueVOList = DICT_CACHE.get(valueCode);
+        if (CollectionUtils.isEmpty(dictValueVOList)) {
+            return null;
+        }
+        Optional<DictValueVO> option = dictValueVOList.stream().filter(e->e.getValueCode().equals(valueCode)).findFirst();
+        if(option.isPresent()){
+            return option.get();
+        }
+        return null;
     }
 
-    public String selectValueNameByValueCodeSplit(String valueCodes) {
+    public String selectValueNameByValueCodeSplit(String keyCode, String valueCodes) {
         if (StrUtil.isEmpty(valueCodes)) {
             return "";
         }
         List<String> valueNameList = Lists.newArrayList();
         String[] valueCodeArray = valueCodes.split(",");
         for (String valueCode : valueCodeArray) {
-            DictValueVO dictValueVO = VALUE_CACHE.get(valueCode);
+            DictValueVO dictValueVO = this.selectValueByValueCode(keyCode, valueCode);
             if (dictValueVO != null) {
                 valueNameList.add(dictValueVO.getValueName());
             }

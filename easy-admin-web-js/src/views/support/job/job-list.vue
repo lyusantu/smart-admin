@@ -55,23 +55,23 @@
           <a-flex align="end" vertical>
             <div class="smart-table-setting-block smart-margin-bottom10">
               <TableOperator
-                class="smart-margin-bottom5 pull-right"
-                v-model="columns"
-                :tableId="TABLE_ID_CONST.SUPPORT.JOB"
-                :refresh="queryJobList"
+                  class="smart-margin-bottom5 pull-right"
+                  v-model="columns"
+                  :tableId="TABLE_ID_CONST.SUPPORT.JOB"
+                  :refresh="queryJobList"
               />
             </div>
           </a-flex>
 
           <a-table
-            :scroll="{ x: 1800 }"
-            size="small"
-            :loading="tableLoading"
-            bordered
-            :dataSource="tableData"
-            :columns="columns"
-            rowKey="jobId"
-            :pagination="false"
+              :scroll="{ x: 1800 }"
+              size="small"
+              :loading="tableLoading"
+              bordered
+              :dataSource="tableData"
+              :columns="columns"
+              rowKey="jobId"
+              :pagination="false"
           >
             <template #bodyCell="{ record, column }">
               <template v-if="column.dataIndex === 'jobClass'">
@@ -106,10 +106,11 @@
               </template>
               <template v-if="column.dataIndex === 'enabledFlag'">
                 <a-switch
-                  v-model:checked="record.enabledFlag"
-                  checked-children="已启用" un-checked-children="已禁用"
-                  @change="(checked) => handleEnabledUpdate(checked, record)"
-                  :loading="record.enabledLoading"
+                    v-model:checked="record.enabledFlag"
+                    checked-children="已启用"
+                    un-checked-children="已禁用"
+                    @change="(checked) => handleEnabledUpdate(checked, record)"
+                    :loading="record.enabledLoading"
                 />
               </template>
               <template v-if="column.dataIndex === 'action'">
@@ -117,7 +118,9 @@
                   <a-button v-privilege="'support:job:update'" @click="openUpdateModal(record)" type="link">编辑</a-button>
                   <a-button v-privilege="'support:job:execute'" type="link" @click="openExecuteModal(record)">执行</a-button>
                   <a-button v-privilege="'support:job:log:query'" @click="openJobLogModal(record.jobId, record.jobName)" type="link">记录</a-button>
-                  <a-button danger v-privilege="'support:job:log:delete'" @click="confirmDelete(record.jobId, record.jobName)" type="link">删除</a-button>
+                  <a-button danger v-privilege="'support:job:log:delete'" @click="confirmDelete(record.jobId, record.jobName)" type="link"
+                  >删除</a-button
+                  >
                 </div>
               </template>
             </template>
@@ -140,8 +143,6 @@
         </a-tab-pane>
         <a-tab-pane key="2" tab="已删除任务"><DeletedJobList /></a-tab-pane>
       </a-tabs>
-
-
     </a-card>
 
     <!-- 表单操作 -->
@@ -152,223 +153,223 @@
   </div>
 </template>
 <script setup>
-  import {message, Modal} from 'ant-design-vue';
-  import { onMounted, reactive, ref } from 'vue';
-  import { jobApi } from '/@/api/support/job-api';
-  import { PAGE_SIZE_OPTIONS } from '/@/constants/common-const';
-  import { smartSentry } from '/@/lib/smart-sentry';
-  import TableOperator from '/@/components/support/table-operator/index.vue';
-  import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
-  import DeletedJobList from './components/deleted-job-list.vue';
-  import { TRIGGER_TYPE_ENUM } from '/@/constants/support/job-const.js';
-  import JobFormModal from './components/job-form-modal.vue';
-  import JobLogListModal from './components/job-log-list-modal.vue';
-  import {SmartLoading} from "/@/components/framework/smart-loading/index.js";
+import { message, Modal } from 'ant-design-vue';
+import { onMounted, reactive, ref } from 'vue';
+import { jobApi } from '/@/api/support/job-api';
+import { PAGE_SIZE_OPTIONS } from '/@/constants/common-const';
+import { smartSentry } from '/@/lib/smart-sentry';
+import TableOperator from '/@/components/support/table-operator/index.vue';
+import { TABLE_ID_CONST } from '/@/constants/support/table-id-const';
+import DeletedJobList from './components/deleted-job-list.vue';
+import { TRIGGER_TYPE_ENUM } from '/@/constants/support/job-const.js';
+import JobFormModal from './components/job-form-modal.vue';
+import JobLogListModal from './components/job-log-list-modal.vue';
+import { SmartLoading } from '/@/components/framework/smart-loading/index.js';
+const activeKey = ref('1');
+const columns = ref([
+  {
+    title: 'id',
+    width: 50,
+    dataIndex: 'jobId',
+  },
+  {
+    title: '任务名称',
+    dataIndex: 'jobName',
+    minWidth: 150,
+    ellipsis: true,
+  },
+  {
+    title: '执行类',
+    dataIndex: 'jobClass',
+    minWidth: 180,
+    ellipsis: true,
+  },
+  {
+    title: '触发类型',
+    dataIndex: 'triggerType',
+    width: 110,
+  },
+  {
+    title: '触发配置',
+    dataIndex: 'triggerValue',
+    width: 150,
+  },
+  {
+    title: '上次执行',
+    width: 180,
+    dataIndex: 'lastJob',
+  },
+  {
+    title: '下次执行',
+    width: 150,
+    dataIndex: 'nextJob',
+  },
+  {
+    title: '启用状态',
+    dataIndex: 'enabledFlag',
+    width: 100,
+  },
+  {
+    title: '执行参数',
+    dataIndex: 'param',
+    ellipsis: true,
+  },
+  {
+    title: '任务描述',
+    dataIndex: 'remark',
+    ellipsis: true,
+  },
+  {
+    title: '排序',
+    dataIndex: 'sort',
+    width: 65,
+  },
+  {
+    title: '更新人',
+    dataIndex: 'updateName',
+    width: 90,
+  },
+  {
+    title: '更新时间',
+    dataIndex: 'updateTime',
+    width: 150,
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    fixed: 'right',
+    width: 170,
+  },
+]);
 
-  const columns = ref([
-    {
-      title: 'id',
-      width: 50,
-      dataIndex: 'jobId',
-    },
-    {
-      title: '任务名称',
-      dataIndex: 'jobName',
-      minWidth: 150,
-      ellipsis: true,
-    },
-    {
-      title: '执行类',
-      dataIndex: 'jobClass',
-      minWidth: 180,
-      ellipsis: true,
-    },
-    {
-      title: '触发类型',
-      dataIndex: 'triggerType',
-      width: 110,
-    },
-    {
-      title: '触发配置',
-      dataIndex: 'triggerValue',
-      width: 150,
-    },
-    {
-      title: '上次执行',
-      width: 180,
-      dataIndex: 'lastJob',
-    },
-    {
-      title: '下次执行',
-      width: 150,
-      dataIndex: 'nextJob',
-    },
-    {
-      title: '启用状态',
-      dataIndex: 'enabledFlag',
-      width: 100,
-    },
-    {
-      title: '执行参数',
-      dataIndex: 'param',
-      ellipsis: true,
-    },
-    {
-      title: '任务描述',
-      dataIndex: 'remark',
-      ellipsis: true,
-    },
-    {
-      title: '排序',
-      dataIndex: 'sort',
-      width: 65,
-    },
-    {
-      title: '更新人',
-      dataIndex: 'updateName',
-      width: 90,
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      width: 150,
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      fixed: 'right',
-      width: 170,
-    },
-  ]);
+// ---------------- 查询数据 -----------------------
 
-  // ---------------- 查询数据 -----------------------
+const queryFormState = {
+  searchWord: '',
+  enabledFlag: null,
+  triggerType: null,
+  deletedFlag: false,
+  pageNum: 1,
+  pageSize: 10,
+};
+const queryForm = reactive({ ...queryFormState });
 
-  const queryFormState = {
-    searchWord: '',
-    enabledFlag: null,
-    triggerType: null,
-    deletedFlag: false,
-    pageNum: 1,
-    pageSize: 10,
-  };
-  const queryForm = reactive({ ...queryFormState });
+const tableLoading = ref(false);
+const tableData = ref([]);
+const total = ref(0);
 
-  const tableLoading = ref(false);
-  const tableData = ref([]);
-  const total = ref(0);
+function resetQuery() {
+  Object.assign(queryForm, queryFormState);
+  queryJobList();
+}
 
-  function resetQuery() {
-    Object.assign(queryForm, queryFormState);
+function onSearch() {
+  queryForm.pageNum = 1;
+  queryJobList();
+}
+
+// 处理执行类展示 默认返回类
+function handleJobClass(jobClass) {
+  return jobClass.split('.').pop();
+}
+
+// 上次处理结果展示
+function handleExecuteResult(result) {
+  let num = 400;
+  return result ? result.substring(0, num) + (result.length > num ? ' ...' : '') : '';
+}
+
+async function queryJobList() {
+  try {
+    tableLoading.value = true;
+    let responseModel = await jobApi.queryJob(queryForm);
+    const list = responseModel.data.list;
+    total.value = responseModel.data.total;
+    tableData.value = list;
+  } catch (e) {
+    smartSentry.captureError(e);
+  } finally {
+    tableLoading.value = false;
+  }
+}
+
+onMounted(queryJobList);
+
+// 更新状态
+async function handleEnabledUpdate(checked, record) {
+  record.enabledLoading = true;
+  try {
+    let updateForm = {
+      jobId: record.jobId,
+      enabledFlag: checked,
+    };
+    await jobApi.updateJobEnabled(updateForm);
+    // 重新查询任务详情
+    let jobInfo = await queryJobInfo(record.jobId);
+    Object.assign(record, jobInfo);
+    message.success('更新成功');
+  } catch (e) {
+    record.enabledFlag = !checked;
+    smartSentry.captureError(e);
+  } finally {
+    record.enabledLoading = false;
+  }
+}
+
+// 查询任务详情
+async function queryJobInfo(jobId) {
+  try {
+    let res = await jobApi.queryJobInfo(jobId);
+    return res.data;
+  } catch (e) {
+    smartSentry.captureError(e);
+  }
+}
+
+// ------------------------------------ 执行记录 -------------------------------------
+const jobLogModal = ref();
+function openJobLogModal(jobId, name) {
+  jobLogModal.value.show(jobId, name);
+}
+
+// ------------------------------------ 删除操作 -------------------------------------
+
+function confirmDelete(jobId, jobName) {
+  Modal.confirm({
+    title: '警告',
+    content: `确定要删除【${jobName}】任务吗?`,
+    okText: '删除',
+    okType: 'danger',
+    onOk() {
+      deleteJob(jobId);
+    },
+    cancelText: '取消',
+    onCancel() {},
+  });
+}
+
+async function deleteJob(jobId) {
+  try {
+    SmartLoading.show();
+    await jobApi.deleteJob(jobId);
+    message.success('删除成功!');
     queryJobList();
+  } catch (e) {
+    smartSentry.captureError(e);
+  } finally {
+    SmartLoading.hide();
   }
+}
 
-  function onSearch() {
-    queryForm.pageNum = 1;
-    queryJobList();
-  }
+// ------------------------------------ 表单操作 -------------------------------------
+const jobFormModal = ref();
 
-  // 处理执行类展示 默认返回类
-  function handleJobClass(jobClass) {
-    return jobClass.split('.').pop();
-  }
-
-  // 上次处理结果展示
-  function handleExecuteResult(result) {
-    let num = 400;
-    return result ? result.substring(0, num) + (result.length > num ? ' ...' : '') : '';
-  }
-
-  async function queryJobList() {
-    try {
-      tableLoading.value = true;
-      let responseModel = await jobApi.queryJob(queryForm);
-      const list = responseModel.data.list;
-      total.value = responseModel.data.total;
-      tableData.value = list;
-    } catch (e) {
-      smartSentry.captureError(e);
-    } finally {
-      tableLoading.value = false;
-    }
-  }
-
-  onMounted(queryJobList);
-
-  // 更新状态
-  async function handleEnabledUpdate(checked, record) {
-    record.enabledLoading = true;
-    try {
-      let updateForm = {
-        jobId: record.jobId,
-        enabledFlag: checked,
-      };
-      await jobApi.updateJobEnabled(updateForm);
-      // 重新查询任务详情
-      let jobInfo = await queryJobInfo(record.jobId);
-      Object.assign(record, jobInfo);
-      message.success('更新成功');
-    } catch (e) {
-      record.enabledFlag = !checked;
-      smartSentry.captureError(e);
-    } finally {
-      record.enabledLoading = false;
-    }
-  }
-
-  // 查询任务详情
-  async function queryJobInfo(jobId) {
-    try {
-      let res = await jobApi.queryJobInfo(jobId);
-      return res.data;
-    } catch (e) {
-      smartSentry.captureError(e);
-    }
-  }
-
-  // ------------------------------------ 执行记录 -------------------------------------
-  const jobLogModal = ref();
-  function openJobLogModal(jobId, name) {
-    jobLogModal.value.show(jobId, name);
-  }
-
-  // ------------------------------------ 删除操作 -------------------------------------
-
-  function confirmDelete(jobId, jobName){
-    Modal.confirm({
-      title: '警告',
-      content: `确定要删除【${jobName}】任务吗?`,
-      okText: '删除',
-      okType: 'danger',
-      onOk() {
-        deleteJob(jobId);
-      },
-      cancelText: '取消',
-      onCancel() {},
-    });
-  }
-
-  async function deleteJob(jobId){
-    try{
-      SmartLoading.show();
-      await jobApi.deleteJob(jobId);
-      message.success('删除成功!');
-      queryJobList();
-    }catch (e){
-      smartSentry.captureError(e);
-    }finally {
-      SmartLoading.hide();
-    }
-  }
-
-  // ------------------------------------ 表单操作 -------------------------------------
-  const jobFormModal = ref();
-
-  // 打开更新表单
-  function openUpdateModal(record) {
-    jobFormModal.value.openUpdateModal(record);
-  }
-  // 打开执行表单
-  function openExecuteModal(record) {
-    jobFormModal.value.openExecuteModal(record);
-  }
+// 打开更新表单
+function openUpdateModal(record) {
+  jobFormModal.value.openUpdateModal(record);
+}
+// 打开执行表单
+function openExecuteModal(record) {
+  jobFormModal.value.openExecuteModal(record);
+}
 </script>

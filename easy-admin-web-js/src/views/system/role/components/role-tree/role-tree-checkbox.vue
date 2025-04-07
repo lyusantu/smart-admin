@@ -22,28 +22,28 @@
   </div>
 </template>
 <script setup>
-  import { ref, watch } from 'vue';
-  import { useRoleStore } from '/@/store/modules/system/role';
-  import RoleTreeMenu from './role-tree-menu.vue';
+import { ref, watch } from 'vue';
+import { useRoleStore } from '/@/store/modules/system/role';
+import RoleTreeMenu from './role-tree-menu.vue';
 
-  let props = defineProps({
-    tree: {
-      type: Array,
-      default: [],
-    },
-  });
-  defineEmits(['update:value']);
+let props = defineProps({
+  tree: {
+    type: Array,
+    default: () => [],
+  },
+});
+defineEmits(['update:value']);
 
-  let roleStore = useRoleStore();
-  let checkedData = ref();
-  watch(
+let roleStore = useRoleStore();
+let checkedData = ref();
+watch(
     () => roleStore.checkedData,
     (e) => (checkedData.value = e),
     {
       deep: true,
     }
-  );
+);
 </script>
 <style scoped lang="less">
-  @import 'index.less';
+@import 'index.less';
 </style>

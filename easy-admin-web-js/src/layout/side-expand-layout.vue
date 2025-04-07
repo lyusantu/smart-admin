@@ -20,7 +20,12 @@
       <!-- 顶部头部信息 -->
       <a-layout-header class="smart-layout-header" :id="LAYOUT_ELEMENT_IDS.header" v-show="!fullScreenFlag">
         <a-row justify="space-between" class="smart-layout-header-user">
-          <a-col class="smart-layout-header-left">
+          <a-col
+              class="smart-layout-header-left"
+              :style="{
+              'max-width': `calc(100% - ${rightWidth}px)`,
+            }"
+          >
             <span class="collapsed-button">
               <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)" />
               <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
@@ -32,7 +37,8 @@
               </span>
             </a-tooltip>
             <span class="location-breadcrumb">
-              <MenuLocationBreadcrumb />
+              <PageTag v-if="pageTagLocation === 'top'" />
+              <MenuLocationBreadcrumb v-if="pageTagLocation !== 'top'" />
             </span>
           </a-col>
           <!---用戶操作区域-->
@@ -40,7 +46,7 @@
             <HeaderUserSpace />
           </a-col>
         </a-row>
-        <PageTag />
+        <PageTag v-if="pageTagLocation === 'center'" />
       </a-layout-header>
 
       <!--中间内容-->
@@ -49,11 +55,11 @@
         <IframeIndex v-show="iframeNotKeepAlivePageFlag" :key="route.name" :name="route.name" :url="route.meta.frameUrl" />
         <!--keepAlive的iframe 每个页面一个iframe组件-->
         <IframeIndex
-          v-for="item in keepAliveIframePages"
-          v-show="route.name === item.name"
-          :key="item.name"
-          :name="item.name"
-          :url="item.meta.frameUrl"
+            v-for="item in keepAliveIframePages"
+            v-show="route.name === item.name"
+            :key="item.name"
+            :name="item.name"
+            :url="item.meta.frameUrl"
         />
         <!--非iframe使用router-view-->
         <div v-show="!iframeNotKeepAlivePageFlag && keepAliveIframePages.every((e) => route.name !== e.name)">
@@ -71,74 +77,105 @@
     </a-layout>
     <!-- 右侧帮助文档 help-doc -->
     <a-layout-sider
-      v-if="helpDocFlag"
-      v-show="helpDocExpandFlag"
-      theme="light"
-      :width="180"
-      class="help-doc-sider"
-      :trigger="null"
-      style="min-height: 100%"
+        v-if="helpDocFlag"
+        v-show="helpDocExpandFlag"
+        theme="light"
+        :width="180"
+        class="help-doc-sider"
+        :trigger="null"
+        style="min-height: 100%"
     >
       <SideHelpDoc />
     </a-layout-sider>
   </a-layout>
 </template>
 <script setup>
-  import { computed, onMounted, ref, watch } from 'vue';
-  import HeaderUserSpace from './components/header-user-space/index.vue';
-  import MenuLocationBreadcrumb from './components/menu-location-breadcrumb/index.vue';
-  import PageTag from './components/page-tag/index.vue';
-  import SideExpandMenu from './components/side-expand-menu/index.vue';
-  import SmartFooter from './components/smart-footer/index.vue';
-  import { smartKeepAlive } from './components/smart-keep-alive';
-  import IframeIndex from '/@/components/framework/iframe/iframe-index.vue';
-  import watermark from '../lib/smart-watermark';
-  import { useAppConfigStore } from '/@/store/modules/system/app-config';
-  import { useUserStore } from '/@/store/modules/system/user';
-  import SideHelpDoc from './components/side-help-doc/index.vue';
-  import { useRouter } from 'vue-router';
-  import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
-  import { LAYOUT_ELEMENT_IDS } from '/@/layout/layout-const.js';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import HeaderUserSpace from './components/header-user-space/index.vue';
+import MenuLocationBreadcrumb from './components/menu-location-breadcrumb/index.vue';
+import PageTag from './components/page-tag/index.vue';
+import SideExpandMenu from './components/side-expand-menu/index.vue';
+import SmartFooter from './components/smart-footer/index.vue';
+import { smartKeepAlive } from './components/smart-keep-alive';
+import IframeIndex from '/@/components/framework/iframe/iframe-index.vue';
+import watermark from '../lib/smart-watermark';
+import { useAppConfigStore } from '/@/store/modules/system/app-config';
+import { useUserStore } from '/@/store/modules/system/user';
+import SideHelpDoc from './components/side-help-doc/index.vue';
+import { useRouter } from 'vue-router';
+import { HOME_PAGE_NAME } from '/@/constants/system/home-const';
+import { LAYOUT_ELEMENT_IDS } from '/@/layout/layout-const.js';
+const appConfigStore = useAppConfigStore();
 
-  const windowHeight = ref(window.innerHeight);
-  //是否全屏
-  const fullScreenFlag = computed(() => useAppConfigStore().$state.fullScreenFlag);
-  //主题颜色
-  const theme = computed(() => useAppConfigStore().$state.sideMenuTheme);
-  //是否显示标签页
-  const pageTagFlag = computed(() => useAppConfigStore().$state.pageTagFlag);
-  // 是否显示帮助文档
-  const helpDocFlag = computed(() => useAppConfigStore().$state.helpDocFlag);
-  // 是否默认展开帮助文档
-  const helpDocExpandFlag = computed(() => useAppConfigStore().$state.helpDocExpandFlag);
-  // 是否显示页脚
-  const footerFlag = computed(() => useAppConfigStore().$state.footerFlag);
-  // 是否显示水印
-  const watermarkFlag = computed(() => useAppConfigStore().$state.watermarkFlag);
-  // 多余高度
-  const dueHeight = computed(() => {
-    let due = 40;
-    if (useAppConfigStore().$state.pageTagFlag) {
-      due = due + 40;
+const windowHeight = ref(window.innerHeight);
+//是否全屏
+const fullScreenFlag = computed(() => useAppConfigStore().$state.fullScreenFlag);
+//主题颜色
+const theme = computed(() => useAppConfigStore().$state.sideMenuTheme);
+//是否显示标签页
+const pageTagFlag = computed(() => useAppConfigStore().$state.pageTagFlag);
+// 是否显示帮助文档
+const helpDocFlag = computed(() => useAppConfigStore().$state.helpDocFlag);
+// 是否默认展开帮助文档
+const helpDocExpandFlag = computed(() => useAppConfigStore().$state.helpDocExpandFlag);
+// 是否显示页脚
+const footerFlag = computed(() => useAppConfigStore().$state.footerFlag);
+// 是否显示水印
+const watermarkFlag = computed(() => useAppConfigStore().$state.watermarkFlag);
+// 标签页位置
+const pageTagLocation = computed(() => useAppConfigStore().$state.pageTagLocation);
+// 多余高度
+const dueHeight = computed(() => {
+  let due = 40;
+  if (useAppConfigStore().$state.pageTagFlag) {
+    due = due + 40;
+  }
+  if (useAppConfigStore().$state.footerFlag) {
+    due = due + 40;
+  }
+  return due;
+});
+
+watch(
+    pageTagLocation,
+    (newVal) => {
+      if (newVal == 'top') {
+        nextTick(() => {
+          sizeComputed();
+        });
+      }
+    },
+    {
+      immediate: true,
     }
-    if (useAppConfigStore().$state.footerFlag) {
-      due = due + 40;
-    }
-    return due;
+);
+const rightWidth = ref(0);
+function sizeComputed() {
+  const tagParentElement = document.querySelector('.location-breadcrumb');
+  const tagsElement = tagParentElement.querySelector('.ant-tabs-nav-list');
+  const parentElement = document.querySelector('.smart-layout-header-user');
+  const rightElement = document.querySelector('.smart-layout-header-right');
+  rightWidth.value = rightElement.offsetWidth;
+  let ro = new ResizeObserver((e) => {
+    rightWidth.value = rightElement.offsetWidth + 10;
   });
-  //是否隐藏菜单
-  const collapsed = ref(false);
+  ro.observe(rightElement);
+  ro.observe(tagsElement);
+  ro.observe(parentElement);
+}
+//是否隐藏菜单
+const collapsed = ref(false);
 
-  //页面初始化的时候加载水印
-  onMounted(() => {
-    if (watermarkFlag.value) {
-      watermark.set(LAYOUT_ELEMENT_IDS.content, useUserStore().actualName);
-    } else {
-      watermark.clear();
-    }
-  });
+//页面初始化的时候加载水印
+onMounted(() => {
+  if (watermarkFlag.value) {
+    watermark.set(LAYOUT_ELEMENT_IDS.content, useUserStore().actualName);
+  } else {
+    watermark.clear();
+  }
+});
 
-  watch(
+watch(
     () => watermarkFlag.value,
     (newValue) => {
       if (newValue) {
@@ -147,132 +184,133 @@
         watermark.clear();
       }
     }
-  );
+);
 
-  window.addEventListener('resize', function () {
-    windowHeight.value = window.innerHeight;
-  });
+window.addEventListener('resize', function () {
+  windowHeight.value = window.innerHeight;
+});
 
-  //回到顶部
-  const backTopTarget = () => {
-    return document.getElementById(LAYOUT_ELEMENT_IDS.main);
-  };
-  // ----------------------- keep-alive相关 -----------------------
-  let { route, keepAliveIncludes, iframeNotKeepAlivePageFlag, keepAliveIframePages } = smartKeepAlive();
-  const router = useRouter();
-  function goHome() {
-    router.push({ name: HOME_PAGE_NAME });
-  }
+//回到顶部
+const backTopTarget = () => {
+  return document.getElementById(LAYOUT_ELEMENT_IDS.main);
+};
+// ----------------------- keep-alive相关 -----------------------
+let { route, keepAliveIncludes, iframeNotKeepAlivePageFlag, keepAliveIframePages } = smartKeepAlive();
+const router = useRouter();
+function goHome() {
+  router.push({ name: HOME_PAGE_NAME });
+}
 </script>
 <style scoped lang="less">
-  :deep(.ant-layout-header) {
-    height: auto;
-  }
-  :deep(.layout-header) {
-    height: auto;
-  }
+:deep(.ant-layout-header) {
+  height: auto;
+}
+:deep(.layout-header) {
+  height: auto;
+}
 
-  .smart-layout-header {
-    background: #fff;
-    padding: 0;
-    z-index: 21;
-  }
+.smart-layout-header {
+  background: #fff;
+  padding: 0;
+  z-index: 21;
+}
 
-  .smart-layout-header-user {
-    height: @header-user-height;
-    border-bottom: 1px solid #f6f6f6;
-  }
+.smart-layout-header-user {
+  height: @header-user-height;
+  border-bottom: 1px solid #f6f6f6;
+}
 
-  .smart-layout-header-left {
-    display: flex;
-    height: @header-user-height;
+.smart-layout-header-left {
+  display: flex;
+  height: @header-user-height;
 
-    .collapsed-button {
-      margin-left: 10px;
-      line-height: @header-user-height;
-    }
-
-    .home-button {
-      margin-left: 15px;
-      cursor: pointer;
-      padding: 0 5px;
-      line-height: @header-user-height;
-    }
-
-    .home-button:hover {
-      background-color: #efefef;
-    }
-
-    .location-breadcrumb {
-      margin-left: 15px;
-      line-height: @header-user-height;
-    }
+  .collapsed-button {
+    margin-left: 10px;
+    line-height: @header-user-height;
   }
 
-  .smart-layout-header-right {
-    display: flex;
-    height: @header-user-height;
+  .home-button {
+    margin-left: 15px;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: @header-user-height;
   }
 
-  .admin-layout {
-    .side-menu {
-      flex: 0 !important;
-      min-width: inherit !important;
-      max-width: none !important;
-      width: auto !important;
-      &.fixed-side {
-        position: fixed;
-        height: 100vh;
-        left: 0;
-        top: 0;
-      }
-    }
+  .home-button:hover {
+    background-color: #efefef;
+  }
 
-    .help-doc-sider {
-      flex: 0 !important;
-      min-width: 100px;
+  .location-breadcrumb {
+    width: calc(100% - 56px);
+    margin-left: 15px;
+    line-height: @header-user-height;
+  }
+}
+
+.smart-layout-header-right {
+  display: flex;
+  height: @header-user-height;
+}
+
+.admin-layout {
+  .side-menu {
+    flex: 0 !important;
+    min-width: inherit !important;
+    max-width: none !important;
+    width: auto !important;
+    &.fixed-side {
+      position: fixed;
       height: 100vh;
-      max-width: 100px;
-      width: auto !important;
-      &.fixed-side {
-        position: fixed;
-        height: 100vh;
-        right: 0;
-        top: 0;
-      }
-    }
-
-    .virtual-side {
-      transition: all 0.2s;
-    }
-
-    .virtual-header {
-      transition: all 0.2s;
-      opacity: 0;
-
-      &.fixed-tabs.multi-page:not(.fixed-header) {
-        height: 0;
-      }
-    }
-
-    .admin-layout-main {
-      overflow-x: hidden;
-    }
-
-    .admin-layout-content {
-      background-color: inherit;
-      min-height: auto;
-      position: relative;
-      padding: 10px 10px 0px 10px;
-      height: calc(100% - v-bind(dueHeight) px);
-      overflow-x: hidden;
+      left: 0;
+      top: 0;
     }
   }
 
-  .smart-layout-footer {
+  .help-doc-sider {
+    flex: 0 !important;
+    min-width: 100px;
+    height: 100vh;
+    max-width: 100px;
+    width: auto !important;
+    &.fixed-side {
+      position: fixed;
+      height: 100vh;
+      right: 0;
+      top: 0;
+    }
+  }
+
+  .virtual-side {
+    transition: all 0.2s;
+  }
+
+  .virtual-header {
+    transition: all 0.2s;
+    opacity: 0;
+
+    &.fixed-tabs.multi-page:not(.fixed-header) {
+      height: 0;
+    }
+  }
+
+  .admin-layout-main {
+    overflow-x: hidden;
+  }
+
+  .admin-layout-content {
+    background-color: inherit;
+    min-height: auto;
     position: relative;
-    padding: 10px 0;
-    display: flex;
-    justify-content: center;
+    padding: 10px 10px 0px 10px;
+    height: calc(100% - v-bind(dueHeight) px);
+    overflow-x: hidden;
   }
+}
+
+.smart-layout-footer {
+  position: relative;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+}
 </style>

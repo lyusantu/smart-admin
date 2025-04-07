@@ -1,6 +1,6 @@
 package com.lyusantu.easy.admin.module.business.goods.domain.vo;
 
-import com.alibaba.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.ExcelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +10,6 @@ import java.math.BigDecimal;
 
 /**
  * excel商品
- *
- * @Author 1024创新实验室: 胡克
- * @Date 2021-10-25 20:26:54
- * @Wechat zhuoda1024
- * @Email lab1024@163.com
- * @Copyright <a href="https://1024lab.net">1024创新实验室</a>
  */
 @Data
 @Builder

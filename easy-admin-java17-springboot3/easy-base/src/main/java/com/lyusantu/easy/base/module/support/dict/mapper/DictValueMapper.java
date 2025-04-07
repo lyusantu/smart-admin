@@ -46,5 +46,5 @@ public interface DictValueMapper extends BaseMapper<DictValueEntity> {
      * 跟进code查询
      *
      */
-    DictValueEntity selectByCode(@Param("valueCode") String valueCode, @Param("deletedFlag") Boolean deletedFlag);
+    DictValueEntity selectByCode(@Param("dictKeyId") Long dictKeyId,@Param("valueCode") String valueCode, @Param("deletedFlag") Boolean deletedFlag);
 }

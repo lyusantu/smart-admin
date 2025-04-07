@@ -37,27 +37,25 @@
         SELECT
         t_notice.* ,
         t_notice_type.notice_type_name as noticeTypeName,
-        t_employee.actual_name as createUserName,
-        t_department.name as departmentName
+        t_employee.actual_name as createUserName
         FROM t_notice
         left join t_notice_type on t_notice_type.notice_type_id = t_notice.notice_type_id
         left join t_employee on t_notice.create_user_id = t_employee.employee_id
-        left join t_department on t_employee.department_id = t_department.department_id
         <where>
             <if test="query.noticeTypeId != null">
                 AND t_notice_type.notice_type_id = #{query.noticeTypeId}
             </if>
-            <if test="query.keywords != null and query.keywords !=''">
+            <if test="query.keywords != null and query.keywords != ''">
                 AND ( INSTR(t_notice.title,#{query.keywords})
                 OR INSTR(t_notice.author,#{query.keywords})
                 OR INSTR(t_notice.source,#{query.keywords})
                 )
             </if>
-            <if test="query.documentNumber != null and query.documentNumber !=''">
+            <if test="query.documentNumber != null and query.documentNumber != ''">
                 AND INSTR(t_notice.document_number, #{query.documentNumber})
             </if>
-            <if test="query.createUserId != null">
-                AND t_notice.create_user_id = #{createUserId}
+            <if test="query.createUserName != null and query.createUserName != ''">
+                AND t_employee.actual_name = #{query.createUserName}
             </if>
             <if test="query.deletedFlag != null">
                 and t_notice.deleted_flag = #{query.deletedFlag}

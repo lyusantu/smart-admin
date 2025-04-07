@@ -1,6 +1,6 @@
 package com.lyusantu.easy.admin.module.business.oa.enterprise.domain.vo;
 
-import com.alibaba.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 /**

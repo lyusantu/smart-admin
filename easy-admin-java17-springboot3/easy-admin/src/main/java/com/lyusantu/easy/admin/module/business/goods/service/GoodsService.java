@@ -1,6 +1,6 @@
 package com.lyusantu.easy.admin.module.business.goods.service;
 
-import com.alibaba.excel.EasyExcel;
+import cn.idev.excel.FastExcel;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lyusantu.easy.admin.module.business.goods.mapper.GoodsMapper;
@@ -164,7 +164,7 @@ public class GoodsService {
     public ResponseDTO<String> importGoods(MultipartFile file) {
         List<GoodsImportForm> dataList;
         try {
-            dataList = EasyExcel.read(file.getInputStream()).head(GoodsImportForm.class)
+            dataList = FastExcel.read(file.getInputStream()).head(GoodsImportForm.class)
                     .sheet()
                     .doReadSync();
         } catch (IOException e) {
@@ -184,12 +184,13 @@ public class GoodsService {
      */
     public List<GoodsExcelVO> getAllGoods() {
         List<GoodsEntity> goodsEntityList = goodsMapper.selectList(null);
+        String keyCode="GODOS_PLACE";
         return goodsEntityList.stream()
                 .map(e ->
                         GoodsExcelVO.builder()
                                 .goodsStatus(EnumUtil.getEnumDescByValue(e.getGoodsStatus(), GoodsStatusEnum.class))
                                 .categoryName(categoryQueryService.queryCategoryName(e.getCategoryId()))
-                                .place(Arrays.stream(e.getPlace().split(",")).map(code -> dictCacheService.selectValueNameByValueCode(code)).collect(Collectors.joining(",")))
+                                .place(Arrays.stream(e.getPlace().split(",")).map(code -> dictCacheService.selectValueNameByValueCode(keyCode,code)).collect(Collectors.joining(",")))
                                 .price(e.getPrice())
                                 .goodsName(e.getGoodsName())
                                 .remark(e.getRemark())

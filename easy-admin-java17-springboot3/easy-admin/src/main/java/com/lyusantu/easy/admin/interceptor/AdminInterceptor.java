@@ -40,8 +40,6 @@ public class AdminInterceptor implements HandlerInterceptor {
 
     private final LoginService loginService;
 
-    private final SystemEnvironment systemEnvironment;
-
     /**
      * 请求前拦截
      */
@@ -61,47 +59,32 @@ public class AdminInterceptor implements HandlerInterceptor {
         try {
             // 获取 Token 并解析用户
             String tokenValue = StpUtil.getTokenValue();
-            boolean debugNumberTokenFlag = isDevDebugNumberToken(tokenValue);
-
-            String loginId = null;
-            if (debugNumberTokenFlag) {
-                // 开发、测试环境，且为数字的话，则表明为调试临时用户，即需要调用 sa-token switch
-                loginId = UserTypeEnum.ADMIN_EMPLOYEE.getValue() + StringConst.COLON + tokenValue;
-                StpUtil.switchTo(loginId);
-            } else {
-                loginId = (String) StpUtil.getLoginIdByToken(tokenValue);
-            }
-
+            String loginId = (String) StpUtil.getLoginIdByToken(tokenValue);
             RequestEmployee requestEmployee = loginService.getLoginEmployee(loginId, request);
 
-            // 放行所有带@NoNeedLogin的接口
+            // 效验登录
             Method method = ((HandlerMethod) handler).getMethod();
-            if (((HandlerMethod) handler).getMethodAnnotation(NoNeedLogin.class) != null) {
-                checkActiveTimeout(requestEmployee, debugNumberTokenFlag);
+            NoNeedLogin noNeedLogin = ((HandlerMethod) handler).getMethodAnnotation(NoNeedLogin.class);
+            if (noNeedLogin != null) {
+                checkActiveTimeout(requestEmployee);
                 return true;
             }
-
-            // 校验用户是否登录
             if (requestEmployee == null) {
                 ResponseUtil.write(response, ResponseDTO.error(UserErrorCode.LOGIN_STATE_INVALID));
                 return false;
             }
+            // 检测token 活跃频率
+            checkActiveTimeout(requestEmployee);
 
-            // 检测token活跃度
-            checkActiveTimeout(requestEmployee, debugNumberTokenFlag);
-
-            // 放行所有带@SaIgnore的接口
+            // 效验权限
             RequestUtil.setRequestUser(requestEmployee);
             if (SaStrategy.instance.isAnnotationPresent.apply(method, SaIgnore.class)) {
                 return true;
             }
-
-            // 放行超级管理员
+            // 如果是超级管理员的话，不需要校验权限
             if (requestEmployee.getAdministratorFlag()) {
                 return true;
             }
-
-            // 权限效验
             SaStrategy.instance.checkMethodAnnotation.accept(method);
         } catch (SaTokenException e) {
             // Sa-Token异常状态码 https://sa-token.cc/doc.html#/fun/exception-code
@@ -123,16 +106,11 @@ public class AdminInterceptor implements HandlerInterceptor {
         return true;
     }
 
-
     /**
      * 检测：token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结
      */
-    private void checkActiveTimeout(RequestEmployee requestEmployee, boolean debugNumberTokenFlag) {
-        // 不检测开发&测试环境的数字DebugToken
-        if (debugNumberTokenFlag) {
-            return;
-        }
-        // 不检测不在线的用户
+    private void checkActiveTimeout(RequestEmployee requestEmployee) {
+        // 用户不在线，也不用检测
         if (requestEmployee == null) {
             return;
         }
@@ -140,25 +118,10 @@ public class AdminInterceptor implements HandlerInterceptor {
         StpUtil.updateLastActiveToNow();
     }
 
-
-    /**
-     * 是否为开发使用的 debug token
-     */
-    private boolean isDevDebugNumberToken(String token) {
-        if (!StrUtil.isNumeric(token)) {
-            return false;
-        }
-        return systemEnvironment.getCurrentEnvironment() == SystemEnvironmentEnum.DEV || systemEnvironment.getCurrentEnvironment() == SystemEnvironmentEnum.TEST;
-    }
-
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         // 清除上下文
         RequestUtil.remove();
-        // 开发环境，关闭 sa token 的临时切换用户
-        if (systemEnvironment.getCurrentEnvironment() == SystemEnvironmentEnum.DEV) {
-            StpUtil.endSwitch();
-        }
     }
 
 

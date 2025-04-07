@@ -1,10 +1,8 @@
 package com.lyusantu.easy.admin.module.business.goods.domain.vo;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.lyusantu.easy.admin.module.business.goods.constant.GoodsStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import com.lyusantu.easy.base.common.json.serializer.DictValueVoSerializer;
 import com.lyusantu.easy.base.common.swagger.SchemaEnum;
 
 import java.math.BigDecimal;
@@ -32,7 +30,6 @@ public class GoodsVO  {
     private Integer goodsStatus;
 
     @Schema(description = "产地")
-    @JsonSerialize(using = DictValueVoSerializer.class)
     private String place;
 
     @Schema(description = "商品价格")

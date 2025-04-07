@@ -40,6 +40,11 @@ public class DataScopeSqlConfigService {
 
     private static final String DEPARTMENT_PARAM = "#departmentIds";
 
+    /**
+     * 用于拼接查看本人数据范围的 SQL
+     */
+    private static final String CREATE_USER_ID_EQUALS = "create_user_id = ";
+
     private final ConcurrentHashMap<String, DataScopeSqlConfig> dataScopeMethodMap = new ConcurrentHashMap<>();
 
     @Resource
@@ -88,14 +93,23 @@ public class DataScopeSqlConfigService {
      * 组装需要拼接的sql
      */
     public String getJoinSql(Map<String, Object> paramMap, DataScopeSqlConfig sqlConfigDTO) {
-        DataScopeTypeEnum dataScopeTypeEnum = sqlConfigDTO.getDataScopeType();
-        String joinSql = sqlConfigDTO.getJoinSql();
         Long employeeId = RequestUtil.getRequestUserId();
         if (employeeId == null) {
             return "";
         }
+
+        DataScopeTypeEnum dataScopeTypeEnum = sqlConfigDTO.getDataScopeType();
+        DataScopeViewTypeEnum viewTypeEnum = dataScopeViewService.getEmployeeDataScopeViewType(dataScopeTypeEnum, employeeId);
+
+        // 数据权限设置为仅本人可见时 直接返回 create_user_id = employeeId
+        if (DataScopeViewTypeEnum.ME == viewTypeEnum) {
+            return CREATE_USER_ID_EQUALS + employeeId;
+        }
+
+        String joinSql = sqlConfigDTO.getJoinSql();
+
         if (DataScopeWhereInTypeEnum.CUSTOM_STRATEGY == sqlConfigDTO.getDataScopeWhereInType()) {
-            Class strategyClass = sqlConfigDTO.getJoinSqlImplClazz();
+            Class<?> strategyClass = sqlConfigDTO.getJoinSqlImplClazz();
             if (strategyClass == null) {
                 log.warn("data scope custom strategy class is null");
                 return "";
@@ -105,11 +119,10 @@ public class DataScopeSqlConfigService {
                 log.warn("data scope custom strategy class：{} ,bean is null", sqlConfigDTO.getJoinSqlImplClazz());
                 return "";
             }
-            DataScopeViewTypeEnum viewTypeEnum = dataScopeViewService.getEmployeeDataScopeViewType(dataScopeTypeEnum, employeeId);
             return powerStrategy.getCondition(viewTypeEnum,paramMap, sqlConfigDTO);
         }
         if (DataScopeWhereInTypeEnum.EMPLOYEE == sqlConfigDTO.getDataScopeWhereInType()) {
-            List<Long> canViewEmployeeIds = dataScopeViewService.getCanViewEmployeeId(dataScopeTypeEnum, employeeId);
+            List<Long> canViewEmployeeIds = dataScopeViewService.getCanViewEmployeeId(viewTypeEnum, employeeId);
             if (CollectionUtils.isEmpty(canViewEmployeeIds)) {
                 return "";
             }
@@ -118,7 +131,7 @@ public class DataScopeSqlConfigService {
             return sql;
         }
         if (DataScopeWhereInTypeEnum.DEPARTMENT == sqlConfigDTO.getDataScopeWhereInType()) {
-            List<Long> canViewDepartmentIds = dataScopeViewService.getCanViewDepartmentId(dataScopeTypeEnum, employeeId);
+            List<Long> canViewDepartmentIds = dataScopeViewService.getCanViewDepartmentId(viewTypeEnum, employeeId);
             if (CollectionUtils.isEmpty(canViewDepartmentIds)) {
                 return "";
             }
